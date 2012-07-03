@@ -1,0 +1,12 @@
+android
+=======
+
+2012.07.03
+----------
+
+   1. train
+
+   http://www.vogella.com/articles/AndroidLocationAPI/article.html
+
+
+   --END
