@@ -3,7 +3,16 @@
     <string name="app_name">MobileApp</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_main">MainActivity</string>
-    <string name="title_activity_logon">LogonActivity</string>
+    <string name="title_activity_main">鑫亿医疗移动平台</string>
+    <string name="title_activity_logon">鑫亿医疗移动平台</string>
+    <string name="gridview1">九宫格1</string>
+    <string name="gridview2">九宫格2</string>
+    <string name="gridview3">九宫格3</string>
+    <string name="gridview4">九宫格4</string>
+    <string name="gridview5">九宫格5</string>
+    <string name="gridview6">九宫格6</string>
+    <string name="gridview7">九宫格7</string>
+    <string name="gridview8">九宫格8</string>
+    <string name="gridview9">九宫格9</string>
 
 </resources>

@@ -8,4 +8,7 @@ android app
 
    lib/fastjson,achartengine
 
+   2. 静态九宫格布局
+   MainActivity
+
    --END
