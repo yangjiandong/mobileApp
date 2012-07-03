@@ -9,26 +9,24 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.alibaba.fastjson.JSON;
-import com.ek.mobileapp.model.User;
+import com.ek.mobileapp.model.UserDTO;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.HttpTool;
 import com.ek.mobileapp.utils.WebUtils;
 
-public class LoginAction {
+public class LogonAction {
     public static int login(String loginname, String password) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("loginname", loginname));
+        params.add(new BasicNameValuePair("username", loginname));
         params.add(new BasicNameValuePair("password", password));
-        JSONObject res = HttpTool.getTool().post(
-                WebUtils.HOST + WebUtils.LOGINACTION, params);
+        JSONObject res = HttpTool.getTool().post(WebUtils.HOST + WebUtils.LOGINACTION, params);
         if (res == null)
             return WebUtils.WEBERROR;
         try {
             if (!res.getBoolean("success")) {
                 return WebUtils.LOGINERROR;
             }
-            User user = JSON.parseObject(res.getJSONObject("user").toString(),
-                    User.class);
+            UserDTO user = JSON.parseObject(res.getJSONObject("user").toString(), UserDTO.class);
             GlobalCache.getCache().setLoginuser(user);
             return WebUtils.SUCCESS;
         } catch (JSONException e) {

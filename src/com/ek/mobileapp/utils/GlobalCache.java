@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.ek.mobileapp.model.GeneralInfo;
 import com.ek.mobileapp.model.GeneralTotal;
-import com.ek.mobileapp.model.User;
+import com.ek.mobileapp.model.UserDTO;
 
 public class GlobalCache {
     public static final int ALLYQ = 0;
@@ -15,7 +15,7 @@ public class GlobalCache {
     public static final String YH = "阳湖";
 
     private static GlobalCache cache = null;
-    private User loginuser;
+    private UserDTO loginuser;
     private int selectedYQ;
     private String startDate = "";
     private String endDate = "";
@@ -36,11 +36,11 @@ public class GlobalCache {
         return cache;
     }
 
-    public User getLoginuser() {
+    public UserDTO getLoginuser() {
         return loginuser;
     }
 
-    public void setLoginuser(User loginuser) {
+    public void setLoginuser(UserDTO loginuser) {
         this.loginuser = loginuser;
     }
 
