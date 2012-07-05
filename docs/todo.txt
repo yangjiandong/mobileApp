@@ -8,5 +8,8 @@ TODO
 
    2. 根据授权生成菜单
 
+   3. 短信通知
+
+   http://stackoverflow.com/questions/4023273/android-custom-url-scheme
 
    --END
