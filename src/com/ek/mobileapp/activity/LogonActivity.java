@@ -1,5 +1,6 @@
 package com.ek.mobileapp.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -43,8 +44,7 @@ public class LogonActivity extends Activity {
                     username.setError("用户名不能为空！");
                     return;
                 }
-                login(username.getEditableText().toString().trim(), password
-                        .getEditableText().toString().trim());
+                login(username.getEditableText().toString().trim(), password.getEditableText().toString().trim());
 
             }
         });
@@ -78,6 +78,8 @@ public class LogonActivity extends Activity {
         }
 
         public void run() {
+
+
             int res = LogonAction.login(loginname, psd);
             if (res == com.ek.mobileapp.utils.WebUtils.WEBERROR) {
                 loginUnSuccess("请检查网络");
@@ -88,7 +90,7 @@ public class LogonActivity extends Activity {
                 //    setPreferences(loginname,psd);
                 //}
                 Intent intent = new Intent(LogonActivity.this, MainActivity.class);
-                //startActivity(intent);
+                //                startActivity(intent);
                 startActivityForResult(intent, LOGINACTION);
                 proDialog.dismiss();
                 finish();

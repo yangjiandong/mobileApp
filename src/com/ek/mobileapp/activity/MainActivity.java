@@ -6,6 +6,7 @@ import java.util.HashMap;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -93,7 +94,10 @@ public class MainActivity extends Activity {
             HashMap<String, Object> item = (HashMap<String, Object>) arg0.getItemAtPosition(arg2);
 
             if (item.get("ItemText").equals(getResources().getString(R.string.gridview1))) {
-                Toast.makeText(MainActivity.this, R.string.gridview1, Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this, R.string.gridview1, Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(MainActivity.this, QueryActivity.class);
+                startActivity(intent);
+                finish();
             }
             if (item.get("ItemText").equals(getResources().getString(R.string.gridview2))) {
                 Toast.makeText(MainActivity.this, R.string.gridview2, Toast.LENGTH_LONG).show();
@@ -122,7 +126,6 @@ public class MainActivity extends Activity {
             }
         }
     }
-
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ek.mobileapp.model.GeneralInfo;
 import com.ek.mobileapp.model.GeneralTotal;
+import com.ek.mobileapp.model.QueryTotalInfo;
 import com.ek.mobileapp.model.UserDTO;
 
 public class GlobalCache {
@@ -16,6 +17,7 @@ public class GlobalCache {
 
     private static GlobalCache cache = null;
     private UserDTO loginuser;
+    private List<QueryTotalInfo> queryList;
     private int selectedYQ;
     private String startDate = "";
     private String endDate = "";
@@ -118,4 +120,13 @@ public class GlobalCache {
     public void setTotals(List<GeneralTotal> totals) {
         this.totals = totals;
     }
+
+    public List<QueryTotalInfo> getQueryList() {
+        return queryList;
+    }
+
+    public void setQueryList(List<QueryTotalInfo> queryList) {
+        this.queryList = queryList;
+    }
+
 }

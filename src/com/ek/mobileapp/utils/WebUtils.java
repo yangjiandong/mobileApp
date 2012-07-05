@@ -12,4 +12,6 @@ public class WebUtils {
     public static final String NEWS = "/news.html";
     public static final String LOGINACTION = "/common/logon?type=mobile";
     public static final String GETGENERALINFOACTION = "/control?action=generalinfo";
+
+    public static final String ACTION_QUERYTOTAL = "/query/querytotal?type=mobile";
 }
