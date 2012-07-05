@@ -1,0 +1,575 @@
+﻿（转）android 小知识
+
+android 
+1、判断sd卡是否存在
+ 
+ boolean sdCardExist = Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);
+ 
+2、TextView部分文字设置颜色
+ 
+ TextView tv = new TextView(this);
+ //添加css样式
+ tv.setText(Html.fromHtml("<font color="#ff0000">红色</font>其它颜色"));
+ 
+3、替换数据库某字段中某些字符的方法：
+ 
+ update table set spell=replace(spell,'ɡ','g')
+ 
+4、单选按钮默认选中：
+ 
+ mRadioGroup.check(mRadioButton_1.getId());
+ 
+下拉列表默认选中：
+ 
+ for(int j = 0;j < cities.length;j ++){
+     if(months[j].equals("武汉")){
+         mSpinner_m.setSelection(j);
+     }
+ }
+ 
+5、TextView中嵌套图片：
+ 
+ Drawable draw = getResources().getDrawable(R.drawable.ji_dot_nor);
+ textView.setCompoundDrawablesWithIntrinsicBounds(null, draw, null, null);  
+ 
+6、ListView去掉下拉条：
+ 
+方法一：在xml属性中设置
+ 
+ android:scrollbars="none"
+ 方法二：在代码中设置：
+ 
+ listView.setVerticalScrollBarEnabled(false);
+ 
+7、设置Activity的风格：
+ 
+ //将Activity设置成半透明的效果
+ android:theme="@android:style/Theme.Translucent"  
+ //将Activity设置成对话框的样式  
+ android:theme="@android:style/Theme.Dialog"  
+ 
+8、创建一个背景模糊的Widow，且将对话框放在前景
+ 
+ Window window = dialog.getWindow();
+ window.setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,WindowManager.LayoutParams.FLAG_BLUR_BEHIND);  
+ 
+9、list滚动时出现黑色底的问题:
+ 
+解决方法:
+ 方法一：
+ 在XML中设置android:cacheColorHint="#00000000"
+ 
+方法二：
+ 在代码中设置listView.setCacheColorHint(0);
+ 
+10、编辑框中指定输入的类型，设置属性digits即可：
+ 
+例：只允许输入数字
+ android:digits="0123456789"  或  android:digits="integer"   或  android:digits="num"
+ 
+11、利用反射机制，获取drawable文件夹下的图片名称：
+ 
+ Field[] fields = R.drawable.class.getDeclaredFields();
+ for(Field field:fields){
+     if(!"icon".equals(field.getName())){
+         sb.append(field.getName() + "\t");
+     }
+ }
+ mTextView.setText(sb.toString());
+ 
+12、缓冲流播放MP3：
+ 
+ MediaPlayer player = new MediaPlayer();
+ try {
+     player.setDataSource(WebMusic.this, Uri.parse("http://stream15.a8.com/a8space/2010/12/30/2010123002225125942.mp3"));
+     player.prepare();
+     player.start();
+ } catch (IllegalArgumentException e) {
+     e.printStackTrace();
+ } catch (SecurityException e) {
+     e.printStackTrace();
+ } catch (IllegalStateException e) {
+     e.printStackTrace();
+ } catch (IOException e) {
+     e.printStackTrace();
+ }
+ 
+13、下面的代码可以用来点亮屏幕：
+ 
+ PowerManager pm = (PowerManager)getSystemService(POWER_SERVICE);
+ mWakelock = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP |PowerManager.SCREEN_DIM_WAKE_LOCK, "SimpleTimer");
+ mWakelock.acquire();
+ ...............
+ mWakelock.release();
+ 
+下面的代码用来屏幕解锁：
+ 
+ KeyguardManager keyguardManager = (KeyguardManager)getSystemService(KEYGUARD_SERVICE);
+ KeyguardLock keyguardLock = keyguardManager.newKeyguardLock("");
+ BkeyguardLock.disableKeyguard();
+ 
+使用这两段代码，需要在AndroidManifest文件中加入以下权限：
+ 
+ <uses-permission android:name="android.permission.DISABLE_KEYGUARD"></uses-permission>
+ <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
+ 
+14、android 跑马灯效果做如下设置即可：
+ 
+ android:scrollHorizontally="true"    
+ android:marqueeRepeatLimit="marquee_forever"    
+ android:ellipsize="marquee"    
+ android:focusable="true"    
+ android:focusableInTouchMode="true"    
+ android:singleLine="true"
+ 
+15、拦截短信：
+     当android系统接收到短信时，会发送一个广播BroadcastReceiver，这个广播是以有序广播的形式发送的。
+     所谓的有序广播就是广播发出后，接收者是按照设置的优先级一个一个接着接收，前面的接收者可以选择是否终止这条广播以使后面的接收者接收不到，而普遍广播发送 后所有的接收者都能同时接到，但是不能终止这条广播，也不能将它的处理结果传递给下个接收者。
+     sms拦截就是通过实现一个BroadcastReceiver并将其的优先级设置的比系统sms接收者高。
+     android:priority就是设置优先级的，设置为100即可：
+ 
+  <receiver android:name="InterceptSMS">
+     <intent-filter android:priority="100">
+         <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+     </intent-filter>
+ </receiver>
+ 
+16、如果在文件夹下选择视频文件时，想调用自己的播放器，需要在Manifest.xml中设置过滤器，设置如下：
+ 
+  <intent-filter>
+     <action android:name="android.intent.action.VIEW" />
+     <category android:name="android.intent.category.DEFAULT"/>
+     <data android:mimeType="video/*"/>
+ </intent-filter>
+ 
+如果想在浏览器中调用自己的播放器，设置如下：
+ 
+ <intent-filter>
+     <action android:name="android.intent.action.VIEW" />
+     <category android:name="android.intent.category.DEFAULT"/>
+     <category android:name="android.intent.category.BROWSABLE" />
+     <data android:mimeType="video/*" android:scheme="http"/>
+ </intent-filter>
+ 
+ 
+ 
+如果两者都要实现的话，就必须配两个过滤器。
+ 
+17、显示图片时，用mImageView.setScaleType(ImageView.ScaleType.FIT_XY); 可以填充整个区域。
+ 
+18、保持屏幕长开：
+ 
+ getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+ 
+开启、关闭屏幕时发送的广播：
+ 
+ <receiver android:name=".MyBroadcastReceiver" android:enabled="true">                 
+     <intent-filter>                       
+         <action android:name="android.intent.action.ACTION_SCREEN_ON"></action>                           
+         <action android:name="android.intent.action.ACTION_SCREEN_OFF"></action>                 
+     </intent-filter>          
+ </receiver>
+ 
+19、判断一个intent是否可用：
+ 
+ public static boolean isIntentAvailable(Context context, String action) {
+     final PackageManager packageManager = context.getPackageManager();
+     final Intent intent = new Intent(action);
+     List<ResolveInfo> list = packageManager.queryIntentActivities(intent,PackageManager.MATCH_DEFAULT_ONLY);
+     return list.size() > 0;
+ }  
+ 
+ 上述代码判断action的intent是否可用
+ （备注，也可以得到相应intent的应用程序信息）
+ 
+ 我们可以根据scanAvailable 来判断是否让用户操作来发送该intent:
+ 
+ boolean bool = isIntentAvailable(gallery.this,ACTION);
+ if(bool){
+     Intent intent = new Intent(ACTION);
+     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+     startActivity(intent);
+ }
+ 
+20、获取所有桌面应用的图标：
+ 
+ private List<Drawable> getImage(){
+     PackageManager packageManager = this.getPackageManager();
+     Intent intent = new Intent(Intent.ACTION_MAIN);
+     intent.addCategory(Intent.CATEGORY_LAUNCHER);
+     List<ResolveInfo> infos = packageManager.queryIntentActivities(intent, 0);
+     for(ResolveInfo info : infos){
+         ActivityInfo ai = info.activityInfo;
+         Drawable icon = ai.loadIcon(packageManager);
+         list.add(icon);
+     }
+     return list;
+ }
+ 
+21、Android 系统图片数据库：
+ 
+ Uri STORAGE_URI = Images.Media.EXTERNAL_CONTENT_URI;
+ 
+往改数据库中插入数据，用到了内容提供者，大致如下：
+ view plaincopy
+ ContentValues values = new ContentValues(11);
+ values.put(Images.Media.TITLE, title);
+ values.put(Images.Media.DISPLAY_NAME, filename);
+ values.put(Images.Media.DATE_TAKEN, dateTaken);
+ values.put(Images.Media.DATE_MODIFIED, dateTaken);
+ values.put(Images.Media.DATE_ADDED, dateAdded);
+ values.put(Images.Media.MIME_TYPE, "image/jpeg");
+ values.put(Images.Media.ORIENTATION, degree[0]);
+ values.put(Images.Media.DATA, filePath);
+ values.put(Images.Media.SIZE, size);
+ values.put(Images.Media.LATITUDE, latitude.floatValue());
+ values.put(Images.Media.LONGITUDE, longitude.floatValue());
+ 
+ ContentResolver contentResolver = getContentResolver();
+ contentResolver.insert(STORAGE_URI, values);
+ 
+ //插入数据后刷新一下：
+ getContentResolver().notifyChange(STORAGE_URI, null);
+ 
+22、获取UI控件的宽、高：
+ 
+在前面几个周期函数中都无法获取宽度和高度值，但在事件中或用定时器可以获取，如下：
+ 
+ public void onCreate(Bundle savedInstanceState) {
+     super.onCreate(savedInstanceState);
+     setContentView(R.layout.main);
+         
+     text = (TextView) findViewById(R.id.text);
+     btn = (Button) findViewById(R.id.btn);       
+     btn.setOnClickListener(new Button.OnClickListener(){
+         @Override
+         public void onClick(View v) {
+             int width = text.getWidth();
+             int height = text.getHeight();
+             Log.i("Log: ", "----------->"+width + " | " + height);
+         }
+     });
+ }
+ 
+23、判断某一服务是否在运行：
+ 
+ //serviceName：即包名+服务的名称
+ //return：某一服务正在运行，返回true，否则返回false
+ public  boolean isRunning(Context c,String serviceName){
+     ActivityManager myAM=(ActivityManager)c.getSystemService(Context.ACTIVITY_SERVICE); 
+     ArrayList<RunningServiceInfo> runningServices = (ArrayList<RunningServiceInfo>)myAM.getRunningServices(40);
+     //获取最多40个当前正在运行的服务，放进ArrList里
+     for(int i = 0 ; i<runningServices.size();i++){  //循环枚举对比
+         if(runningServices.get(i).service.getClassName().toString().equals(serviceName)){
+             return true;
+         }
+     }
+     return false;
+ }
+ 
+ 
+24、根据角度求正弦值：
+ 
+  Math.sin(Math.PI/2)
+ 
+   根据正弦值求角度:
+   Math.toDegrees(Math.asin(1.0))
+ 
+   其他求法同上
+ 
+25、画图时，设置画布抗锯齿：
+ 
+ canvas.setDrawFilter(new PaintFlagsDrawFilter(0,Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));
+ 
+26、让ListView的滚动条定位到最后一行
+ 设置以下两个属性：
+ 
+ android:stackFromBottom="true"
+ android:transcriptMode="alwaysScroll"
+ 
+27、获取系统所有包的信息：
+ 
+ List<PackageInfo> pkgs = AndroidDemo.this.getPackageManager().getInstalledPackages(0);
+ for (int i=0; i<pkgs.size(); i++) {
+     PackageInfo info = new PackageInfo();
+     info = pkgs.get(i);
+     label = info.applicationInfo.loadLabel(getPackageManager()).toString();
+     mPackageInfoList.add(label);
+     System.out.println("label----------->" + label);
+ }
+ 
+ 
+28、如何判断一个应用是系统应用？？？
+ 
+ private boolean isDefaultApplication(String packageName) {   
+     boolean flag = false;   
+     boolean isDefault = false;   
+     PackageManager pckMan = mLauncher.getPackageManager();   
+     List<PackageInfo> packs = pckMan.getInstalledPackages(0);   
+     int count = packs.size();   
+     for (int i = 0; i < count && !flag; i++) {   
+         PackageInfo p = packs.get(i);   
+         ApplicationInfo appInfo = p.applicationInfo;   
+         if (packageName.equals(appInfo.packageName)) {   
+             if ((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) > 0) {   
+                 isDefault = true;   
+             }   
+             flag = true;   
+         }   
+     }   
+     return isDefault;   
+ }  
+ 
+核心判断：
+ 
+ if ((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) > 0){   
+     //系统应用   
+ }else{   
+     //用户安装的   
+ } 
+ 
+29、卸载应用：
+ 
+ //包名：package + 具体包路径
+ Uri packageURI = Uri.parse("package:com.android.myapp");   
+ Intent uninstallIntent = new Intent(Intent.ACTION_DELETE, packageURI);   
+ startActivity(uninstallIntent);
+ 
+30、检查网络状态：
+ 
+ //return  true表示有网络可用，dalse表示无网络可用
+ public static boolean checkNetwork(){
+     // 检查网络连接，如果无网络可用，就不需要进行连网操作等    
+     final NetworkInfo info = mConnectivity.getActiveNetworkInfo();   
+     if (info == null) {      
+         return false;     
+     }    
+     //判断网络连接类型，是WIFI网络还是3G网络     
+     final int netType = info.getType();   
+     if (netType == ConnectivityManager.TYPE_WIFI) {   
+         return info.isConnected();     
+     } else if (netType == ConnectivityManager.TYPE_MOBILE && !mTelephony.isNetworkRoaming()) {
+         return info.isConnected();     
+     } else {        
+         return false;     
+     } 
+ }
+ 
+31、获取本地apk文件的包名：
+ 
+ public void getApkInfo(){
+     String apkPath ="/sdcard/JXT_calendar.apk";
+     PackageManager pm = GetApkInfo.this.getPackageManager();
+     PackageInfo info = pm.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
+     if (info != null) {
+         ApplicationInfo appInfo = info.applicationInfo;
+         Drawable icon = pm.getApplicationIcon(appInfo);
+         image.setImageDrawable(icon);
+         packageName = appInfo.packageName;
+         text.setText("package: " + packageName);
+     }
+ }
+ 
+32、捕获Home键，重写onAttachedToWindow()方法，在方法里面setType 即可，去掉之后就无法捕获Home键：
+ 
+ @Override
+ public void onAttachedToWindow() {
+     // TODO Auto-generated method stub
+     this.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD);
+     super.onAttachedToWindow();
+ }
+ @Override
+ public boolean onKeyDown(int keyCode, KeyEvent event) {
+     // TODO Auto-generated method stub
+     if(keyCode == KeyEvent.KEYCODE_HOME) {
+         //不做任何操作
+     }
+     return false;
+ }
+ 
+33、Notification通知如何点击后自动消失:
+     代码中加上notification.flags |= Notification.FLAG_AUTO_CANCEL 即可
+     Notification通知无清楚按钮，如音乐播放时的状态：
+     代码中加上notification.flags |= Notification.FLAG_NO_CLEAR 即可
+ 
+34、横竖屏切换时候activity的生命周期android:configChanges
+ 
+不设置Activity的android:configChanges时，切屏会重新调用各个生命周期，切横屏时会执行一次，切竖屏时会执行两次
+ 设置Activity的android:configChanges="orientation"时，切屏还是会重新调用各个生命周期，切横、竖屏时只会执行一次
+ 设置Activity的android:configChanges="orientation|keyboardHidden"时，切屏不会重新调用各个生命周期，只会执行onConfigurationChanged方法
+ 
+35、获取默认的应用图标：
+ 
+ private PackageManager mPackageManager;
+ mPackageManager = getPackageManager();
+ Drawable d = mPackageManager.getDefaultActivityIcon();
+ Bitmap b = Bitmap.createBitmap(Math.max(d.getIntrinsicWidth(), 1),Math.max(d.getIntrinsicHeight(), 1),Bitmap.Config.ARGB_8888);
+ 
+36、优化Dalvik虚拟机的堆内存分配：
+ 
+    对于Android平台来说，其托管层使用的Dalvik Java VM从目前的表现来看还有很多地方可以优化处理，比如我们在开发一些大型游戏或耗资源的应用中可能考虑手动干涉GC处理，
+ 使用dalvik.system.VMRuntime类提供的setTargetHeapUtilization方法可以增强程序堆内存的处理效率。当然具体原理我们可以参考开源工程，这里我们仅说下使用方法: 
+ view plaincopy
+ private final static float TARGET_HEAP_UTILIZATION = 0.75f; 
+ 
+在程序onCreate时调用一下代码即可：
+ 
+ VMRuntime.getRuntime().setTargetHeapUtilization(TARGET_HEAP_UTILIZATION); 
+ 
+Android堆内存也可自己定义大小：
+  
+ 
+ private final static int CWJ_HEAP_SIZE = 6* 1024* 1024 ;  
+     (可参考Lanucher源码中LauncherApplication.java文件中使用)
+  
+ 
+ //设置最小heap内存为6MB大小。当然对于内存吃紧来说还可以通过手动干涉GC去处理
+ VMRuntime.getRuntime().setMinimumHeapSize(CWJ_HEAP_SIZE); 
+ // 查看剩余的内存容量。
+ Runtime.getRuntime().freeMemory()；
+ 
+37、PopupWindow 的使用：
+ 显示PopupWindow 的代码如下：
+ 
+ public void showPopupWindow(){
+     //获取上下文环境
+     Context context = PopupWindowCalendar.this;
+     //获取系统服务
+     LayoutInflater fliter = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+     //加载自定义的布局文件date_layout.xml
+     View calendarWindow = fliter.inflate(R.layout.date_popup, null);
+     //new 一个PopupWindow ，参数一：将加载的布局放在PopupWindow中显示；参数二：设置宽度；参数三：设置高度；参数四：获取焦点
+     final PopupWindow popupWindow = new PopupWindow(calendarWindow, LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT, true);
+     //设置背景(此处设置是当点击PopupWindow之外的区域或按back键时隐藏该PopupWindow)
+     ColorDrawable dw = new ColorDrawable(-00000);
+     popupWindow.setBackgroundDrawable(dw);
+     //显示PopupWindow的位置，参数一：父亲的view，即底层Activity根布局的id；参数二：显示的位置，如左上角；参数三：在参数二的基础上x、y坐标的偏移
+     popupWindow.showAtLocation(findViewById(R.id.main), Gravity.LEFT|Gravity.TOP, 150, 200);
+ }
+ 
+隐藏PopupWindow 的代码：
+ 
+ popupWindow.dismiss();
+ 
+38、Android ListView的美化方法:
+ 
+listview在拖动的时候背景图片消失变成黑色背景。等到拖动完毕我们自己的背景图片才显示出来
+       代码结解决android:scrollingCache=”false”
+ listview的上边和下边有黑色的阴影
+       代码解决：android:fadingEdge=”none”
+ lsitview的每一项之间需要设置一个图片做为间隔
+       代码解决：  android:divider=”@drawable/list_driver”  其中  @drawable/list_driver 是一个图片资源
+ 自定义listview的时候，会出现下面选中一个空间黑色底色的情况，破坏整体美观度
+       代码解决：android:cacheColorHint=“#00000000”
+ 默认显示选中的item为橙黄底色，有时候我们需要去掉这种效果
+       代码解决：android:listSelector属性.
+ 
+39、
+     在AndroidManifest.xml文件中设置android:launchMode="singleInstance" ，可以保证栈中每个Activity只有一个实例，防止重复界面的不断加载。
+     单纯的跳转页面时是可以处理的，但是跳转界面需要传值时就会出问题，这样处理只会将后台的Activity启动，传递的值是无法获取并重新加载的，
+     如：ActivityA ——> ActivityB ——(搜索关键字)——> ActivityA    (当我从ActivityB传递关键字到ActivityA时，只是将栈底的ActivityA放在了栈顶，并不会做其他操作)
+     如果既要保证每个Activity只有一个实例，又可以传递数据，可以在跳转界面的代码处加上下面一句话：
+ 
+ intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+     这样处理，就是在跳转的时候将堆栈中该Activity前面的所有Activity都清除，并重新发intent将此Activity启动，因此就可以获取传递过来的数据进行相关处理。
+ 
+40、线程问题：
+ 
+The content of the adapter has changed but ListView did not receive a notification.
+ Make sure the content of your adapter is not modified from a background thread, but only from the UI thread。
+ 解决问题的方法：
+ 
+    这个错误经常出现在Activity休眠起来之后，主要还是使用adapter不太小心造成的，有时候我们获取数据都使用后台线程操作，
+     当Activity休眠时，后台线程还在运行，唤醒Activity时再次操作该数据就会报这个错，原因就是数据在后台改变了但界面没有刷新。
+     Activity从休眠状态被唤醒时会调用onResume()方法，我们可以在onResume()方法中进行数据的刷新notifyDataSetChanged，如下操作：
+ 
+ @Override
+ protected void onResume() {
+     super.onResume();
+     Log.e("onResume", "------------>onResume");
+     //这个错误经常出现在Activity休眠起来之后,休眠起来时会调用onResume(),调notifyDataSetChanged可以解决改问题
+     if(securitiesAdapter != null){
+         securitiesAdapter.notifyDataSetChanged();
+     }
+ }
+ 
+41、保留小数点后两位：
+ 
+ DecimalFormat formater = new DecimalFormat("#0.##");
+ System.out.println(formater.format(123456.7897456));
+ 
+42、判断耳机状态：
+ 
+ public class ServiceReceiver extends BroadcastReceiver {
+     public void onReceive(Context context, Intent intent) {
+         if (Intent.ACTION_HEADSET_PLUG.equals(intent.getAction())) {
+             try {
+                 if (intent.getIntExtra("state", 0) == 0) {
+                     Log.e("caculate broadcast", "headset off");
+                     bHeadsetOn = false;
+                 } else if (intent.getIntExtra("state", 0) == 1) {
+                     Log.e("headset", "headset on");
+                     bHeadsetOn = true;
+                 }
+             } catch (Exception e) {
+                 e.printStackTrace();
+             }
+         }
+     }
+ }
+ 
+43、异步任务调用时，先判断是否在运行，如果正在运行，则先取消该任务，然后再开启
+ 
+ if(searchTask.getStatus() == AsyncTask.Status.RUNNING){
+     searchTask.cancel(true);
+ }
+ searchTask = new SearchTask();
+ searchByKey(sSearchKey);
+ 
+44、黑屏后音频播放会有停顿的问题：
+ 
+ PowerManager mPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
+ PowerManager.WakeLock mWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "media");
+ 播放时：
+ 
+ if (!mWakeLock.isHeld()){
+     mWakeLock.acquire();
+ }
+ 停止时：
+ 
+ if (mWakeLock.isHeld()){
+     mWakeLock.release();
+ }
+ 
+权限：
+ 
+ <uses-permission android:name="android.permission.WAKE_LOCK"/>
+ <uses-permission android:name="android.permission.DEVICE_POWER"/>  
+ 
+45、当ViewFlipper 与touch 事件冲突时，ViewFlipper的滑屏事件会被touch 事件拦截，解决方法如下：
+ 
+ public boolean onTouchEvent(MotionEvent event) {
+     // 执行touch 事件
+     super.onTouchEvent(event);
+     return this.detector.onTouchEvent(event);
+ }
+ //这个方法会先执行，当返回为true时，才执行onTouchEvent 方法
+ public boolean dispatchTouchEvent(MotionEvent ev){
+     //先执行滑屏事件
+     detector.onTouchEvent(ev);
+     super.dispatchTouchEvent(ev);
+     return true;
+ }
+ 
+46、
+ 查询图片，Uri地址为：MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+ 查询音乐，Uri地址为：MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+ 
+47、
+ TextView底部加横线:
+ 
+ mTextView.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG|Paint.ANTI_ALIAS_FLAG);
+ TextView中间加横线:
+ 
+ mTextView.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG|Paint.ANTI_ALIAS_FLAG);
+分享到： 
