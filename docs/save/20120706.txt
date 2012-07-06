@@ -1,0 +1,45 @@
+Android资源文件的命名规范
+楼主
+发表于 2012-1-18 15:00:49 | 查看: 750| 回复: 2
+你有木有发现R文件突然消失，然后你翻箱倒柜查不出究竟，呵呵，刚开始接触android的我经常遇到此类情况，原来秘密就是...
+你注意到下面的这些么？？
+1   [2012-01-11 13:26:04- PhoneIntent] res\layout\callBotton.xml: Invalid file name: must contain only [a-z0-9_.]
+
+意思就是：资源文件只能以小写字母和下划线做首字母，随后的名字中只能出现 [a-z0-9_.] 这些字符。
+知道了这个规则，我们把callButton.xml改成call_button.xml即可把问题解决。
+好了，你也记住这个关于资源文件的命名规则吧。
+
+Control Name    Shutcut
+TextView        txt
+Button          btn
+LinkButton      lnkbtn
+ImageButton     imgbtn
+ListBox         lst
+CheckBox        chk
+RadioButton     rdobtn
+ImageView       imgView
+AnalogClock 　
+DigitalClock    dc
+DatePicker      dp
+TimePicker      tp
+ToggleButton    tgBtn
+EditText        edt
+ProgressBar     proBar
+SeekBar         sekBar
+AutoCompleteTextView    　
+MultiAutoCompleteTextView   　
+ZoomControls    zc
+Include 　
+VideoView       vdoView
+WebView 　
+RatingBar       ratBar
+Tab tab
+Spinner         spn
+Chronometer 　
+ScrollView  　
+TextSwitcher    txtSw
+ListView        lstView
+Gallery 　
+ImageSwitcher   　
+GridView        gv
+ExpandableList  　
