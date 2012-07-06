@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry kind="output" path="bin/classes"/>
+  <classpathentry kind="src" path="src"/>
+  <classpathentry kind="src" path="gen"/>
+  <classpathentry kind="var" path="M2_REPO/org/achartengine/achartengine/1.0.0/achartengine-1.0.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/alibaba/fastjson/1.1.17/fastjson-1.1.17.jar"/>
+  <classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+  <classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+  <classpathentry kind="output" path="bin/classes"/>
 </classpath>

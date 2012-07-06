@@ -1,6 +1,5 @@
 package com.ek.mobileapp.activity;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
