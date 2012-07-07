@@ -1,13 +1,24 @@
 TODO
 ====
 
+2012.07.06
+----------
+
+   1. 登录界面采用了
+   android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+   就不提供滚动
+
+   设置了登录界面的
+   <android:label="@string/title_activity_logon" >
+   应用程序的标题也变成了它
+
 2012.07.04
 ----------
 
    1. 设置本地信息
    android之简单数据存储Preference
    http://gundumw100.iteye.com/blog/830108
-   
+
 2012.07.03
 ----------
 

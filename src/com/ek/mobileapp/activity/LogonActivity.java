@@ -13,6 +13,7 @@ import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.ek.mobileapp.R;
@@ -25,6 +26,7 @@ public class LogonActivity extends Activity {
     EditText username;
     EditText password;
     Button logonBtn;
+    CheckBox savepassword;
 
     public static final int LOGINACTION = 12;
     private ProgressDialog proDialog;
@@ -32,10 +34,23 @@ public class LogonActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_logon);
+        setContentView(R.layout.logon);
         username = (EditText) findViewById(R.id.logon_username);
         password = (EditText) findViewById(R.id.logon_password);
+        savepassword = (CheckBox) findViewById(R.id.logon_save_password);
         logonBtn = (Button) findViewById(R.id.logon_ok);
+
+        SharedPreferences sharedPreferences = getSharedPreferences(SettingsUtils.PreferencesString, 0);
+        String share_username = sharedPreferences.getString("username", "");
+        String share_password = sharedPreferences.getString("password", "");
+
+        // 记住密码
+        boolean issave = sharedPreferences.getBoolean("issave", false);
+        if (issave) {
+            username.setText(share_username);
+            password.setText(share_password);
+            savepassword.setChecked(issave);
+        }
 
         logonBtn.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
@@ -78,16 +93,15 @@ public class LogonActivity extends Activity {
 
         public void run() {
 
-
             int res = LogonAction.login(loginname, psd);
             if (res == com.ek.mobileapp.utils.WebUtils.WEBERROR) {
                 loginUnSuccess("请检查网络");
             } else if (res == WebUtils.APPLICATIONERROR) {
                 loginUnSuccess("用户名密码不正确");
             } else {
-                //if(savepassword.isChecked()) {
-                //    setPreferences(loginname,psd);
-                //}
+                if (savepassword.isChecked()) {
+                    setPreferences(loginname, psd);
+                }
                 Intent intent = new Intent(LogonActivity.this, MainActivity.class);
                 //                startActivity(intent);
                 startActivityForResult(intent, LOGINACTION);
