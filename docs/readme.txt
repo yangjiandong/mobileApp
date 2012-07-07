@@ -7,6 +7,11 @@ android app
    1. mvn
    mvn install:install-file -Dfile=achartengine-1.0.0.jar -DgroupId=org.achartengine -DartifactId=achartengine -Dversion=1.0.0 -Dpackaging=jar
 
+   其他功能
+   混淆 https://code.google.com/p/maven-android-plugin/wiki/ProGuard
+
+   --暂时不能解决生成eclipse项目
+
 2012.07.03
 ----------
 

@@ -1,0 +1,39 @@
+http://lufengdie.iteye.com/blog/814660
+http://www.cnblogs.com/feisky/archive/2010/01/17/1650076.html
+
+首先,我们需要一个keystore,当然已经有了的话就不用这一步了:
+cmd下:
+进入到jdk的bin目录,这样的话,android.keystore文件就会生成在这个目录下,签名的时候我们需要这个文件
+C:\Program Files\Java\jdk1.6.0_10\bin>keytool -genkey -alias android.keystore -keyalg RSA -validity 20000 -keystore android.keystore
+输入keystore密码：
+再次输入新密码：
+您的名字与姓氏是什么？
+  [Unknown]：  qiaoling您的组织单位名称是什么？
+  [Unknown]：  www.chinaandroid.com
+您的组织名称是什么？
+  [Unknown]：  www.chinaandroid.com
+您所在的城市或区域名称是什么？
+  [Unknown]：  haidian
+您所在的州或省份名称是什么？
+  [Unknown]：  BJ
+该单位的两字母国家代码是什么
+  [Unknown]：  86
+CN=qiaoling, OU=www.chinaandroid.com, O=www.chinaandroid.com, L=haidian, ST=BJ, C=86 正确吗？
+  [否]：  Y
+输入<android.keystore>的主密码（如果和 keystore 密码相同，按回车）：
+
+其中参数-validity为证书有效天数，这里我们写的大些10000天。还有在输入密码时没有回显(尽管输就是啦) 并且 退格,tab等都属于密码内容，这个密码在给.apk文件签名的时候需要.
+
+
+
+然后签名:
+Eclipse中,右击需要签名的工程-->android tools-->export signed application package...
+出现下面对话框,选择需要签名的工程
+
+next,选择上面生成的android.keystore文件位置和设置的密码
+
+next
+
+next,选择签名生成文件的位置和名称
+
+finish,搞定啦...
