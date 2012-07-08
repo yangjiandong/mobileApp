@@ -1,5 +1,5 @@
 <resources>
-
+    <string name="vendor_name">鑫亿软件</string>
     <string name="app_name">鑫亿医疗移动平台</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>

@@ -1,5 +1,8 @@
 package com.ek.mobileapp.activity;
 
+import java.io.File;
+import java.io.FileOutputStream;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -7,20 +10,30 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
-import com.ek.mobileapp.utils.SettingsUtils;
 import com.ek.mobileapp.utils.WebUtils;
 import com.markupartist.android.widget.ActionBar;
 import com.markupartist.android.widget.ActionBar.Action;
@@ -34,6 +47,8 @@ public class LogonActivity extends Activity {
     CheckBox savepassword;
     SharedPreferences sharedPreferences;
 
+    private static final String TRACKER_PACKAGE_NAME = "com.ek.mobileapp";
+
     public static final int LOGINACTION = 12;
     private ProgressDialog proDialog;
 
@@ -43,12 +58,31 @@ public class LogonActivity extends Activity {
         setContentView(R.layout.logon);
 
         final ActionBar actionBar = (ActionBar) findViewById(R.id.actionbar);
-        actionBar.setTitle("用户登录");
 
         //设置
         final Action otherAction = new IntentAction(this, new Intent(this, SettingActivity.class),
                 R.drawable.ic_title_export_default);
         actionBar.addAction(otherAction);
+
+        String version = "x.xx";
+        String vendor = "鑫亿";
+        try {
+            PackageInfo pinfo = this.getPackageManager().getPackageInfo(TRACKER_PACKAGE_NAME, 0);
+            version = pinfo.versionCode + "." + pinfo.versionName;
+            //vendor = pinfo.applicationInfo.sharedUserLabel;
+            actionBar.setTitle(pinfo.applicationInfo.labelRes);
+
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        //手工设置版本显示
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.repeat_bg);
+        Bitmap other = textAsBitmap(bitmap, "ver:" + version, vendor, 10, Color.WHITE);
+
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.footer);
+        BitmapDrawable background = new BitmapDrawable(other);
+        linearLayout.setBackgroundDrawable(background);
 
         username = (EditText) findViewById(R.id.logon_username);
         password = (EditText) findViewById(R.id.logon_password);
@@ -213,5 +247,37 @@ public class LogonActivity extends Activity {
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private Bitmap textAsBitmap(Bitmap image, String version, String vendor, float textSize, int textColor) {
+        Paint paint = new Paint();
+        paint.setTextSize(textSize);
+        paint.setColor(textColor);
+        paint.setAntiAlias(true);
+
+        Bitmap newMapBitmap = image.copy(Bitmap.Config.ARGB_8888, true);
+
+        try {
+            Canvas canvas = new Canvas(newMapBitmap);
+            canvas.drawText(vendor, 10, 20, paint);
+            canvas.drawText(version, 10, 30, paint);
+        } catch (Exception e) {
+            Log.e("textAsBitmap", e.getMessage());
+        }
+
+        String filename = "version.jpg";
+        File sd = Environment.getExternalStorageDirectory();
+        File dest = new File(sd, filename);
+
+        try {
+            FileOutputStream out = new FileOutputStream(dest);
+            newMapBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return newMapBitmap;
     }
 }

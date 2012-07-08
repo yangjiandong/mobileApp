@@ -1,7 +1,15 @@
 package com.ek.mobileapp.utils;
 
+import java.io.File;
+import java.io.FileOutputStream;
+
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.os.Environment;
+import android.util.Log;
 
 public class ViewUtils {
     public static final int MENU_HOME = 1;
@@ -33,5 +41,46 @@ public class ViewUtils {
     public static int pxtodip(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
+    }
+
+    public static Bitmap textAsBitmap(Bitmap image, String text, float textSize, int textColor) {
+        Paint paint = new Paint();
+        paint.setTextSize(textSize);
+        paint.setColor(textColor);
+        //paint.setTextAlign(Paint.Align.CENTER);
+        paint.setAntiAlias(true);
+        int width = (int) (paint.measureText(text) + 0.5f); // round
+        float baseline = (int) (paint.ascent() + 0.5f);
+        int height = (int) (baseline + paint.descent() + 0.5f);
+        Bitmap newMapBitmap = image.copy(Bitmap.Config.ARGB_8888, true);
+        //Bitmap newMapBitmap=null;
+        try {
+
+            //newMapBitmap = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888); // this creates a MUTABLE bitmap
+            //Canvas canvas = new Canvas(bmp);
+
+            //Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+            Canvas canvas = new Canvas(newMapBitmap);
+            //canvas.drawColor(Color.GREEN);
+            canvas.drawText(text, 10, 20, paint);
+        } catch (Exception e) {
+            Log.e("textAsBitmap", e.getMessage());
+        }
+
+        String filename = "version.jpg";
+        File sd = Environment.getExternalStorageDirectory();
+        File dest = new File(sd, filename);
+
+        try {
+            FileOutputStream out = new FileOutputStream(dest);
+            newMapBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return newMapBitmap;
     }
 }

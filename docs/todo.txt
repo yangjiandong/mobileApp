@@ -15,7 +15,7 @@ TODO
 2012.07.04
 ----------
 
-   1. 设置本地信息
+ok   1. 设置本地信息
    android之简单数据存储Preference
    http://gundumw100.iteye.com/blog/830108
 
