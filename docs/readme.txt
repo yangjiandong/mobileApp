@@ -10,6 +10,9 @@ android app
 
    参考 http://www.javacodegeeks.com/2011/01/android-quick-preferences-tutorial.html
 
+   --sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+   //getSharedPreferences(SettingsUtils.PreferencesString, MODE_PRIVATE);
+
 2012.07.07
 ----------
 
