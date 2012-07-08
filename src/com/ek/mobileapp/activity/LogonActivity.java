@@ -10,6 +10,8 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -20,6 +22,9 @@ import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
 import com.ek.mobileapp.utils.SettingsUtils;
 import com.ek.mobileapp.utils.WebUtils;
+import com.markupartist.android.widget.ActionBar;
+import com.markupartist.android.widget.ActionBar.Action;
+import com.markupartist.android.widget.ActionBar.IntentAction;
 
 public class LogonActivity extends Activity {
 
@@ -27,6 +32,7 @@ public class LogonActivity extends Activity {
     EditText password;
     Button logonBtn;
     CheckBox savepassword;
+    SharedPreferences sharedPreferences;
 
     public static final int LOGINACTION = 12;
     private ProgressDialog proDialog;
@@ -35,12 +41,22 @@ public class LogonActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.logon);
+
+        final ActionBar actionBar = (ActionBar) findViewById(R.id.actionbar);
+        actionBar.setTitle("用户登录");
+
+        //设置
+        final Action otherAction = new IntentAction(this, new Intent(this, SettingActivity.class),
+                R.drawable.ic_title_export_default);
+        actionBar.addAction(otherAction);
+
         username = (EditText) findViewById(R.id.logon_username);
         password = (EditText) findViewById(R.id.logon_password);
         savepassword = (CheckBox) findViewById(R.id.logon_save_password);
         logonBtn = (Button) findViewById(R.id.logon_ok);
 
-        SharedPreferences sharedPreferences = getSharedPreferences(SettingsUtils.PreferencesString, 0);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        //getSharedPreferences(SettingsUtils.PreferencesString, MODE_PRIVATE);
         String share_username = sharedPreferences.getString("username", "");
         String share_password = sharedPreferences.getString("password", "");
 
@@ -58,22 +74,24 @@ public class LogonActivity extends Activity {
                     username.setError("用户名不能为空！");
                     return;
                 }
-                login(username.getEditableText().toString().trim(), password.getEditableText().toString().trim());
+                String ip = sharedPreferences.getString("setting_http_ip", "");
+                login(username.getEditableText().toString().trim(), password.getEditableText().toString().trim(), ip);
 
             }
         });
 
     }
 
-    private void login(String loginname, String psd) {
+    private void login(String loginname, String psd, String ip) {
         proDialog = ProgressDialog.show(LogonActivity.this, "", "登录中...", true, true);
-        Thread login = new LoginHandler(loginname, psd);
+        Thread login = new LoginHandler(loginname, psd, ip);
         login.start();
     }
 
     private class LoginHandler extends Thread {
         private String loginname;
         private String psd;
+        private String ip;
 
         private void loginUnSuccess(String msg) {
             proDialog.dismiss();
@@ -86,16 +104,18 @@ public class LogonActivity extends Activity {
             UIHandler.sendMessage(message);
         }
 
-        public LoginHandler(String loginname, String psd) {
+        public LoginHandler(String loginname, String psd, String ip) {
             this.loginname = loginname;
             this.psd = psd;
+            this.ip = ip;
         }
 
         public void run() {
 
-            int res = LogonAction.login(loginname, psd);
+            int res = LogonAction.login(loginname, psd, ip);
             if (res == com.ek.mobileapp.utils.WebUtils.WEBERROR) {
-                loginUnSuccess("请检查网络");
+
+                loginUnSuccess("请检查网络,ip地址:" + ip);
             } else if (res == WebUtils.APPLICATIONERROR) {
                 loginUnSuccess("用户名密码不正确");
             } else {
@@ -135,8 +155,8 @@ public class LogonActivity extends Activity {
     };
 
     public void setPreferences(String username, String password) {
-        SharedPreferences sharedPreferences = getSharedPreferences(
-                com.ek.mobileapp.utils.SettingsUtils.PreferencesString, 0);
+        //SharedPreferences sharedPreferences = getSharedPreferences(
+        //        com.ek.mobileapp.utils.SettingsUtils.PreferencesString, 0);
         Editor edit = sharedPreferences.edit();
         edit.putString("username", username);
         edit.putString("password", password);
@@ -150,12 +170,48 @@ public class LogonActivity extends Activity {
     }
 
     public void clearPreferences() {
-        SharedPreferences sharedPreferences = getSharedPreferences(SettingsUtils.PreferencesString, 0);
+        //SharedPreferences sharedPreferences = getSharedPreferences(SettingsUtils.PreferencesString, 0);
         Editor edit = sharedPreferences.edit();
         edit.putString("username", "");
         edit.putString("password", "");
         edit.putBoolean("issave", false);
         edit.putBoolean("isauto", false);
         edit.commit();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exit(RESULT_OK, "确认退出程序");
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    private void exit(final int result, String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("确认退出");
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                setResult(result);
+                System.exit(0);
+            }
+        });
+
+        // 设置取消按钮
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO Auto-generated method stub
+                // do nothing
+
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

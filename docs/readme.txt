@@ -1,6 +1,20 @@
 android app
 ===========
 
+2012.07.08
+----------
+
+   1. 增加preference 设置界面
+   activity/SettingActivity
+   xml/setting.xml
+
+   参考 http://www.javacodegeeks.com/2011/01/android-quick-preferences-tutorial.html
+
+2012.07.07
+----------
+
+   1. 增加actinbar 支持
+
 2012.07.06
 ----------
 

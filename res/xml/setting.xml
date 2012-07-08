@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="setting_preference"
+    android:summary="@string/summary_setting_preference"
+    android:title="@string/title_setting_preference" >
+
+    <PreferenceCategory
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:key="common_settings"
+        android:title="@string/common_settings" >
+
+        <CheckBoxPreference
+            android:key="setting_use_vocie"
+            android:defaultValue="false"
+            android:summary="操作时会发出语音提示"
+            android:title="@string/setting_use_voice" />
+
+        <EditTextPreference
+            android:dialogTitle="设置访问服务端地址"
+            android:key="setting_http_ip"
+            android:summary="设置移动平台访问后台服务端地址"
+            android:title="访问服务端地址"
+            android:dialogMessage="ip地址"
+            android:defaultValue="192.168.1.1:8090/sshapp" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

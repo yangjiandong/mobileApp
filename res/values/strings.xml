@@ -10,6 +10,11 @@
     <string name="cancel">取消</string>
     <string name="title_activity_main">鑫亿医疗移动平台</string>
     <string name="title_activity_logon">鑫亿医疗移动平台:用户登录</string>
+
+    <string name="common_settings">参数</string>
+    <string name="title_setting_preference">平台参数设置</string>
+    <string name="summary_setting_preference">参数设置</string>
+    <string name="setting_use_voice">启用语音提示</string>
     <string name="gridview1">九宫格1</string>
     <string name="gridview2">九宫格2</string>
     <string name="gridview3">九宫格3</string>
