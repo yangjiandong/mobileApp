@@ -96,7 +96,7 @@ public class MainActivity extends Activity {
             modules.addView(one2);
 
             Button bn3 = new Button(this);//, null, R.style.H01Button);
-            bn3.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.speaker_button, 0, 0);
+            bn3.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.doctor_button, 0, 0);
             bn3.setText("全院概括");
 
             //向Layout容器中添加按钮
@@ -110,7 +110,7 @@ public class MainActivity extends Activity {
             });
 
             Button bn4 = new Button(this, null, R.style.H01Button);
-            bn4.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.speaker_button, 0, 0);
+            bn4.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.doctor_button, 0, 0);
 
             bn4.setText("全院概括4");
 
