@@ -39,7 +39,8 @@ public class LogonAction {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("username", loginname));
         params.add(new BasicNameValuePair("password", password));
-        JSONObject res = HttpTool.getTool().post("http://"+ip+ WebUtils.LOGINACTION, params);
+        String url = "http://" + ip + WebUtils.LOGINACTION;
+        JSONObject res = HttpTool.getTool().post(url, params);
         if (res == null)
             return WebUtils.WEBERROR;
         try {

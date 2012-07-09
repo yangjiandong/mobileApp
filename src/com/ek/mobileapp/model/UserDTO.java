@@ -14,9 +14,7 @@ public class UserDTO {
     //密码状态,0必须修改1已修改
     private String updatePwd;
 
-    //有序的关联对象集合
-    //private List<Role> roleList = Lists.newArrayList();
-    //private List<RoleDTO> roleList = Lists.newArrayList();
+    private String roles;
 
     public Long getId() {
         return id;
@@ -93,6 +91,14 @@ public class UserDTO {
 
     public void setUpdatePwd(String updatePwd) {
         this.updatePwd = updatePwd;
+    }
+
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
     }
 
     //public List<RoleDTO> getRoleList() {

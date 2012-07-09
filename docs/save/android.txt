@@ -1,6 +1,17 @@
 android
 =======
 
+2012.07.09
+----------
+
+   1. Windows DOS窗口中输入adb shell后，会出现如下错误：
+   adb server is out of date.
+   killing... ADB server didn't ACK * failed to start daemon * error: unknown host service，
+   or
+   could not read ok from adb server
+
+   出现这问题是因为你的电脑上安装了豌豆夹造成的，只需打开“任务管理器”，找到'wandoujia_helper.exe'，把这个进行终止掉就可以
+
 2012.07.05
 ----------
 

@@ -157,17 +157,6 @@ public class QueryActivity extends ActivityGroup {
 
         });
 
-        backButton.setOnClickListener(new OnClickListener() {
-
-            public void onClick(View v) {
-
-                Intent intent = new Intent(QueryActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-
-        });
-
         int res = QueryAction.getTotalData(startDate, endDate);
 
         if (res == WebUtils.SUCCESS) {
@@ -239,42 +228,6 @@ public class QueryActivity extends ActivityGroup {
                 }
             }
         });
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            exit(RESULT_OK, "确认退出程序");
-            return true;
-        } else {
-            return super.onKeyDown(keyCode, event);
-        }
-    }
-
-    private void exit(final int result, String msg) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("确认退出");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int which) {
-                setResult(result);
-                System.exit(0);
-            }
-        });
-
-        // 设置取消按钮
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int which) {
-                // TODO Auto-generated method stub
-                // do nothing
-
-            }
-        });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
     }
 
     Handler UIHandler = new Handler() {

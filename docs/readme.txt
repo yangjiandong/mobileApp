@@ -1,6 +1,11 @@
 android app
 ===========
 
+2012.07.09
+----------
+
+   1. 还原libs目录,采用maven 方式时调试不能把lib打包到项目
+
 2012.07.08
 ----------
 
@@ -17,6 +22,7 @@ android app
 ----------
 
    1. 增加actinbar 支持
+   svn: sshapp/trunk/android-actionbar-library
 
 2012.07.06
 ----------

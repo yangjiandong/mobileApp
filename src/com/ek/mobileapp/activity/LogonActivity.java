@@ -34,6 +34,7 @@ import android.widget.LinearLayout;
 
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
+import com.ek.mobileapp.utils.SettingsUtils;
 import com.ek.mobileapp.utils.WebUtils;
 import com.markupartist.android.widget.ActionBar;
 import com.markupartist.android.widget.ActionBar.Action;
@@ -46,8 +47,6 @@ public class LogonActivity extends Activity {
     Button logonBtn;
     CheckBox savepassword;
     SharedPreferences sharedPreferences;
-
-    private static final String TRACKER_PACKAGE_NAME = "com.ek.mobileapp";
 
     public static final int LOGINACTION = 12;
     private ProgressDialog proDialog;
@@ -67,7 +66,7 @@ public class LogonActivity extends Activity {
         String version = "x.xx";
         String vendor = "鑫亿";
         try {
-            PackageInfo pinfo = this.getPackageManager().getPackageInfo(TRACKER_PACKAGE_NAME, 0);
+            PackageInfo pinfo = this.getPackageManager().getPackageInfo(SettingsUtils.TRACKER_PACKAGE_NAME, 0);
             version = pinfo.versionCode + "." + pinfo.versionName;
             //vendor = pinfo.applicationInfo.sharedUserLabel;
             actionBar.setTitle(pinfo.applicationInfo.labelRes);
@@ -147,20 +146,22 @@ public class LogonActivity extends Activity {
         public void run() {
 
             int res = LogonAction.login(loginname, psd, ip);
-            if (res == com.ek.mobileapp.utils.WebUtils.WEBERROR) {
-
-                loginUnSuccess("请检查网络,ip地址:" + ip);
-            } else if (res == WebUtils.APPLICATIONERROR) {
-                loginUnSuccess("用户名密码不正确");
-            } else {
+            if (res == WebUtils.SUCCESS) {
                 if (savepassword.isChecked()) {
                     setPreferences(loginname, psd);
                 }
                 Intent intent = new Intent(LogonActivity.this, MainActivity.class);
-                //                startActivity(intent);
+                //startActivity(intent);
                 startActivityForResult(intent, LOGINACTION);
                 proDialog.dismiss();
                 finish();
+
+            } else if (res == WebUtils.APPLICATIONERROR) {
+                loginUnSuccess("用户名密码不正确");
+            } else if (res == com.ek.mobileapp.utils.WebUtils.WEBERROR) {
+                loginUnSuccess("请检查网络,ip地址:" + ip);
+            } else {
+                loginUnSuccess("登录失败");
             }
         }
     }
