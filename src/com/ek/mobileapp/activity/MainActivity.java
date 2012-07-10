@@ -1,5 +1,10 @@
 package com.ek.mobileapp.activity;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -18,15 +23,20 @@ import com.ek.mobileapp.R;
 import com.ek.mobileapp.model.UserDTO;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.SettingsUtils;
+import com.ek.mobileapp.utils.UtilString;
 import com.markupartist.android.widget.ActionBar;
 import com.markupartist.android.widget.ActionBar.Action;
 import com.markupartist.android.widget.ActionBar.IntentAction;
 
 public class MainActivity extends Activity {
+    Map<String, Integer> btns = new HashMap<String, Integer>();
+    Map<String, Integer> btnsStyle = new HashMap<String, Integer>();
+
+    //OnClickListener handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        createBtns();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
@@ -41,91 +51,98 @@ public class MainActivity extends Activity {
         }
         String version = "x.xx";
         String vendor = "鑫亿";
+
         try {
             PackageInfo pinfo = this.getPackageManager().getPackageInfo(SettingsUtils.TRACKER_PACKAGE_NAME, 0);
             version = pinfo.versionCode + "." + pinfo.versionName;
             actionBar.setTitle(pinfo.applicationInfo.labelRes);
 
+            //一排三个按钮
+            int count = 3;
+            LinearLayout modules = (LinearLayout) findViewById(R.id.modules);
+
             //
             UserDTO user = GlobalCache.getCache().getLoginuser();
-            //String roles = user.getRoles();
-            //List<String> allIds = UtilString.stringToArrayList(roles, ",");
+            String alls = user.getMobmodules();
+            List<String> allIds = UtilString.stringToArrayList(alls, ",");
+            int i = 1;
+            LinearLayout one = null;
 
-            LinearLayout modules = (LinearLayout) findViewById(R.id.modules);
-            LinearLayout one = new LinearLayout(this);
+            for (String oneModule : allIds) {
+                StringTokenizer filter = new StringTokenizer(oneModule, "|");
+                String code = filter.nextToken();
+                String module = filter.nextToken();
 
-            one.setOrientation(LinearLayout.HORIZONTAL);
-            one.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT));
-            modules.addView(one);
+                if (i > count)
+                    i = 1;
 
-            Button bn = new Button(this);//, null, R.style.H01Button
-            bn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.speaker_button, 0, 0);
-            bn.setText("全院概括");
-
-            //向Layout容器中添加按钮
-            one.addView(bn);
-            //为按钮绑定一个事件监听器
-            bn.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    Intent intent = new Intent(MainActivity.this, QueryActivity.class);
-                    startActivity(intent);
+                if (i == 1) {
+                    one = new LinearLayout(this);
+                    one.setOrientation(LinearLayout.HORIZONTAL);
+                    one.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT));
+                    modules.addView(one);
                 }
-            });
 
-            Button bn2 = new Button(this, null, R.style.H01Button);
-            bn2.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.speaker_button, 0, 0);
+                Button bn = new Button(this, null, R.style.H01Button);
+                bn.setId(btns.get(code));
+                bn.setCompoundDrawablesWithIntrinsicBounds(0, this.btnsStyle.get(code), 0, 0);
+                bn.setText(module);
 
-            bn2.setText("全院概括2");
+                //向Layout容器中添加按钮
+                one.addView(bn);
 
-            //向Layout容器中添加按钮
-            one.addView(bn2);
-            //为按钮绑定一个事件监听器
-            bn2.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
+                //为按钮绑定一个事件监听器
+                bn.setOnClickListener(new OnClickListener() {
+                    public void onClick(View v) {
+                        switch (v.getId()) {
+                        case R.id.m01: // doStuff
+                            actionBar.setTitle("01");
+                            break;
+                        case R.id.m02: // doStuff
+                            actionBar.setTitle("02");
+                            break;
+                        case R.id.m03: // doStuff
+                            actionBar.setTitle("03");
+                            break;
+                        case R.id.m04: // doStuff
+                            actionBar.setTitle("04");
+                            break;
+                        case R.id.m05: // doStuff
+                            actionBar.setTitle("05");
+                            break;
+                        //    break;
+                        //case R.id.myOtherButton: // doStuff
+                        //    break;
+                        default:
+                            break;
+                        }
+                    }
+                });
 
-                }
-            });
-
-            //
-            LinearLayout one2 = new LinearLayout(this);
-
-            one2.setOrientation(LinearLayout.HORIZONTAL);
-            one2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT, 1));
-            modules.addView(one2);
-
-            Button bn3 = new Button(this);//, null, R.style.H01Button);
-            bn3.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.doctor_button, 0, 0);
-            bn3.setText("全院概括");
-
-            //向Layout容器中添加按钮
-            one2.addView(bn3);
-            //为按钮绑定一个事件监听器
-            bn3.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    //Intent intent = new Intent(MainActivity.this, QueryActivity.class);
-                    //startActivity(intent);
-                }
-            });
-
-            Button bn4 = new Button(this, null, R.style.H01Button);
-            bn4.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.doctor_button, 0, 0);
-
-            bn4.setText("全院概括4");
-
-            //向Layout容器中添加按钮
-            one2.addView(bn4);
-            //为按钮绑定一个事件监听器
-            bn4.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-
-                }
-            });
+                i++;
+            }
         } catch (NameNotFoundException e) {
             Log.e("", e.getMessage());
             //e.printStackTrace();
         }
+
+    }
+
+    private void createBtns() {
+        btns.put("01", R.id.m01);
+        btns.put("02", R.id.m02);
+        btns.put("03", R.id.m03);
+        btns.put("04", R.id.m04);
+        btns.put("05", R.id.m05);
+        btns.put("06", R.id.m06);
+        //
+        btnsStyle.put("01", R.drawable.doctor_button);
+        btnsStyle.put("02", R.drawable.doctor_button);
+        btnsStyle.put("03", R.drawable.doctor_button);
+        btnsStyle.put("04", R.drawable.doctor_button);
+        btnsStyle.put("05", R.drawable.doctor_button);
+        btnsStyle.put("06", R.drawable.doctor_button);
     }
 
     @Override
