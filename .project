@@ -30,4 +30,17 @@
 		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>mobilecommon</name>
+			<type>2</type>
+			<locationURI>mobilecommon</locationURI>
+		</link>
+	</linkedResources>
+	<variableList>
+		<variable>
+			<name>mobilecommon</name>
+			<value>file:/D:/workspace/workspace_ssh/shapp-mobileCommon/src/main/java</value>
+		</variable>
+	</variableList>
 </projectDescription>

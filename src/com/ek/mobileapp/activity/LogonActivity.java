@@ -77,7 +77,7 @@ public class LogonActivity extends Activity {
 
         //手工设置版本显示
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.repeat_bg);
-        Bitmap other = textAsBitmap(bitmap, "ver:" + version, vendor, 10, Color.WHITE);
+        Bitmap other = textAsBitmap(bitmap, "ver:" + version, vendor, 15, Color.BLACK);
 
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.footer);
         BitmapDrawable background = new BitmapDrawable(other);
@@ -261,7 +261,7 @@ public class LogonActivity extends Activity {
         try {
             Canvas canvas = new Canvas(newMapBitmap);
             canvas.drawText(vendor, 10, 20, paint);
-            canvas.drawText(version, 10, 30, paint);
+            canvas.drawText(version, 10, 35, paint);
         } catch (Exception e) {
             Log.e("textAsBitmap", e.getMessage());
         }

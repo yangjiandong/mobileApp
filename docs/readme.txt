@@ -1,6 +1,17 @@
 android app
 ===========
 
+2012.07.10
+----------
+
+   1. 读短信
+   SMSReceiver
+
+   2. 增加ssh-mobileCommon 公共库支持,取消com.ek.mobileapp.model
+   --elcipse下建立link souce,mobilecommon
+
+   --手工发布时需拷贝sshapp-mobileCommon-6.0.jar 到libs
+
 2012.07.09
 ----------
 

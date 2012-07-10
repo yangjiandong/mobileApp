@@ -56,7 +56,7 @@ public class MainActivity extends Activity {
 
             one.setOrientation(LinearLayout.HORIZONTAL);
             one.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+                    LinearLayout.LayoutParams.WRAP_CONTENT));
             modules.addView(one);
 
             Button bn = new Button(this);//, null, R.style.H01Button
