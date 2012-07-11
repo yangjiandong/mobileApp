@@ -1,0 +1,13 @@
+用户管理
+========
+
+设计
+----
+
+   1. 登录
+
+   采用 HttpTool.getTool().login(url); 保存cookie
+
+   这样就实现了服务端提取 http session 功能
+
+   --END

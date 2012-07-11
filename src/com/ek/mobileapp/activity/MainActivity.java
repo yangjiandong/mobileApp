@@ -9,24 +9,27 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.ek.mobileapp.R;
+import com.ek.mobileapp.action.LogonAction;
 import com.ek.mobileapp.model.UserDTO;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.SettingsUtils;
 import com.ek.mobileapp.utils.UtilString;
-import com.ek.mobileapp.utils.ViewUtils;
+import com.ek.mobileapp.utils.WebUtils;
 import com.markupartist.android.widget.ActionBar;
 import com.markupartist.android.widget.ActionBar.Action;
 import com.markupartist.android.widget.ActionBar.IntentAction;
@@ -34,8 +37,12 @@ import com.markupartist.android.widget.ActionBar.IntentAction;
 public class MainActivity extends Activity {
     Map<String, Integer> btns = new HashMap<String, Integer>();
     Map<String, Integer> btnsStyle = new HashMap<String, Integer>();
+    Map<Integer, String> moduels = new HashMap<Integer, String>();
 
+    ActionBar actionBar;
     //OnClickListener handler;
+    SharedPreferences sharedPreferences;
+    String ip = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +50,10 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        final ActionBar actionBar = (ActionBar) findViewById(R.id.actionbar);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        ip = sharedPreferences.getString("setting_http_ip", WebUtils.HOST);
+
+        actionBar = (ActionBar) findViewById(R.id.actionbar);
         try {
             //
             final Action otherAction = new IntentAction(this, new Intent(this, SettingActivity.class),
@@ -77,59 +87,40 @@ public class MainActivity extends Activity {
                 String module = filter.nextToken();
 
                 if (i == count) {
-                    ViewUtils.putViewsInLine(bns, getScreenWidth(), 0.1);
+                    //ViewUtils.putViewsInLine(bns, getScreenWidth(), 0.1);
                     i = 0;
                     bns = new Button[count];
                 }
 
                 if (i == 0) {
                     one = new LinearLayout(this);
+                    //one.set
                     one.setOrientation(LinearLayout.HORIZONTAL);
-                    one.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT));
-                    modules.addView(one);
+                    //one.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
+                    //        LinearLayout.LayoutParams.WRAP_CONTENT));
+                    modules.addView(one, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT, 2));
                 }
 
-                Button bn = new Button(this, null, R.style.MButton);
+                Button bn = new Button(this);//, null, R.style.MButton);
                 bn.setId(btns.get(code));
                 bn.setCompoundDrawablesWithIntrinsicBounds(0, this.btnsStyle.get(code), 0, 0);
                 bn.setText(module);
+                //后台日志显示用
+                moduels.put(bn.getId(), module);
 
                 //向Layout容器中添加按钮
-                one.addView(bn);
+                one.addView(bn, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 
                 //为按钮绑定一个事件监听器
-                bn.setOnClickListener(new OnClickListener() {
-                    public void onClick(View v) {
-                        switch (v.getId()) {
-                        case R.id.m01: // doStuff
-                            actionBar.setTitle("01");
-                            break;
-                        case R.id.m02: // doStuff
-                            actionBar.setTitle("02");
-                            break;
-                        case R.id.m03: // doStuff
-                            actionBar.setTitle("03");
-                            break;
-                        case R.id.m04: // doStuff
-                            actionBar.setTitle("04");
-                            break;
-                        case R.id.m05: // doStuff
-                            actionBar.setTitle("05");
-                            break;
-
-                        default:
-                            break;
-                        }
-                    }
-                });
+                bn.setOnClickListener(new ClickEvent());
                 bns[i] = bn;
 
                 i++;
             }
 
             if (i > 0) {
-                ViewUtils.putViewsInLine(bns, getScreenWidth(), 0.1);
+                //ViewUtils.putViewsInLine(bns, getScreenWidth(), 0.1);
             }
         } catch (NameNotFoundException e) {
             Log.e("", e.getMessage());
@@ -193,5 +184,36 @@ public class MainActivity extends Activity {
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    class ClickEvent implements View.OnClickListener {
+
+        public void onClick(View v) {
+            LogonAction.userLog(moduels.get(v.getId()), ip);
+
+            switch (v.getId()) {
+            case R.id.m01: // doStuff
+
+                Intent intent = new Intent(MainActivity.this, QueryActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.m02: // doStuff
+                actionBar.setTitle("02");
+                break;
+            case R.id.m03: // doStuff
+                actionBar.setTitle("03");
+                break;
+            case R.id.m04: // doStuff
+                actionBar.setTitle("04");
+                break;
+            case R.id.m05: // doStuff
+                actionBar.setTitle("05");
+                break;
+
+            default:
+                break;
+            }
+
+        }
     }
 }

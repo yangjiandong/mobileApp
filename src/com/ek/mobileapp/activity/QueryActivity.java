@@ -5,10 +5,11 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.KeyEvent;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,10 +25,9 @@ import android.widget.RadioButton;
 import android.widget.ViewAnimator;
 
 import com.ek.mobileapp.R;
+import com.ek.mobileapp.action.LogonAction;
 import com.ek.mobileapp.action.QueryAction;
-import com.ek.mobileapp.model.QueryTotalInfo;
 import com.ek.mobileapp.utils.TimeTool;
-import com.ek.mobileapp.utils.ViewUtils;
 import com.ek.mobileapp.utils.WebUtils;
 
 public class QueryActivity extends ActivityGroup {
@@ -41,8 +41,8 @@ public class QueryActivity extends ActivityGroup {
     ListView grid;
 
     String busdate = "";
-
     String startDate = "", endDate = "";
+    String ip = "";
 
     protected PopupWindow selectDateView;
     protected LayoutInflater mLayoutInflater;
@@ -56,9 +56,15 @@ public class QueryActivity extends ActivityGroup {
     public static final int LEFT = 1;
     public static final int RIGHT = 2;
 
+    SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle fromMainBundle) {
         super.onCreate(fromMainBundle);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        ip = sharedPreferences.getString("setting_http_ip", WebUtils.HOST);
+
         mLayoutInflater = (LayoutInflater) QueryActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
         setContentView(R.layout.activity_query);
         startTime = (EditText) findViewById(R.id.query_startdate);
@@ -113,7 +119,7 @@ public class QueryActivity extends ActivityGroup {
         queryButton.setOnClickListener(new OnClickListener() {
 
             public void onClick(View v) {
-                QueryAction.getTotalData(startDate, endDate);
+                QueryAction.getTotalData(startDate, endDate, ip);
             }
 
         });
@@ -157,12 +163,12 @@ public class QueryActivity extends ActivityGroup {
 
         });
 
-        int res = QueryAction.getTotalData(startDate, endDate);
+        int res = QueryAction.getTotalData(startDate, endDate, ip);
 
         if (res == WebUtils.SUCCESS) {
 
             // 开始显示内容
-            switchActivity(new Intent(QueryActivity.this, QueryTotalInfo.class), ViewUtils.MENU_HOME, this.RIGHT);
+            //switchActivity(new Intent(QueryActivity.this, QueryTotalInfo.class), ViewUtils.MENU_HOME, this.RIGHT);
 
         }
 

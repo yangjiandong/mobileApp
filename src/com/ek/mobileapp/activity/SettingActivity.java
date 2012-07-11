@@ -5,17 +5,14 @@ import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
-import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.ek.mobileapp.R;
 
 //登录时设置界面
 public class SettingActivity extends PreferenceActivity implements OnPreferenceChangeListener
-//,
-//OnPreferenceClickListener
+
 {
     EditTextPreference settingIp;
     CheckBoxPreference settingUseVociePref;
@@ -32,16 +29,8 @@ public class SettingActivity extends PreferenceActivity implements OnPreferenceC
 
         //
         settingUseVociePref.setOnPreferenceChangeListener(this);
-        //settingUseVociePref.setOnPreferenceClickListener(this);
         settingIp.setOnPreferenceChangeListener(this);
-        //settingIp.setOnPreferenceClickListener(this);
-
     }
-
-    //public boolean onPreferenceClick(Preference arg0) {
-    //    // TODO Auto-generated method stub
-    //    return false;
-    //}
 
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         Log.v("SystemSetting", "preference is changed");

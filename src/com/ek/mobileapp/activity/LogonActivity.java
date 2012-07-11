@@ -107,7 +107,7 @@ public class LogonActivity extends Activity {
                     username.setError("用户名不能为空！");
                     return;
                 }
-                String ip = sharedPreferences.getString("setting_http_ip", "");
+                String ip = sharedPreferences.getString("setting_http_ip", WebUtils.HOST);
                 login(username.getEditableText().toString().trim(), password.getEditableText().toString().trim(), ip);
 
             }
@@ -205,7 +205,6 @@ public class LogonActivity extends Activity {
     }
 
     public void clearPreferences() {
-        //SharedPreferences sharedPreferences = getSharedPreferences(SettingsUtils.PreferencesString, 0);
         Editor edit = sharedPreferences.edit();
         edit.putString("username", "");
         edit.putString("password", "");

@@ -15,11 +15,9 @@ import com.ek.mobileapp.utils.HttpTool;
 import com.ek.mobileapp.utils.WebUtils;
 
 public class LogonAction {
-    public static int login2(String loginname, String password) {
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("username", loginname));
-        params.add(new BasicNameValuePair("password", password));
-        JSONObject res = HttpTool.getTool().post(WebUtils.HOST + WebUtils.LOGINACTION, params);
+    public static int login(String loginname, String password, String ip) {
+        String url = "http://" + ip + WebUtils.LOGINACTION + "&username=" + loginname + "&password=" + password;
+        JSONObject res = HttpTool.getTool().login(url);
         if (res == null)
             return WebUtils.WEBERROR;
         try {
@@ -35,11 +33,11 @@ public class LogonAction {
         }
     }
 
-    public static int login(String loginname, String password, String ip) {
+    public static int userLog(String infos, String ip) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("username", loginname));
-        params.add(new BasicNameValuePair("password", password));
-        String url = "http://" + ip + WebUtils.LOGINACTION;
+        params.add(new BasicNameValuePair("infos", infos));
+
+        String url = "http://" + ip + WebUtils.USERLOG;
         JSONObject res = HttpTool.getTool().post(url, params);
         if (res == null)
             return WebUtils.WEBERROR;
@@ -47,8 +45,6 @@ public class LogonAction {
             if (!res.getBoolean("success")) {
                 return WebUtils.LOGINERROR;
             }
-            UserDTO user = JSON.parseObject(res.getJSONObject("user").toString(), UserDTO.class);
-            GlobalCache.getCache().setLoginuser(user);
             return WebUtils.SUCCESS;
         } catch (JSONException e) {
             e.printStackTrace();

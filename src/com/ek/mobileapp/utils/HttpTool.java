@@ -45,6 +45,7 @@ public class HttpTool {
                 Header[] headers = response.getHeaders("Set-Cookie");
                 if (headers.length != 0)
                     cookie = headers[0].toString();
+
                 return json;
             } else
                 return null;
@@ -98,7 +99,7 @@ public class HttpTool {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
         }
+        return null;
     }
 }
