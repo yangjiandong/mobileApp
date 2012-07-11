@@ -13,9 +13,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -24,6 +26,7 @@ import com.ek.mobileapp.model.UserDTO;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.SettingsUtils;
 import com.ek.mobileapp.utils.UtilString;
+import com.ek.mobileapp.utils.ViewUtils;
 import com.markupartist.android.widget.ActionBar;
 import com.markupartist.android.widget.ActionBar.Action;
 import com.markupartist.android.widget.ActionBar.IntentAction;
@@ -65,18 +68,21 @@ public class MainActivity extends Activity {
             UserDTO user = GlobalCache.getCache().getLoginuser();
             String alls = user.getMobmodules();
             List<String> allIds = UtilString.stringToArrayList(alls, ",");
-            int i = 1;
+            int i = 0;
             LinearLayout one = null;
-
+            Button[] bns = new Button[count];
             for (String oneModule : allIds) {
                 StringTokenizer filter = new StringTokenizer(oneModule, "|");
                 String code = filter.nextToken();
                 String module = filter.nextToken();
 
-                if (i > count)
-                    i = 1;
+                if (i == count) {
+                    ViewUtils.putViewsInLine(bns, getScreenWidth(), 0.1);
+                    i = 0;
+                    bns = new Button[count];
+                }
 
-                if (i == 1) {
+                if (i == 0) {
                     one = new LinearLayout(this);
                     one.setOrientation(LinearLayout.HORIZONTAL);
                     one.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
@@ -84,7 +90,7 @@ public class MainActivity extends Activity {
                     modules.addView(one);
                 }
 
-                Button bn = new Button(this, null, R.style.H01Button);
+                Button bn = new Button(this, null, R.style.MButton);
                 bn.setId(btns.get(code));
                 bn.setCompoundDrawablesWithIntrinsicBounds(0, this.btnsStyle.get(code), 0, 0);
                 bn.setText(module);
@@ -111,22 +117,30 @@ public class MainActivity extends Activity {
                         case R.id.m05: // doStuff
                             actionBar.setTitle("05");
                             break;
-                        //    break;
-                        //case R.id.myOtherButton: // doStuff
-                        //    break;
+
                         default:
                             break;
                         }
                     }
                 });
+                bns[i] = bn;
 
                 i++;
             }
+
+            if (i > 0) {
+                ViewUtils.putViewsInLine(bns, getScreenWidth(), 0.1);
+            }
         } catch (NameNotFoundException e) {
             Log.e("", e.getMessage());
-            //e.printStackTrace();
         }
 
+    }
+
+    private int getScreenWidth() {
+        WindowManager windowManager = getWindowManager();
+        Display display = windowManager.getDefaultDisplay();
+        return display.getWidth();
     }
 
     private void createBtns() {
@@ -137,7 +151,7 @@ public class MainActivity extends Activity {
         btns.put("05", R.id.m05);
         btns.put("06", R.id.m06);
         //
-        btnsStyle.put("01", R.drawable.doctor_button);
+        btnsStyle.put("01", R.drawable.hospital_button);
         btnsStyle.put("02", R.drawable.doctor_button);
         btnsStyle.put("03", R.drawable.doctor_button);
         btnsStyle.put("04", R.drawable.doctor_button);

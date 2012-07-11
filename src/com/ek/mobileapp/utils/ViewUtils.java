@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.TextView;
 
 public class ViewUtils {
     public static final int MENU_HOME = 1;
@@ -41,6 +42,13 @@ public class ViewUtils {
     public static int pxtodip(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
+    }
+
+    public static void putViewsInLine(TextView[] views, int width, double space_width) {
+        int padding = (int)(width * space_width);
+        for(TextView v : views) {
+            v.setPadding(padding, 0, 0, 0);
+        }
     }
 
     public static Bitmap textAsBitmap(Bitmap image, String text, float textSize, int textColor) {
