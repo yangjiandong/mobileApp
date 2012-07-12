@@ -25,6 +25,8 @@ public class LogonAction {
                 return WebUtils.LOGINERROR;
             }
             UserDTO user = JSON.parseObject(res.getJSONObject("user").toString(), UserDTO.class);
+            String lastIp = res.getString("lastIp");//JSON.parseObject(res.getJSONObject("lastIp").toString(), String.class);
+            GlobalCache.getCache().setLastIp(lastIp);
             GlobalCache.getCache().setLoginuser(user);
             return WebUtils.SUCCESS;
         } catch (JSONException e) {
@@ -51,4 +53,5 @@ public class LogonAction {
             return WebUtils.APPLICATIONERROR;
         }
     }
+
 }

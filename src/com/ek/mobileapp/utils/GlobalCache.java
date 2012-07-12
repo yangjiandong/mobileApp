@@ -17,6 +17,8 @@ public class GlobalCache {
 
     private static GlobalCache cache = null;
     private UserDTO loginuser;
+    private String lastIp;
+
     private List<QueryTotalInfo> queryList;
     private int selectedYQ;
     private String startDate = "";
@@ -70,17 +72,6 @@ public class GlobalCache {
         this.endDate = endDate;
     }
 
-    public List<GeneralInfo> getInfos() {
-        if (selectedYQ == ALLYQ) {
-            return infos;
-        } else if (selectedYQ == CZYQ) {
-            return czinfos;
-        } else if (selectedYQ == YHYQ) {
-            return yhinfos;
-        } else
-            return infos;
-    }
-
     public void setInfos(List<GeneralInfo> infos) {
         this.infos = new ArrayList<GeneralInfo>();
         if (infos != null) {
@@ -128,5 +119,25 @@ public class GlobalCache {
     public void setQueryList(List<QueryTotalInfo> queryList) {
         this.queryList = queryList;
     }
+
+    public String getLastIp() {
+        return lastIp;
+    }
+
+    public void setLastIp(String lastIp) {
+        this.lastIp = lastIp;
+    }
+
+    public List<GeneralInfo> getInfos() {
+        if (selectedYQ == ALLYQ) {
+            return infos;
+        } else if (selectedYQ == CZYQ) {
+            return czinfos;
+        } else if (selectedYQ == YHYQ) {
+            return yhinfos;
+        } else
+            return infos;
+    }
+
 
 }

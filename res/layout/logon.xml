@@ -47,6 +47,7 @@
                 android:layout_marginBottom="20dip"
                 android:layout_marginTop="5dip"
                 android:singleLine="true"
+
                 >
                 <!-- android:background="@drawable/edittext_modified_states" -->
                 <requestFocus />

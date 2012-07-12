@@ -84,6 +84,7 @@ public class LogonActivity extends Activity {
         linearLayout.setBackgroundDrawable(background);
 
         username = (EditText) findViewById(R.id.logon_username);
+
         password = (EditText) findViewById(R.id.logon_password);
         savepassword = (CheckBox) findViewById(R.id.logon_save_password);
         logonBtn = (Button) findViewById(R.id.logon_ok);

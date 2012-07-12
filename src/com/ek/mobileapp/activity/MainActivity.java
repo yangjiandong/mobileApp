@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
+import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.model.UserDTO;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.SettingsUtils;
@@ -190,6 +191,7 @@ public class MainActivity extends Activity {
 
         public void onClick(View v) {
             LogonAction.userLog(moduels.get(v.getId()), ip);
+            //MobLogAction.mobLogInfo(moduels.get(v.getId()), ip);
 
             switch (v.getId()) {
             case R.id.m01: // doStuff

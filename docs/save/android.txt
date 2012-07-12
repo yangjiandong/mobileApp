@@ -1,6 +1,34 @@
 android
 =======
 
+2012.07.12
+----------
+
+   1. activity 初始不弹出输入软键盘
+   android:windowSoftInputMode="adjustUnspecified|stateHidden"
+   android:configChanges="orientation|keyboardHidden"
+
+   ecitText 输入时还会弹出,另找方法
+    //屏蔽输入法
+    private void d(View v){
+        InputMethodManager manager = (InputMethodManager) LogonActivity.this
+                .getSystemService(INPUT_METHOD_SERVICE);
+        manager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        //activity:
+        //android:windowSoftInputMode="adjustUnspecified|stateHidden"
+        //android:configChanges="orientation|keyboardHidden"
+    }
+
+   //EditText有焦点（focusable为true）阻止输入法弹出
+   editText.setOnTouchListener(new OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                editText.setInputType(InputType.TYPE_NULL); // 关闭软键盘
+                return false;
+            }
+   //当EidtText无焦点（focusable=false）时阻止输入法弹出
+   InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+   imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+
 2012.07.09
 ----------
 

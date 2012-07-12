@@ -1,6 +1,12 @@
 android app
 ===========
 
+2012.07.12
+----------
+
+   1. 增加记录手机操作信息
+   MobLogAction.mobLogInfo,mobLogError
+
 2012.07.10
 ----------
 

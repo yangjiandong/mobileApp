@@ -25,7 +25,6 @@ import android.widget.RadioButton;
 import android.widget.ViewAnimator;
 
 import com.ek.mobileapp.R;
-import com.ek.mobileapp.action.LogonAction;
 import com.ek.mobileapp.action.QueryAction;
 import com.ek.mobileapp.utils.TimeTool;
 import com.ek.mobileapp.utils.WebUtils;
