@@ -25,7 +25,6 @@ import android.widget.LinearLayout;
 
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
-import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.model.UserDTO;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.SettingsUtils;
@@ -200,7 +199,8 @@ public class MainActivity extends Activity {
                 startActivity(intent);
                 break;
             case R.id.m02: // doStuff
-                actionBar.setTitle("02");
+                Intent intent2 = new Intent(MainActivity.this, InputDemoActivtiy.class);
+                startActivity(intent2);
                 break;
             case R.id.m03: // doStuff
                 actionBar.setTitle("03");

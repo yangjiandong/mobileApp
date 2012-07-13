@@ -8,20 +8,24 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:key="common_settings"
         android:title="@string/common_settings" >
-
         <CheckBoxPreference
-            android:key="setting_use_vocie"
             android:defaultValue="false"
+            android:key="setting_use_vocie"
             android:summary="操作时会发出语音提示"
             android:title="@string/setting_use_voice" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="setting_update"
+            android:summary="启动程序时,是否检查更新"
+            android:title="检查更新" />
 
         <EditTextPreference
+            android:defaultValue="192.168.1.1:8090/sshapp"
+            android:dialogMessage="ip地址"
             android:dialogTitle="设置访问服务端地址"
             android:key="setting_http_ip"
             android:summary="设置移动平台访问后台服务端地址"
-            android:title="访问服务端地址"
-            android:dialogMessage="ip地址"
-            android:defaultValue="192.168.1.1:8090/sshapp" />
+            android:title="访问服务端地址" />
     </PreferenceCategory>
 
 </PreferenceScreen>

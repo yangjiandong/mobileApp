@@ -1,6 +1,16 @@
 android app
 ===========
 
+2012.07.13
+----------
+
+   1. 模拟键盘
+   InputDemoActivity
+   inputkey.xml
+
+   2. 自动更新
+   LogonActivity
+
 2012.07.12
 ----------
 

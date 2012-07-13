@@ -2,6 +2,9 @@ package com.ek.mobileapp.activity;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,6 +21,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -27,10 +31,12 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
@@ -50,6 +56,11 @@ public class LogonActivity extends Activity {
 
     public static final int LOGINACTION = 12;
     private ProgressDialog proDialog;
+
+    //update
+    private boolean isupdate = false;
+    private String currentTempFilePath = "";
+    private String strURL = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,6 +111,16 @@ public class LogonActivity extends Activity {
             username.setText(share_username);
             password.setText(share_password);
             savepassword.setChecked(issave);
+        }
+
+        isupdate = sharedPreferences.getBoolean("setting_update", false);
+        //自动更新
+        if (isupdate) {
+            //TODO
+            //检查后台
+            //String ip = sharedPreferences.getString("setting_http_ip", WebUtils.HOST);
+            //String uriPath = "http://" + ip + WebUtils.UPDATE;
+            //update(uriPath);
         }
 
         logonBtn.setOnClickListener(new OnClickListener() {
@@ -280,5 +301,118 @@ public class LogonActivity extends Activity {
         }
 
         return newMapBitmap;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        delFile(currentTempFilePath);
+        super.onResume();
+    }
+
+    private void update(final String filename) {
+        new AlertDialog.Builder(LogonActivity.this).setTitle("更新提示").setMessage("发现新版本，是否更新")
+                .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialoginterface, int i) {
+                        strURL = filename;
+                        getFile(strURL);
+                    }
+                }).setNegativeButton("否", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
+    }
+
+    private void getFile(final String strPath) {
+        try {
+            Runnable r = new Runnable() {
+                public void run() {
+                    try {
+                        getDataSource(strPath);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            new Thread(r).start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getDataSource(String strPath) throws Exception {
+        if (!URLUtil.isNetworkUrl(strPath)) {
+            Toast.makeText(this, "下载地址错误", Toast.LENGTH_SHORT).show();
+        } else {
+            String fileEx = strURL.substring(strURL.lastIndexOf(".") + 1, strURL.length()).toLowerCase();
+            String fileNa = strURL.substring(strURL.lastIndexOf("/") + 1, strURL.lastIndexOf("."));
+            if (!fileEx.equals("apk")) {
+                Toast.makeText(this, "下载安装文件错误", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            URL myURL = new URL(strPath);
+            URLConnection conn = myURL.openConnection();
+            conn.connect();
+            InputStream is = conn.getInputStream();
+            if (is == null) {
+                throw new RuntimeException("stream is null");
+            }
+            File myTempFile = File.createTempFile(fileNa, "." + fileEx);
+            currentTempFilePath = myTempFile.getAbsolutePath();
+            FileOutputStream fos = new FileOutputStream(myTempFile);
+            byte buf[] = new byte[128];
+            do {
+                int numread = is.read(buf);
+                if (numread <= 0) {
+                    break;
+                }
+                fos.write(buf, 0, numread);
+            } while (true);
+            openFile(myTempFile);
+            this.finish();
+            try {
+                is.close();
+            } catch (Exception ex) {
+
+            }
+        }
+    }
+
+    private void openFile(File f) {
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setAction(android.content.Intent.ACTION_VIEW);
+        String type = getMIMEType(f);
+        intent.setDataAndType(Uri.fromFile(f), type);
+        startActivity(intent);
+    }
+
+    private String getMIMEType(File f) {
+        String type = "";
+        String fName = f.getName();
+        String end = fName.substring(fName.lastIndexOf(".") + 1, fName.length()).toLowerCase();
+        if (end.equals("apk")) {
+            type = "application/vnd.android.package-archive";
+        } else {
+            type = "*";
+        }
+        if (end.equals("apk")) {
+        } else {
+            type += "/*";
+        }
+        return type;
+    }
+
+    private void delFile(String strFileName) {
+        File myFile = new File(strFileName);
+        if (myFile.exists()) {
+            myFile.delete();
+        }
     }
 }

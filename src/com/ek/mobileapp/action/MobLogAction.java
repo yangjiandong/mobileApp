@@ -16,14 +16,16 @@ import com.ek.mobileapp.utils.HttpTool;
 import com.ek.mobileapp.utils.WebUtils;
 
 public class MobLogAction {
-    public static int mobLog(String infos, String type, String ip) {
+    public static int mobLog(String event, String infos, String type, String ip) {
         UserDTO u = GlobalCache.getCache().getLoginuser();
+        if (u == null)
+            return WebUtils.WEBERROR;
         String lastIp = GlobalCache.getCache().getLastIp();
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         MobLogDTO mlog = new MobLogDTO();
         mlog.setUserId(u.getId());
-        mlog.setEvent(infos);
+        mlog.setEvent(event);
         mlog.setType(type);
         mlog.setNetIp(lastIp);
         //mobile info
@@ -46,11 +48,11 @@ public class MobLogAction {
         }
     }
 
-    public static int mobLogInfo(String infos, String ip) {
-        return mobLog(infos, "info", ip);
+    public static int mobLogInfo(String event, String infos, String ip) {
+        return mobLog(event, infos, "info", ip);
     }
 
-    public static int mobLogError(String infos, String ip) {
-        return mobLog(infos, "error", ip);
+    public static int mobLogError(String event, String infos, String ip) {
+        return mobLog(event, infos, "error", ip);
     }
 }

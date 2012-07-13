@@ -1,4 +1,5 @@
 <resources>
+
     <string name="vendor_name">鑫亿软件</string>
     <string name="app_name">鑫亿医疗移动平台</string>
     <string name="hello_world">Hello world!</string>
@@ -10,19 +11,28 @@
     <string name="cancel">取消</string>
     <string name="title_activity_main">鑫亿医疗移动平台</string>
     <string name="title_activity_logon">鑫亿医疗移动平台:用户登录</string>
-
     <string name="common_settings">参数</string>
     <string name="title_setting_preference">平台参数设置</string>
     <string name="summary_setting_preference">参数设置</string>
     <string name="setting_use_voice">启用语音提示</string>
-    <string name="gridview1">九宫格1</string>
-    <string name="gridview2">九宫格2</string>
-    <string name="gridview3">九宫格3</string>
-    <string name="gridview4">九宫格4</string>
-    <string name="gridview5">九宫格5</string>
-    <string name="gridview6">九宫格6</string>
-    <string name="gridview7">九宫格7</string>
-    <string name="gridview8">九宫格8</string>
-    <string name="gridview9">九宫格9</string>
+
+    <string name="B1">1</string>
+    <string name="B2">2</string>
+    <string name="B3">3</string>
+    <string name="B4">4</string>
+    <string name="B5">5</string>
+    <string name="B6">6</string>
+    <string name="B7">7</string>
+    <string name="B8">8</string>
+    <string name="B9">9</string>
+    <string name="B0">0</string>
+    <string name="Dot">.</string>
+    <string name="Eq">=</string>
+    <string name="Clear">清空</string>
+    <string name="sum">+</string>
+    <string name="dif">-</string>
+    <string name="mul">x</string>
+    <string name="div">/</string>
+    <string name="Empty">0</string>
 
 </resources>
