@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -96,21 +97,24 @@ public class MainActivity extends Activity {
                     one = new LinearLayout(this);
                     //one.set
                     one.setOrientation(LinearLayout.HORIZONTAL);
-                    //one.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
-                    //        LinearLayout.LayoutParams.WRAP_CONTENT));
-                    modules.addView(one, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT, 2));
+                    one.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT,1));
+                    //buttnon 居中
+                    one.setGravity(Gravity.CENTER);
+                    modules.addView(one);
                 }
 
-                Button bn = new Button(this);//, null, R.style.MButton);
+                Button bn = new Button(this, null, R.style.MButton);
                 bn.setId(btns.get(code));
                 bn.setCompoundDrawablesWithIntrinsicBounds(0, this.btnsStyle.get(code), 0, 0);
                 bn.setText(module);
+                //TODO 硬编码尺寸
+                bn.setPadding(20, 10, 20, 2);
                 //后台日志显示用
                 moduels.put(bn.getId(), module);
 
                 //向Layout容器中添加按钮
-                one.addView(bn, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+                one.addView(bn);//, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 
                 //为按钮绑定一个事件监听器
                 bn.setOnClickListener(new ClickEvent());

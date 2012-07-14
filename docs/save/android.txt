@@ -1,6 +1,24 @@
 android
 =======
 
+2012.07.14
+----------
+
+   1. Elipse关联Android源码
+     a下载Android源码
+          下面有Android 2.1的源码，只有约7M
+          更多版本下载 http://repository.grepcode.com/java/ext/com/google/android/android/
+     b解压源码，将文件夹命名为sources,再拷贝到<android-sdk-windows>/platforms/对应版本中，
+          如<android-sdk-windows>/platforms/android-7
+     现在打开Eclipse,选中某个Android类，按Ctrl，单击鼠标，跳转到相关类中，前提是<android-sdk-windows>/platforms/项目版本中有源码。
+
+   2. HierarchyView能深入全面的理解xml布局文件，更可以通过它来学习别人优秀的布局技巧。下面是一些基本使用步骤:
+     启动模拟器。
+     到androidtools目录下，双击可以启动hierarchyviewerbat文件，打开一个图形界面。
+     点击 load View hierarchy按钮，就可以捕获模拟器当前activity的画面布局信息。
+     ierarchy通过树形结构展示布局形式。双击树节点可以展示单独的UI部分。
+     当模拟器activity画面改变后，点击““refresh””可以加载新的页面布局信息。
+
 2012.07.12
 ----------
 
