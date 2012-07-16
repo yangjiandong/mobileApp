@@ -8,8 +8,9 @@ public class WebUtils {
     public static final int AUTHERROR = 2;
     public static final int LOGINERROR = 4;
 
+    public static final String HTTP = "http://";
     public static final String HOST = "http://192.168.1.112:8090/sshapp";
-    public static final String NEWS = "/news.html";
+    public static final String NEWS = "/common/host_info";
     public static final String LOGINACTION = "/common/logon?type=mobile";
     public static final String USERLOG = "/system/user_log?type=mobile";
     public static final String MOBLOG = "/moblog/save?type=mobile";

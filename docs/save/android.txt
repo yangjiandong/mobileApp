@@ -1,6 +1,15 @@
 android
 =======
 
+2012.07.16
+----------
+
+   1. activity back home 键
+   android的手机的back键默认行为是finish处于前台的Activity的即Activity的状态为Destroy状态，
+   再次启动该Activity是从onCreate开始的。
+   而Home键默认是stop前台的Activity即状态为onStop而不是Destroy,若再次启动它，则是从OnResume开始的，即会保持上次Activityd的状态。
+   back键也有例外的，按back键不会关闭Activity的，比如播放音乐，按了back键之后仍可以继续播放音乐，这是Music这支ap已经重写了back键的事件处理。
+
 2012.07.14
 ----------
 

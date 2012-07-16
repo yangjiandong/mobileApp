@@ -15,14 +15,13 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
@@ -98,7 +97,7 @@ public class MainActivity extends Activity {
                     //one.set
                     one.setOrientation(LinearLayout.HORIZONTAL);
                     one.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT,1));
+                            LinearLayout.LayoutParams.WRAP_CONTENT, 1));
                     //buttnon 居中
                     one.setGravity(Gravity.CENTER);
                     modules.addView(one);
@@ -109,7 +108,7 @@ public class MainActivity extends Activity {
                 bn.setCompoundDrawablesWithIntrinsicBounds(0, this.btnsStyle.get(code), 0, 0);
                 bn.setText(module);
                 //TODO 硬编码尺寸
-                bn.setPadding(20, 10, 20, 2);
+                bn.setPadding(20, 10, 20, 0);
                 //后台日志显示用
                 moduels.put(bn.getId(), module);
 
@@ -130,12 +129,6 @@ public class MainActivity extends Activity {
             Log.e("", e.getMessage());
         }
 
-    }
-
-    private int getScreenWidth() {
-        WindowManager windowManager = getWindowManager();
-        Display display = windowManager.getDefaultDisplay();
-        return display.getWidth();
     }
 
     private void createBtns() {
@@ -194,7 +187,6 @@ public class MainActivity extends Activity {
 
         public void onClick(View v) {
             LogonAction.userLog(moduels.get(v.getId()), ip);
-            //MobLogAction.mobLogInfo(moduels.get(v.getId()), ip);
 
             switch (v.getId()) {
             case R.id.m01: // doStuff
