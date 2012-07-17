@@ -1,4 +1,4 @@
-package com.ek.mobileapp.activity;
+package com.ek.mobileapp.nurse.activity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,39 +8,39 @@ import java.util.StringTokenizer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.ek.mobileapp.R;
-import com.ek.mobileapp.action.LogonAction;
+import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.model.UserDTO;
-import com.ek.mobileapp.query.activity.QueryActivity;
 import com.ek.mobileapp.utils.GlobalCache;
-import com.ek.mobileapp.utils.SettingsUtils;
 import com.ek.mobileapp.utils.UtilString;
-import com.ek.mobileapp.utils.WebUtils;
-import com.markupartist.android.widget.ActionBar;
-import com.markupartist.android.widget.ActionBar.Action;
-import com.markupartist.android.widget.ActionBar.IntentAction;
 
-public class MainActivity extends Activity {
+public class VitalSign extends Activity {
     Map<String, Integer> btns = new HashMap<String, Integer>();
     Map<String, Integer> btnsStyle = new HashMap<String, Integer>();
     Map<Integer, String> moduels = new HashMap<Integer, String>();
 
-    ActionBar actionBar;
+    //OnClickListener handler;
     SharedPreferences sharedPreferences;
-    String ip = "";
+
+    EditText patientId;
+    TextView name;
+    TextView sex;
+    TextView age;
+    TextView bedNo;
+    TextView doctor;
+    EditText busDate;
+    Spinner timePoint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,30 +48,20 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        ip = sharedPreferences.getString("setting_http_ip", WebUtils.HOST);
-        //String o = sharedPreferences.getString("setting_bluetooth_scanner", "");
-
-        actionBar = (ActionBar) findViewById(R.id.actionbar);
-        try {
-            //
-            final Action otherAction = new IntentAction(this, new Intent(this, SettingActivity.class),
-                    R.drawable.ic_title_export_default);
-            actionBar.addAction(otherAction);
-        } catch (Exception e) {
-            Log.e("about", e.getMessage());
-        }
-        String version = "x.xx";
-        String vendor = "鑫亿";
+        patientId = (EditText) findViewById(R.id.vitalsign_patientId);
+        name = (TextView) findViewById(R.id.vitalsign_name);
+        sex = (TextView) findViewById(R.id.vitalsign_sex);
+        age = (TextView) findViewById(R.id.vitalsign_age);
+        bedNo = (TextView) findViewById(R.id.vitalsign_bedNo);
+        doctor = (TextView) findViewById(R.id.vitalsign_doctor);
+        busDate = (EditText) findViewById(R.id.vitalsign_busDate);
+        timePoint = (Spinner) findViewById(R.id.vitalsign_timePoint);
 
         try {
-            PackageInfo pinfo = this.getPackageManager().getPackageInfo(SettingsUtils.TRACKER_PACKAGE_NAME, 0);
-            version = pinfo.versionCode + "." + pinfo.versionName;
-            actionBar.setTitle(pinfo.applicationInfo.labelRes);
 
-            //一排三个按钮
-            int count = 3;
-            LinearLayout modules = (LinearLayout) findViewById(R.id.modules);
+            //一排四个按钮
+            int count = 4;
+            LinearLayout modules = (LinearLayout) findViewById(R.id.vitalsign_layout1);
 
             //
             UserDTO user = GlobalCache.getCache().getLoginuser();
@@ -115,7 +105,7 @@ public class MainActivity extends Activity {
                 one.addView(bn);//, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 
                 //为按钮绑定一个事件监听器
-                bn.setOnClickListener(new ClickEvent());
+                // bn.setOnClickListener(new ClickEvent());
                 bns[i] = bn;
 
                 i++;
@@ -124,8 +114,9 @@ public class MainActivity extends Activity {
             if (i > 0) {
                 //ViewUtils.putViewsInLine(bns, getScreenWidth(), 0.1);
             }
-        } catch (NameNotFoundException e) {
+        } catch (Exception e) {
             Log.e("", e.getMessage());
+            MobLogAction.mobLogError("构建生命体征界面", e.getMessage());
         }
 
     }
@@ -182,35 +173,35 @@ public class MainActivity extends Activity {
         dialog.show();
     }
 
-    class ClickEvent implements View.OnClickListener {
-
-        public void onClick(View v) {
-            LogonAction.userLog(moduels.get(v.getId()), ip);
-
-            switch (v.getId()) {
-            case R.id.m01: // doStuff
-
-                Intent intent = new Intent(MainActivity.this, QueryActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.m02: // doStuff
-                Intent intent2 = new Intent(MainActivity.this, InputDemoActivtiy.class);
-                startActivity(intent2);
-                break;
-            case R.id.m03: // doStuff
-                actionBar.setTitle("03");
-                break;
-            case R.id.m04: // doStuff
-                actionBar.setTitle("04");
-                break;
-            case R.id.m05: // doStuff
-                actionBar.setTitle("05");
-                break;
-
-            default:
-                break;
-            }
-
-        }
-    }
+    //    class ClickEvent implements View.OnClickListener {
+    //
+    //        public void onClick(View v) {
+    //            LogonAction.userLog(moduels.get(v.getId()), ip);
+    //
+    //            switch (v.getId()) {
+    //            case R.id.m01: // doStuff
+    //
+    //                Intent intent = new Intent(VitalSign.this, QueryActivity.class);
+    //                startActivity(intent);
+    //                break;
+    //            case R.id.m02: // doStuff
+    //                Intent intent2 = new Intent(VitalSign.this, InputDemoActivtiy.class);
+    //                startActivity(intent2);
+    //                break;
+    //            case R.id.m03: // doStuff
+    //                actionBar.setTitle("03");
+    //                break;
+    //            case R.id.m04: // doStuff
+    //                actionBar.setTitle("04");
+    //                break;
+    //            case R.id.m05: // doStuff
+    //                actionBar.setTitle("05");
+    //                break;
+    //
+    //            default:
+    //                break;
+    //            }
+    //
+    //        }
+    //    }
 }

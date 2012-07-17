@@ -26,6 +26,7 @@ public class LogonAction {
             }
             UserDTO user = JSON.parseObject(res.getJSONObject("user").toString(), UserDTO.class);
             String lastIp = res.getString("lastIp");//JSON.parseObject(res.getJSONObject("lastIp").toString(), String.class);
+            GlobalCache.getCache().setHostIp(ip);
             GlobalCache.getCache().setLastIp(lastIp);
             GlobalCache.getCache().setLoginuser(user);
             return WebUtils.SUCCESS;

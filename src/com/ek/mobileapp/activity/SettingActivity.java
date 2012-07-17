@@ -21,6 +21,7 @@ public class SettingActivity extends PreferenceActivity implements OnPreferenceC
     EditTextPreference settingIp;
     CheckBoxPreference settingUseVociePref;
     CheckBoxPreference settingUpdate;
+    EditTextPreference settingBlueToothScanner;
     SharedPreferences sharedPreferences;
 
     @Override
@@ -33,8 +34,10 @@ public class SettingActivity extends PreferenceActivity implements OnPreferenceC
         settingUseVociePref = (CheckBoxPreference) findPreference("setting_use_vocie");
         settingUpdate = (CheckBoxPreference) findPreference("setting_update");
         settingIp = (EditTextPreference) findPreference("setting_http_ip");
+        settingBlueToothScanner = (EditTextPreference) findPreference("setting_bluetooth_scanner");
 
-        //
+        //TODO
+        //这里有点多余,现有的参数都会影响SharedPreferences
         settingUseVociePref.setOnPreferenceChangeListener(this);
         settingUpdate.setOnPreferenceChangeListener(this);
         settingIp.setOnPreferenceChangeListener(this);
@@ -45,7 +48,6 @@ public class SettingActivity extends PreferenceActivity implements OnPreferenceC
         //Log.v("Key_SystemSetting", preference.getKey());
         String ip = sharedPreferences.getString("setting_http_ip", WebUtils.HOST);
         try {
-            //TODO
             //用户没有登录,异常
             MobLogAction.mobLogInfo("SystemSetting", preference.getKey() + ":" + newValue, ip);
         } catch (Exception e) {

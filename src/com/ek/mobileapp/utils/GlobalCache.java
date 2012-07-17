@@ -3,33 +3,21 @@ package com.ek.mobileapp.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ek.mobileapp.model.GeneralInfo;
-import com.ek.mobileapp.model.GeneralTotal;
-import com.ek.mobileapp.model.QueryTotalInfo;
+import com.ek.mobileapp.model.Patient;
 import com.ek.mobileapp.model.UserDTO;
 
 public class GlobalCache {
-    public static final int ALLYQ = 0;
-    public static final int CZYQ = 1;
-    public static final int YHYQ = 2;
-    public static final String CZ = "城中";
-    public static final String YH = "阳湖";
-
     private static GlobalCache cache = null;
     private UserDTO loginuser;
-    private String lastIp;
-
-    private List<QueryTotalInfo> queryList;
-    private int selectedYQ;
+    private String lastIp;//客户端ip
+    private String hostIp;//服务端ip
     private String startDate = "";
     private String endDate = "";
-    private List<GeneralTotal> totals;
-    private List<GeneralInfo> infos;
-    private List<GeneralInfo> czinfos;
-    private List<GeneralInfo> yhinfos;
-
     private int screenWidth;
     private int screenHeight;
+
+    private List<Patient> patients = new ArrayList<Patient>();
+    private Patient currentPatient;
 
     private GlobalCache() {
     }
@@ -48,14 +36,6 @@ public class GlobalCache {
         this.loginuser = loginuser;
     }
 
-    public int getSelectedYQ() {
-        return selectedYQ;
-    }
-
-    public void setSelectedYQ(int selectedYQ) {
-        this.selectedYQ = selectedYQ;
-    }
-
     public String getStartDate() {
         return startDate;
     }
@@ -70,22 +50,6 @@ public class GlobalCache {
 
     public void setEndDate(String endDate) {
         this.endDate = endDate;
-    }
-
-    public void setInfos(List<GeneralInfo> infos) {
-        this.infos = new ArrayList<GeneralInfo>();
-        if (infos != null) {
-            this.infos = infos;
-        }
-        czinfos = new ArrayList<GeneralInfo>();
-        yhinfos = new ArrayList<GeneralInfo>();
-        for (GeneralInfo info : infos) {
-            if (info.getLevel1() == GeneralInfo.CZYQ) {
-                czinfos.add(info);
-            } else if (info.getLevel1() == GeneralInfo.YHYQ) {
-                yhinfos.add(info);
-            }
-        }
     }
 
     public int getScreenHeight() {
@@ -104,22 +68,6 @@ public class GlobalCache {
         this.screenWidth = screenWidth;
     }
 
-    public List<GeneralTotal> getTotals() {
-        return totals;
-    }
-
-    public void setTotals(List<GeneralTotal> totals) {
-        this.totals = totals;
-    }
-
-    public List<QueryTotalInfo> getQueryList() {
-        return queryList;
-    }
-
-    public void setQueryList(List<QueryTotalInfo> queryList) {
-        this.queryList = queryList;
-    }
-
     public String getLastIp() {
         return lastIp;
     }
@@ -128,16 +76,28 @@ public class GlobalCache {
         this.lastIp = lastIp;
     }
 
-    public List<GeneralInfo> getInfos() {
-        if (selectedYQ == ALLYQ) {
-            return infos;
-        } else if (selectedYQ == CZYQ) {
-            return czinfos;
-        } else if (selectedYQ == YHYQ) {
-            return yhinfos;
-        } else
-            return infos;
+    public String getHostIp() {
+        return hostIp;
     }
 
+    public void setHostIp(String hostIp) {
+        this.hostIp = hostIp;
+    }
+
+    public List<Patient> getPatients() {
+        return patients;
+    }
+
+    public void setPatients(List<Patient> patients) {
+        this.patients = patients;
+    }
+
+    public Patient getCurrentPatient() {
+        return currentPatient;
+    }
+
+    public void setCurrentPatient(Patient currentPatient) {
+        this.currentPatient = currentPatient;
+    }
 
 }
