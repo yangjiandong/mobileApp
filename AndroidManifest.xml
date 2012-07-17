@@ -34,8 +34,9 @@
         <activity android:name=".activity.SettingActivity" />
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.InputDemoActivtiy" />
+        <activity android:name=".nurse.activity.VitalSign" />
         <activity
-            android:name=".activity.QueryActivity">
+            android:name=".query.activity.QueryActivity">
         </activity>
     </application>
 

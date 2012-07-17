@@ -16,11 +16,8 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -32,10 +29,11 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.URLUtil;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ek.mobileapp.R;
@@ -47,7 +45,7 @@ import com.markupartist.android.widget.ActionBar.Action;
 import com.markupartist.android.widget.ActionBar.IntentAction;
 
 public class LogonActivity extends Activity {
-
+    WebView host_info;
     EditText username;
     EditText password;
     Button logonBtn;
@@ -56,6 +54,8 @@ public class LogonActivity extends Activity {
 
     public static final int LOGINACTION = 12;
     private ProgressDialog proDialog;
+
+    String ip = "";
 
     //update
     private boolean isupdate = false;
@@ -86,16 +86,13 @@ public class LogonActivity extends Activity {
             e.printStackTrace();
         }
 
-        //手工设置版本显示
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.repeat_bg);
-        Bitmap other = textAsBitmap(bitmap, "ver:" + version, vendor, 15, Color.BLACK);
+        TextView app_info = (TextView) findViewById(R.id.app_info);
+        app_info.setText("Copyright © "+vendor);
+        TextView app_info2 = (TextView) findViewById(R.id.app_info2);
+        app_info2.setText(" ver:"+version);
 
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.footer);
-        BitmapDrawable background = new BitmapDrawable(other);
-        linearLayout.setBackgroundDrawable(background);
-
+        host_info = (WebView) findViewById(R.id.host_info);
         username = (EditText) findViewById(R.id.logon_username);
-
         password = (EditText) findViewById(R.id.logon_password);
         savepassword = (CheckBox) findViewById(R.id.logon_save_password);
         logonBtn = (Button) findViewById(R.id.logon_ok);
@@ -104,6 +101,9 @@ public class LogonActivity extends Activity {
         //getSharedPreferences(SettingsUtils.PreferencesString, MODE_PRIVATE);
         String share_username = sharedPreferences.getString("username", "");
         String share_password = sharedPreferences.getString("password", "");
+        ip = sharedPreferences.getString("setting_http_ip", WebUtils.HOST);
+
+        host_info.loadUrl(WebUtils.HTTP + ip + WebUtils.NEWS);
 
         // 记住密码
         boolean issave = sharedPreferences.getBoolean("issave", false);
@@ -129,7 +129,6 @@ public class LogonActivity extends Activity {
                     username.setError("用户名不能为空！");
                     return;
                 }
-                String ip = sharedPreferences.getString("setting_http_ip", WebUtils.HOST);
                 login(username.getEditableText().toString().trim(), password.getEditableText().toString().trim(), ip);
 
             }
@@ -312,6 +311,8 @@ public class LogonActivity extends Activity {
     protected void onResume() {
         delFile(currentTempFilePath);
         super.onResume();
+
+        host_info.loadUrl(WebUtils.HTTP + ip + WebUtils.NEWS);
     }
 
     private void update(final String filename) {

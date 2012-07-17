@@ -1,4 +1,4 @@
-package com.ek.mobileapp.activity;
+package com.ek.mobileapp.query.activity;
 
 import android.app.ActivityGroup;
 import android.app.AlertDialog;
@@ -25,7 +25,6 @@ import android.widget.RadioButton;
 import android.widget.ViewAnimator;
 
 import com.ek.mobileapp.R;
-import com.ek.mobileapp.action.QueryAction;
 import com.ek.mobileapp.utils.TimeTool;
 import com.ek.mobileapp.utils.WebUtils;
 
@@ -118,7 +117,7 @@ public class QueryActivity extends ActivityGroup {
         queryButton.setOnClickListener(new OnClickListener() {
 
             public void onClick(View v) {
-                QueryAction.getTotalData(startDate, endDate, ip);
+                //QueryAction.getTotalData(startDate, endDate, ip);
             }
 
         });
@@ -162,14 +161,14 @@ public class QueryActivity extends ActivityGroup {
 
         });
 
-        int res = QueryAction.getTotalData(startDate, endDate, ip);
+        //int res = QueryAction.getTotalData(startDate, endDate, ip);
 
-        if (res == WebUtils.SUCCESS) {
+        //if (res == WebUtils.SUCCESS) {
 
             // 开始显示内容
             //switchActivity(new Intent(QueryActivity.this, QueryTotalInfo.class), ViewUtils.MENU_HOME, this.RIGHT);
 
-        }
+        //}
 
     }
 

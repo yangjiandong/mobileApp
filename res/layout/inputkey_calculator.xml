@@ -1,6 +1,6 @@
 <!-- 键盘 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/inputkey"
+    android:id="@+id/inputkey_cal"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="2dp"
@@ -115,6 +115,42 @@
         android:maxLines="1"
         android:text="@string/Clear"
         android:textSize="@dimen/TextSizeClearButton" />
+
+    <Button
+        android:id="@+id/buttonSum"
+        android:layout_width="@dimen/ButtonSize"
+        android:layout_height="@dimen/ButtonSize"
+        android:layout_below="@+id/buttonDif"
+        android:layout_toRightOf="@+id/buttonClear"
+        android:text="@string/sum"
+        android:textSize="@dimen/TextSize" />
+
+    <Button
+        android:id="@+id/buttonDif"
+        android:layout_width="@dimen/ButtonSize"
+        android:layout_height="@dimen/ButtonSize"
+        android:layout_below="@+id/buttonMul"
+        android:layout_toRightOf="@+id/button3"
+        android:text="@string/dif"
+        android:textSize="@dimen/TextSize" />
+
+    <Button
+        android:id="@+id/buttonMul"
+        android:layout_width="@dimen/ButtonSize"
+        android:layout_height="@dimen/ButtonSize"
+        android:layout_below="@+id/buttonDiv"
+        android:layout_toRightOf="@+id/button6"
+        android:text="@string/mul"
+        android:textSize="@dimen/TextSize" />
+
+    <Button
+        android:id="@+id/buttonDiv"
+        android:layout_width="@dimen/ButtonSize"
+        android:layout_height="@dimen/ButtonSize"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/button9"
+        android:text="@string/div"
+        android:textSize="@dimen/TextSize" />
 
     <Button
         android:id="@+id/buttonEq"

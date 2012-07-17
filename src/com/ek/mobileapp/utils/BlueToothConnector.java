@@ -11,10 +11,10 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Message;
-
-import com.ek.mobileapp.activity.MainActivity;
+import android.preference.PreferenceManager;
 
 public class BlueToothConnector extends Thread {
     public static final int CONNECTED = 1;
@@ -23,10 +23,12 @@ public class BlueToothConnector extends Thread {
 
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-    private MainActivity receiver;
+    //private MainActivity receiver;
+    BlueToothReceive blueToothReceive;
 
-    public BlueToothConnector(MainActivity receiver) {
-        this.receiver = receiver;
+    //public BlueToothConnector(MainActivity receiver) {
+    public BlueToothConnector(BlueToothReceive blueToothReceive) {
+        this.blueToothReceive = blueToothReceive;
     }
 
     public void run() {
@@ -34,9 +36,12 @@ public class BlueToothConnector extends Thread {
             return;
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            receiver.startActivity(enableBtIntent);
+            blueToothReceive.getContext().startActivity(enableBtIntent);
+            //receiver.startActivity(enableBtIntent);
         }
-        connectToDevice("SUMLUNG Device");
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(blueToothReceive.getContext());
+        String o = sharedPreferences.getString("setting_bluetooth_scanner", "SUMLUNG Device");
+        connectToDevice(o);
     }
 
     public void connectToDevice(String name) {
@@ -48,7 +53,8 @@ public class BlueToothConnector extends Thread {
                 // Log.e(TAG, device.getName());
                 if (device.getName().equals(name)) {
                     // System.out.println(TAG+device.getName()+"starting connectthread");
-                    ConnectThread mConnectThread = new ConnectThread(device, receiver);
+                    //ConnectThread mConnectThread = new ConnectThread(device, receiver);
+                    ConnectThread mConnectThread = new ConnectThread(device, this.blueToothReceive);
                     mConnectThread.start();
                 }
             }
@@ -61,12 +67,15 @@ public class BlueToothConnector extends Thread {
 
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
-        private MainActivity receiver;
+        //private MainActivity receiver;
+        BlueToothReceive blueToothReceive;
 
-        public ConnectThread(BluetoothDevice device, MainActivity receiver) {
+        //public ConnectThread(BluetoothDevice device, MainActivity receiver) {
+        public ConnectThread(BluetoothDevice device, BlueToothReceive blueToothReceive) {
             BluetoothSocket tmp = null;
             this.mmDevice = device;
-            this.receiver = receiver;
+            //this.receiver = receiver;
+            this.blueToothReceive = blueToothReceive;
 
             try {
                 tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
@@ -120,8 +129,8 @@ public class BlueToothConnector extends Thread {
             bundle.putInt("type", type);
             bundle.putString("msg", msg);
             message.setData(bundle);
-            //TODO
-            //receiver.UIHandler.sendMessage(message);
+            
+            this.blueToothReceive.getUIHandler().sendMessage(message);
         }
     }
 }

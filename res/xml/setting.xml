@@ -26,6 +26,13 @@
             android:key="setting_http_ip"
             android:summary="设置移动平台访问后台服务端地址"
             android:title="访问服务端地址" />
+        <EditTextPreference
+            android:defaultValue="SUMLUNG Device"
+            android:dialogMessage="蓝牙扫描枪"
+            android:dialogTitle="设置程序应用的蓝牙扫描枪设备"
+            android:key="setting_bluetooth_scanner"
+            android:summary="设置程序应用的蓝牙扫描枪设备"
+            android:title="蓝牙扫描枪" />
     </PreferenceCategory>
 
 </PreferenceScreen>
