@@ -6,31 +6,36 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.MobLogAction;
+import com.ek.mobileapp.model.Patient;
 import com.ek.mobileapp.model.UserDTO;
+import com.ek.mobileapp.utils.BarCodeUtils;
+import com.ek.mobileapp.utils.BlueToothConnector;
+import com.ek.mobileapp.utils.BlueToothReceive;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.UtilString;
 
-public class VitalSign extends Activity {
+public class VitalSign extends Activity implements BlueToothReceive {
     Map<String, Integer> btns = new HashMap<String, Integer>();
     Map<String, Integer> btnsStyle = new HashMap<String, Integer>();
     Map<Integer, String> moduels = new HashMap<Integer, String>();
 
-    //OnClickListener handler;
     SharedPreferences sharedPreferences;
 
     EditText patientId;
@@ -41,12 +46,23 @@ public class VitalSign extends Activity {
     TextView doctor;
     EditText busDate;
     Spinner timePoint;
+    //
+    private int state = 0;
+    private String barcode = "";
+    private static final int scanPatient = 0;
+    private Patient currentPatient = null;
+
+    //
+    protected ProgressDialog proDialog;
+    protected String submitString = "正在传输数据...";
+
+    protected BlueToothConnector connector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         createBtns();
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.vitalsign);
 
         patientId = (EditText) findViewById(R.id.vitalsign_patientId);
         name = (TextView) findViewById(R.id.vitalsign_name);
@@ -56,6 +72,9 @@ public class VitalSign extends Activity {
         doctor = (TextView) findViewById(R.id.vitalsign_doctor);
         busDate = (EditText) findViewById(R.id.vitalsign_busDate);
         timePoint = (Spinner) findViewById(R.id.vitalsign_timePoint);
+
+        //
+        clearData();
 
         try {
 
@@ -119,6 +138,18 @@ public class VitalSign extends Activity {
             MobLogAction.mobLogError("构建生命体征界面", e.getMessage());
         }
 
+        connector = new BlueToothConnector(this);
+        connector.setDaemon(true);
+        connector.start();
+    }
+
+    private void clearData() {
+        patientId.setText("");
+        name.setText("");
+        sex.setText("");
+        age.setText("");
+        bedNo.setText("");
+        doctor.setText("");
     }
 
     private void createBtns() {
@@ -137,71 +168,141 @@ public class VitalSign extends Activity {
         btnsStyle.put("06", R.drawable.doctor_button);
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    private void sendMessage(String msg, int type) {
+        Message message = new Message();
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", type);
+        bundle.putString("msg", msg);
+        message.setData(bundle);
+        getUIHandler().sendMessage(message);
+    }
 
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            exit(RESULT_OK, "确认退出程序");
-            return true;
-        } else {
-            return super.onKeyDown(keyCode, event);
+    private void showMessage(String msg) {
+        //if (useVoice) {
+        //    Toast.makeText(CheckMedicine.this, msg, Toast.LENGTH_SHORT).show();
+        //    try {
+        //        ttsService.speak(msg, TextToSpeech.QUEUE_ADD);
+        //    } catch (RemoteException e) {
+        // TODO Auto-generated catch block
+        //        e.printStackTrace();
+        //    }
+        //} else {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        //}
+    }
+
+    protected void submitDate() {
+        if (state == scanPatient) {
+            //medicines = null;
+            //currentPatient = CheckMedicineAction.GetPatient(barcode);
+        }
+        //else if (state == scanMedicine) {
+        //    medicines = null;
+        //    if (currentPatient != null)
+        //        medicines = CheckMedicineAction.GetMedicine(barcode,
+        //                currentPatient.getPatientid());
+        //}
+    }
+
+    private class SubmitHandler extends Thread {
+        @Override
+        public void run() {
+            submitDate();
+            Message message = new Message();
+            Bundle bundle = new Bundle();
+            bundle.putInt("type", -2);
+            message.setData(bundle);
+            getUIHandler().sendMessage(message);
+            proDialog.dismiss();
         }
     }
 
-    private void exit(final int result, String msg) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("确认退出");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int which) {
-                setResult(result);
-                System.exit(0);
-            }
-        });
-
-        // 设置取消按钮
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int which) {
-                // TODO Auto-generated method stub
-                // do nothing
-
-            }
-        });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
+    protected void submitWithProgressDialog() {
+        proDialog = ProgressDialog.show(this, "", submitString, true, true);
+        SubmitHandler t = new SubmitHandler();
+        t.start();
     }
 
-    //    class ClickEvent implements View.OnClickListener {
-    //
-    //        public void onClick(View v) {
-    //            LogonAction.userLog(moduels.get(v.getId()), ip);
-    //
-    //            switch (v.getId()) {
-    //            case R.id.m01: // doStuff
-    //
-    //                Intent intent = new Intent(VitalSign.this, QueryActivity.class);
-    //                startActivity(intent);
-    //                break;
-    //            case R.id.m02: // doStuff
-    //                Intent intent2 = new Intent(VitalSign.this, InputDemoActivtiy.class);
-    //                startActivity(intent2);
-    //                break;
-    //            case R.id.m03: // doStuff
-    //                actionBar.setTitle("03");
-    //                break;
-    //            case R.id.m04: // doStuff
-    //                actionBar.setTitle("04");
-    //                break;
-    //            case R.id.m05: // doStuff
-    //                actionBar.setTitle("05");
-    //                break;
-    //
-    //            default:
-    //                break;
-    //            }
-    //
-    //        }
-    //    }
+    private void setMessage() {
+        if (currentPatient == null) {
+            //清除病人信息
+            clearData();
+            return;
+        }
+        //from currentPatient 装载病人信息
+        //patientInfo.setText(res);
+    }
+
+    protected void afterSubmit() {
+        if (state == scanPatient) {
+            if (currentPatient == null) {
+                showMessage("不能识别当前病人");
+                setMessage();
+            } else {
+                showMessage("当前病人" + currentPatient.getPatientName());
+                setMessage();
+            }
+
+        }
+    }
+
+    public void receiveBlueToothMessage(String msg, int type) {
+        if (type == BlueToothConnector.CONNECTED) {
+            sendMessage(msg, type);
+        } else {
+            if (BarCodeUtils.isPatientTM(msg)) {
+                state = scanPatient;
+                barcode = msg;
+                sendMessage("", 3);
+                submitWithProgressDialog();
+            } else if (BarCodeUtils.isMedicineTM(msg)) {
+                if (currentPatient == null) {
+                    sendMessage("请先扫描病人条码", type);
+                } else {
+                    //state = scanMedicine;
+                    barcode = msg;
+                    sendMessage("", 4);
+                    // submitWithProgressDialog();
+                }
+            } else {
+                sendMessage("请检查条码重新扫描", type);
+            }
+        }
+    }
+
+    public Context getContext() {
+        return this;
+    }
+
+    Handler UIHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            int type = msg.getData().getInt("type");
+            switch (type) {
+            case BlueToothConnector.CONNECTED:
+                showMessage(msg.getData().getString("msg"));
+                break;
+            case BlueToothConnector.READ:
+                showMessage(msg.getData().getString("msg"));
+                break;
+            case 3:
+                submitWithProgressDialog();
+                break;
+            case 4:
+                submitWithProgressDialog();
+                break;
+            case -2: {
+                afterSubmit();
+                break;
+            }
+            default: {
+
+            }
+            }
+            super.handleMessage(msg);
+        }
+    };
+
+    public Handler getUIHandler() {
+        return UIHandler;
+    }
 }

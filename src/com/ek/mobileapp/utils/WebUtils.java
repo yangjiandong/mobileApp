@@ -23,7 +23,9 @@ public class WebUtils {
     //保存生命体征
     public static final String VITALSIGN_SAVE = "/vital_sign/save_vitalsign_data?type=mobile";
     //查询一个病人
-    public static final String PATIENT_GET = "/vital_sign/get_patient?type=mobile";
+    public static final String VITALSIGN_GET_PATIENT = "/vital_sign/get_patient?type=mobile";
+    //查询一个病区所有病人
+    public static final String VITALSIGN_GET_PATIENT_ALL = "/vital_sign/get_patient_all?type=mobile";
     //查询一个病人一天一个指标的记录(如果是一日多次的指标,则是某个时间点的记录)
     public static final String VITALSIGN_GET_ONE = "/vital_sign/get_vitalsign_data?type=mobile";
     //查询一个病人一天的所有生命体征
@@ -31,8 +33,8 @@ public class WebUtils {
     //查询某一类生命体征指标
     public static final String VITALSIGN_GET_ITEM = "/vital_sign/get_vitalsign_item?type=mobile";
     //查询时间点
-    public static final String VITALSIGN_GET_TIMEPOINT = "/vital_sign/query_time_point?type=mobile";
+    public static final String VITALSIGN_GET_TIMEPOINT = "/vital_sign/get_timepoint?type=mobile";
     //查询测量类别
-    public static final String VITALSIGN_GET_MEASURETYPE = "/vital_sign/query_measure_type?type=mobile";
+    public static final String VITALSIGN_GET_MEASURETYPE = "/vital_sign/get_measuretype?type=mobile";
 
 }

@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
 import com.ek.mobileapp.model.UserDTO;
+import com.ek.mobileapp.nurse.activity.VitalSign;
 import com.ek.mobileapp.query.activity.QueryActivity;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.SettingsUtils;
@@ -50,7 +51,6 @@ public class MainActivity extends Activity {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         ip = sharedPreferences.getString("setting_http_ip", WebUtils.HOST);
-        //String o = sharedPreferences.getString("setting_bluetooth_scanner", "");
 
         actionBar = (ActionBar) findViewById(R.id.actionbar);
         try {
@@ -194,7 +194,7 @@ public class MainActivity extends Activity {
                 startActivity(intent);
                 break;
             case R.id.m02: // doStuff
-                Intent intent2 = new Intent(MainActivity.this, InputDemoActivtiy.class);
+                Intent intent2 = new Intent(MainActivity.this, VitalSign.class);
                 startActivity(intent2);
                 break;
             case R.id.m03: // doStuff

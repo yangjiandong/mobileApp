@@ -5,6 +5,10 @@ import java.util.List;
 
 import com.ek.mobileapp.model.Patient;
 import com.ek.mobileapp.model.UserDTO;
+import com.ek.mobileapp.model.VitalSignItem;
+import com.ek.mobileapp.model.VitalSignData;
+import com.ek.mobileapp.model.MeasureType;
+import com.ek.mobileapp.model.TimePoint;
 
 public class GlobalCache {
     private static GlobalCache cache = null;
@@ -17,7 +21,14 @@ public class GlobalCache {
     private int screenHeight;
 
     private List<Patient> patients = new ArrayList<Patient>();
+    private List<VitalSignItem> vitalSignItems = new ArrayList<VitalSignItem>();
+    private List<VitalSignData> vitalSignDatas = new ArrayList<VitalSignData>();
+    private List<MeasureType> measureTypes = new ArrayList<MeasureType>();
+    private List<TimePoint> timePoints = new ArrayList<TimePoint>();
+
     private Patient currentPatient;
+
+    private VitalSignData vitalSignData;
 
     private GlobalCache() {
     }
@@ -98,6 +109,46 @@ public class GlobalCache {
 
     public void setCurrentPatient(Patient currentPatient) {
         this.currentPatient = currentPatient;
+    }
+
+    public List<VitalSignItem> getVitalSignItems() {
+        return vitalSignItems;
+    }
+
+    public void setVitalSignItems(List<VitalSignItem> vitalSignItems) {
+        this.vitalSignItems = vitalSignItems;
+    }
+
+    public List<VitalSignData> getVitalSignDatas() {
+        return vitalSignDatas;
+    }
+
+    public void setVitalSignDatas(List<VitalSignData> vitalSignDatas) {
+        this.vitalSignDatas = vitalSignDatas;
+    }
+
+    public List<MeasureType> getMeasureTypes() {
+        return measureTypes;
+    }
+
+    public void setMeasureTypes(List<MeasureType> measureTypes) {
+        this.measureTypes = measureTypes;
+    }
+
+    public List<TimePoint> getTimePoints() {
+        return timePoints;
+    }
+
+    public void setTimePoints(List<TimePoint> timePoints) {
+        this.timePoints = timePoints;
+    }
+
+    public VitalSignData getVitalSignData() {
+        return vitalSignData;
+    }
+
+    public void setVitalSignData(VitalSignData vitalSignData) {
+        this.vitalSignData = vitalSignData;
     }
 
 }

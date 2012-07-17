@@ -2,150 +2,167 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/Page" >
 
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fillViewport="true" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
-        <TableRow
-            android:id="@+id/tableRow1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:id="@+id/vitalsign_patientLabel"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="住院号" />
+                android:orientation="horizontal"
+                android:padding="10dip" >
 
-            <EditText
-                android:id="@+id/vitalsign_patientId"
-                android:layout_width="60dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="5dp"
-                android:ems="10" >
+                <TextView
+                    android:id="@+id/vitalsign_patientLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="住院号" />
 
-                <requestFocus />
-            </EditText>
+                <EditText
+                    android:id="@+id/vitalsign_patientId"
+                    android:layout_width="200dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="5dp"
+                    android:ems="10"
+                    android:singleLine="true" >
 
-            <TextView
-                android:id="@+id/vitalsign_nameLabel"
-                android:layout_width="wrap_content"
+                    <requestFocus />
+                </EditText>
+            </LinearLayout>
+
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="姓名" />
+                android:orientation="horizontal"
+                android:padding="10dip" >
 
-            <TextView
-                android:id="@+id/vitalsign_name"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/vitalsign_nameLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="姓名" />
+
+                <TextView
+                    android:id="@+id/vitalsign_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="TextView" />
+
+                <TextView
+                    android:id="@+id/vitalsign_sexLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="性别" />
+
+                <TextView
+                    android:id="@+id/vitalsign_sex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="TextView" />
+            </LinearLayout>
+
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="TextView" />
+                android:orientation="horizontal"
+                android:padding="10dip" >
 
-            <TextView
-                android:id="@+id/vitalsign_sexLabel"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/vitalsign_ageLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="年龄" />
+
+                <TextView
+                    android:id="@+id/vitalsign_age"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView" />
+
+                <TextView
+                    android:id="@+id/vitalsign_bedNoLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="床号" />
+
+                <TextView
+                    android:id="@+id/vitalsign_bedNo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="TextView" />
+
+                <TextView
+                    android:id="@+id/vitalsign_doctorLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="医生" />
+
+                <TextView
+                    android:id="@+id/vitalsign_doctor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="TextView" />
+            </LinearLayout>
+
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="性别" />
+                android:orientation="horizontal"
+                android:padding="10dip" >
 
-            <TextView
-                android:id="@+id/vitalsign_sex"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="TextView" />
-        </TableRow>
+                <TextView
+                    android:id="@+id/vitalsign_busDateLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="日期" />
 
-        <TableRow
-            android:id="@+id/tableRow2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+                <EditText
+                    android:id="@+id/vitalsign_busDate"
+                    android:layout_width="80dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="5dp"
+                    android:ems="10" />
 
-            <TextView
-                android:id="@+id/vitalsign_ageLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="年龄" />
+                <Spinner
+                    android:id="@+id/vitalsign_timePoint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="-5dp" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/vitalsign_age"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView" />
+            <LinearLayout
+                android:id="@+id/vitalsign_layout1"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:orientation="vertical" >
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/vitalsign_bedNoLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="床号" />
-
-            <TextView
-                android:id="@+id/vitalsign_bedNo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="TextView" />
-
-            <TextView
-                android:id="@+id/vitalsign_doctorLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="医生" />
-
-            <TextView
-                android:id="@+id/vitalsign_doctor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="TextView" />
-        </TableRow>
-    </TableLayout>
-
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginTop="10dp" >
-
-        <TableRow
-            android:id="@+id/tableRow3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:id="@+id/vitalsign_busDateLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="日期" />
-
-            <EditText
-                android:id="@+id/vitalsign_busDate"
-                android:layout_width="80dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="5dp"
-                android:ems="10" />
-
-            <Spinner
-                android:id="@+id/vitalsign_timePoint"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginTop="-5dp" />
-        </TableRow>
-    </TableLayout>
-
-    <LinearLayout
-        android:id="@+id/vitalsign_layout1"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:orientation="vertical" >
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/vitalsign_layout2"
-        android:layout_width="match_parent"
-        android:layout_height="173dp"
-        android:orientation="vertical" >
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/vitalsign_layout2"
+                android:layout_width="match_parent"
+                android:layout_height="173dp"
+                android:orientation="vertical" >
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
