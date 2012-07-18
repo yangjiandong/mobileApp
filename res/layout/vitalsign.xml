@@ -189,7 +189,7 @@
             <LinearLayout
                 android:id="@+id/vitalsign_layout1"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
                 <GridView
@@ -206,8 +206,8 @@
 
             <LinearLayout
                 android:id="@+id/vitalsign_layout2"
-                android:layout_width="match_parent"
-                android:layout_height="202dp"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
                 android:orientation="vertical" >
 
                 <GridView
@@ -215,7 +215,7 @@
                     android:id="@+id/gridView2"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:columnWidth="100dp"
+                    android:columnWidth="150dp"
                     android:gravity="center"
                     android:numColumns="auto_fit"
                     android:stretchMode="columnWidth" >

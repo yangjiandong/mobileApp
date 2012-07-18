@@ -1,14 +1,13 @@
 package com.ek.mobileapp.nurse.activity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,19 +28,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ek.mobileapp.R;
+import com.ek.mobileapp.model.MobConstants;
 import com.ek.mobileapp.model.Patient;
 import com.ek.mobileapp.model.UserDTO;
+import com.ek.mobileapp.model.VitalSignItem;
 import com.ek.mobileapp.nurse.action.VitalSignAction;
-import com.ek.mobileapp.nurse.adapter.ImageAdapter;
+import com.ek.mobileapp.nurse.adapter.VitalSignDataGridViewAdapter;
 import com.ek.mobileapp.utils.BarCodeUtils;
 import com.ek.mobileapp.utils.BlueToothConnector;
 import com.ek.mobileapp.utils.BlueToothReceive;
 import com.ek.mobileapp.utils.GlobalCache;
 
 public class VitalSign extends Activity implements BlueToothReceive {
-    Map<String, Integer> btns = new HashMap<String, Integer>();
-    Map<String, Integer> btnsStyle = new HashMap<String, Integer>();
-    Map<Integer, String> moduels = new HashMap<Integer, String>();
 
     SharedPreferences sharedPreferences;
 
@@ -70,7 +68,7 @@ public class VitalSign extends Activity implements BlueToothReceive {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        createBtns();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.vitalsign);
 
@@ -100,27 +98,45 @@ public class VitalSign extends Activity implements BlueToothReceive {
 
         //
         clearData();
+
         gridView1 = (GridView) findViewById(R.id.gridView1);
         final List<String> numsList = new ArrayList<String>();
-        numsList.add("tweetnum");
-        numsList.add("fansnum");
-        numsList.add("idolnum");
-        gridView1.setAdapter(new ImageAdapter(this, numsList));
+        final List<String> numsList2 = new ArrayList<String>();
+        VitalSignAction.getItem("");
+        List<VitalSignItem> vas = GlobalCache.getCache().getVitalSignItems();
+        for (VitalSignItem vitalSignItem : vas) {
+            if (vitalSignItem.getTypeCode().equals(MobConstants.MOB_VITALSIGN_MORE)) {
+                numsList.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + vitalSignItem.getUnit() + "|000");
+            } else {
+                numsList2.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + vitalSignItem.getUnit()
+                        + "|000");
+            }
 
+        }
+
+        gridView1.setAdapter(new VitalSignDataGridViewAdapter(this, numsList));
         gridView1.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Toast.makeText(getApplicationContext(), ((TextView) v.findViewById(R.id.grid_item_label)).getText(),
-                        Toast.LENGTH_SHORT).show();
+                String code = ((TextView) v.findViewById(R.id.grid_item_code)).getText().toString();
+                if (code.equals("01")) {
+                    Intent intent = new Intent(VitalSign.this, VitalSignEdit.class);
+                    startActivity(intent);
+
+                } else if (code.equals("99")) {
+
+                } else {
+                    Toast.makeText(getApplicationContext(), code, Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
 
         gridView2 = (GridView) findViewById(R.id.gridView2);
-        gridView2.setAdapter(new ImageAdapter(this, numsList));
+        gridView2.setAdapter(new VitalSignDataGridViewAdapter(this, numsList2));
 
         gridView2.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Toast.makeText(getApplicationContext(), ((TextView) v.findViewById(R.id.grid_item_label)).getText(),
+                Toast.makeText(getApplicationContext(), ((TextView) v.findViewById(R.id.grid_item_code)).getText(),
                         Toast.LENGTH_SHORT).show();
 
             }
@@ -137,40 +153,6 @@ public class VitalSign extends Activity implements BlueToothReceive {
         age.setText("");
         bedNo.setText("");
         doctor.setText("");
-    }
-
-    private void createBtns() {
-        btns.put("01", R.id.v01);
-        btns.put("02", R.id.v02);
-        btns.put("03", R.id.v03);
-        btns.put("04", R.id.v04);
-        btns.put("05", R.id.v05);
-        btns.put("06", R.id.v06);
-        btns.put("07", R.id.v07);
-        btns.put("08", R.id.v08);
-        btns.put("09", R.id.v09);
-        btns.put("10", R.id.v10);
-        btns.put("11", R.id.v11);
-        btns.put("12", R.id.v12);
-        btns.put("13", R.id.v13);
-        btns.put("14", R.id.v14);
-        btns.put("15", R.id.v15);
-        //
-        btnsStyle.put("01", R.drawable.hospital_button);
-        btnsStyle.put("02", R.drawable.doctor_button);
-        btnsStyle.put("03", R.drawable.doctor_button);
-        btnsStyle.put("04", R.drawable.doctor_button);
-        btnsStyle.put("05", R.drawable.doctor_button);
-        btnsStyle.put("06", R.drawable.doctor_button);
-        btnsStyle.put("07", R.drawable.doctor_button);
-        btnsStyle.put("08", R.drawable.doctor_button);
-        btnsStyle.put("09", R.drawable.doctor_button);
-        btnsStyle.put("10", R.drawable.doctor_button);
-        btnsStyle.put("11", R.drawable.doctor_button);
-        btnsStyle.put("12", R.drawable.doctor_button);
-        btnsStyle.put("13", R.drawable.doctor_button);
-        btnsStyle.put("14", R.drawable.doctor_button);
-        btnsStyle.put("15", R.drawable.doctor_button);
     }
 
     private void sendMessage(String msg, int type) {

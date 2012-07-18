@@ -14,16 +14,19 @@
 
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            >
 
             <!-- Footer Start -->
+
             <TextView
                 android:id="@+id/app_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/host_info"
-                android:text="soft"
                 android:layout_alignParentLeft="true"
+                android:paddingLeft="2dp"
+                android:text="soft"
                 android:textColor="#000000" />
 
             <TextView
@@ -32,8 +35,10 @@
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/host_info"
                 android:layout_alignParentRight="true"
+                android:paddingRight="2dp"
                 android:text="version"
                 android:textColor="#000000" />
+
             <WebView
                 android:id="@+id/host_info"
                 android:layout_width="fill_parent"
@@ -41,7 +46,9 @@
                 android:layout_alignParentBottom="true" />
             <!-- Footer Ends -->
 
+
             <!-- Login Form -->
+
             <LinearLayout
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
@@ -55,7 +62,9 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/logon_username"
-                    android:textColor="#ffffff" />
+                    android:textColor="#ffffff"
+                    android:textSize="20sp"
+                    android:typeface="sans" />
 
                 <EditText
                     android:id="@+id/logon_username"
@@ -76,7 +85,9 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/logon_password"
-                    android:textColor="#ffffff" />
+                    android:textColor="#ffffff"
+                    android:textSize="20sp"
+                    android:typeface="sans" />
 
                 <EditText
                     android:id="@+id/logon_password"
@@ -91,13 +102,17 @@
                     android:id="@+id/logon_save_password"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/logon_save_passwrod" />
+                    android:text="@string/logon_save_passwrod"
+                    android:textSize="20sp"
+                    android:typeface="sans"/>
 
                 <Button
                     android:id="@+id/logon_ok"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dip"
+                    android:textSize="20sp"
+                    android:typeface="sans"
                     android:text="@string/ok" />
             </LinearLayout>
             <!-- Login Form Ends -->
