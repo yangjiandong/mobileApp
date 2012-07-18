@@ -45,6 +45,7 @@ public class VitalSignAction {
         }
     }
 
+    //取一个病人
     public static void getPatient(String patientId) {
         String ip = GlobalCache.getCache().getHostIp();
         Long userId = GlobalCache.getCache().getLoginuser().getId();
@@ -151,6 +152,7 @@ public class VitalSignAction {
         }
     }
 
+    
     public static void getAll(String patientId, String busDate) {
         String ip = GlobalCache.getCache().getHostIp();
         Long userId = GlobalCache.getCache().getLoginuser().getId();

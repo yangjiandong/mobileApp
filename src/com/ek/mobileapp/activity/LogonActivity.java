@@ -129,6 +129,8 @@ public class LogonActivity extends Activity {
                     username.setError("用户名不能为空！");
                     return;
                 }
+
+                ip = sharedPreferences.getString("setting_http_ip", WebUtils.HOST);
                 login(username.getEditableText().toString().trim(), password.getEditableText().toString().trim(), ip);
 
             }

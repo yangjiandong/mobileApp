@@ -1,9 +1,10 @@
 package com.ek.mobileapp.nurse.activity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -12,24 +13,30 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
-import android.view.Gravity;
+import android.preference.PreferenceManager;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ek.mobileapp.R;
-import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.model.Patient;
 import com.ek.mobileapp.model.UserDTO;
+import com.ek.mobileapp.nurse.action.VitalSignAction;
+import com.ek.mobileapp.nurse.adapter.ImageAdapter;
 import com.ek.mobileapp.utils.BarCodeUtils;
 import com.ek.mobileapp.utils.BlueToothConnector;
 import com.ek.mobileapp.utils.BlueToothReceive;
 import com.ek.mobileapp.utils.GlobalCache;
-import com.ek.mobileapp.utils.UtilString;
 
 public class VitalSign extends Activity implements BlueToothReceive {
     Map<String, Integer> btns = new HashMap<String, Integer>();
@@ -38,6 +45,8 @@ public class VitalSign extends Activity implements BlueToothReceive {
 
     SharedPreferences sharedPreferences;
 
+    TextView user_by;
+    Button get_patient;
     EditText patientId;
     TextView name;
     TextView sex;
@@ -46,16 +55,17 @@ public class VitalSign extends Activity implements BlueToothReceive {
     TextView doctor;
     EditText busDate;
     Spinner timePoint;
+
+    GridView gridView1;
+    GridView gridView2;
     //
     private int state = 0;
     private String barcode = "";
     private static final int scanPatient = 0;
     private Patient currentPatient = null;
 
-    //
     protected ProgressDialog proDialog;
     protected String submitString = "正在传输数据...";
-
     protected BlueToothConnector connector;
 
     @Override
@@ -63,6 +73,21 @@ public class VitalSign extends Activity implements BlueToothReceive {
         createBtns();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.vitalsign);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        UserDTO user = GlobalCache.getCache().getLoginuser();
+        user_by = (TextView) findViewById(R.id.user_by);
+        user_by.setText(user.getName() + " - " + user.getDepartName());
+
+        get_patient = (Button) findViewById(R.id.get_patient);
+        get_patient.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                if (patientId.getEditableText().toString().trim().equals("")) {
+                    return;
+                }
+            }
+        });
 
         patientId = (EditText) findViewById(R.id.vitalsign_patientId);
         name = (TextView) findViewById(R.id.vitalsign_name);
@@ -75,69 +100,31 @@ public class VitalSign extends Activity implements BlueToothReceive {
 
         //
         clearData();
+        gridView1 = (GridView) findViewById(R.id.gridView1);
+        final List<String> numsList = new ArrayList<String>();
+        numsList.add("tweetnum");
+        numsList.add("fansnum");
+        numsList.add("idolnum");
+        gridView1.setAdapter(new ImageAdapter(this, numsList));
 
-        try {
+        gridView1.setOnItemClickListener(new OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                Toast.makeText(getApplicationContext(), ((TextView) v.findViewById(R.id.grid_item_label)).getText(),
+                        Toast.LENGTH_SHORT).show();
 
-            //一排四个按钮
-            int count = 4;
-            LinearLayout modules = (LinearLayout) findViewById(R.id.vitalsign_layout1);
-
-            //
-            UserDTO user = GlobalCache.getCache().getLoginuser();
-            String alls = user.getMobmodules();
-            List<String> allIds = UtilString.stringToArrayList(alls, ",");
-            int i = 0;
-            LinearLayout one = null;
-            Button[] bns = new Button[count];
-            for (String oneModule : allIds) {
-                StringTokenizer filter = new StringTokenizer(oneModule, "|");
-                String code = filter.nextToken();
-                String module = filter.nextToken();
-
-                if (i == count) {
-                    //ViewUtils.putViewsInLine(bns, getScreenWidth(), 0.1);
-                    i = 0;
-                    bns = new Button[count];
-                }
-
-                if (i == 0) {
-                    one = new LinearLayout(this);
-                    //one.set
-                    one.setOrientation(LinearLayout.HORIZONTAL);
-                    one.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT, 1));
-                    //buttnon 居中
-                    one.setGravity(Gravity.CENTER);
-                    modules.addView(one);
-                }
-
-                Button bn = new Button(this, null, R.style.MButton);
-                bn.setId(btns.get(code));
-                bn.setCompoundDrawablesWithIntrinsicBounds(0, this.btnsStyle.get(code), 0, 0);
-                bn.setText(module);
-                //TODO 硬编码尺寸
-                bn.setPadding(20, 10, 20, 0);
-                //后台日志显示用
-                moduels.put(bn.getId(), module);
-
-                //向Layout容器中添加按钮
-                one.addView(bn);//, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-
-                //为按钮绑定一个事件监听器
-                // bn.setOnClickListener(new ClickEvent());
-                bns[i] = bn;
-
-                i++;
             }
+        });
 
-            if (i > 0) {
-                //ViewUtils.putViewsInLine(bns, getScreenWidth(), 0.1);
+        gridView2 = (GridView) findViewById(R.id.gridView2);
+        gridView2.setAdapter(new ImageAdapter(this, numsList));
+
+        gridView2.setOnItemClickListener(new OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                Toast.makeText(getApplicationContext(), ((TextView) v.findViewById(R.id.grid_item_label)).getText(),
+                        Toast.LENGTH_SHORT).show();
+
             }
-        } catch (Exception e) {
-            Log.e("", e.getMessage());
-            MobLogAction.mobLogError("构建生命体征界面", e.getMessage());
-        }
-
+        });
         connector = new BlueToothConnector(this);
         connector.setDaemon(true);
         connector.start();
@@ -153,12 +140,21 @@ public class VitalSign extends Activity implements BlueToothReceive {
     }
 
     private void createBtns() {
-        btns.put("01", R.id.m01);
-        btns.put("02", R.id.m02);
-        btns.put("03", R.id.m03);
-        btns.put("04", R.id.m04);
-        btns.put("05", R.id.m05);
-        btns.put("06", R.id.m06);
+        btns.put("01", R.id.v01);
+        btns.put("02", R.id.v02);
+        btns.put("03", R.id.v03);
+        btns.put("04", R.id.v04);
+        btns.put("05", R.id.v05);
+        btns.put("06", R.id.v06);
+        btns.put("07", R.id.v07);
+        btns.put("08", R.id.v08);
+        btns.put("09", R.id.v09);
+        btns.put("10", R.id.v10);
+        btns.put("11", R.id.v11);
+        btns.put("12", R.id.v12);
+        btns.put("13", R.id.v13);
+        btns.put("14", R.id.v14);
+        btns.put("15", R.id.v15);
         //
         btnsStyle.put("01", R.drawable.hospital_button);
         btnsStyle.put("02", R.drawable.doctor_button);
@@ -166,6 +162,15 @@ public class VitalSign extends Activity implements BlueToothReceive {
         btnsStyle.put("04", R.drawable.doctor_button);
         btnsStyle.put("05", R.drawable.doctor_button);
         btnsStyle.put("06", R.drawable.doctor_button);
+        btnsStyle.put("07", R.drawable.doctor_button);
+        btnsStyle.put("08", R.drawable.doctor_button);
+        btnsStyle.put("09", R.drawable.doctor_button);
+        btnsStyle.put("10", R.drawable.doctor_button);
+        btnsStyle.put("11", R.drawable.doctor_button);
+        btnsStyle.put("12", R.drawable.doctor_button);
+        btnsStyle.put("13", R.drawable.doctor_button);
+        btnsStyle.put("14", R.drawable.doctor_button);
+        btnsStyle.put("15", R.drawable.doctor_button);
     }
 
     private void sendMessage(String msg, int type) {
@@ -246,6 +251,48 @@ public class VitalSign extends Activity implements BlueToothReceive {
         }
     }
 
+    private void showProcessingImage(int imageViewId) {
+        ImageView imageView = (ImageView) findViewById(imageViewId);
+        imageView.setImageResource(R.drawable.loading);
+        RotateAnimation rotateAnimation = new RotateAnimation(0, 360, 13, 13);
+        rotateAnimation.setDuration(1000);
+        rotateAnimation.setRepeatCount(Animation.INFINITE);
+        imageView.startAnimation(rotateAnimation);
+    }
+
+    private void stopAnimation(int imageViewId) {
+        ImageView imageView = (ImageView) findViewById(imageViewId);
+        imageView.clearAnimation();
+        imageView.setImageResource(0);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        //isActive.set(false);
+        //AtomicBoolean isActive=new AtomicBoolean(false);
+        //this.connector.setIsActive(isActive);
+    }
+
+    public void onResume() {
+        super.onResume();
+
+        //AtomicBoolean isActive=new AtomicBoolean(true);
+        //this.connector.setIsActive(isActive);
+    }
+
+    @Override
+    public void onDestroy() {
+        AtomicBoolean isActive = new AtomicBoolean(false);
+        this.connector.setIsActive(isActive);
+
+        connector.mystop();
+        connector.stop();
+        connector = null;
+
+        super.onDestroy();
+    }
+
     public void receiveBlueToothMessage(String msg, int type) {
         if (type == BlueToothConnector.CONNECTED) {
             sendMessage(msg, type);
@@ -279,10 +326,25 @@ public class VitalSign extends Activity implements BlueToothReceive {
             int type = msg.getData().getInt("type");
             switch (type) {
             case BlueToothConnector.CONNECTED:
+                //有蓝牙设备
                 showMessage(msg.getData().getString("msg"));
                 break;
             case BlueToothConnector.READ:
-                showMessage(msg.getData().getString("msg"));
+                //showMessage(msg.getData().getString("msg"));
+                String p = msg.getData().getString("msg");
+                patientId.setText(p);
+
+                VitalSignAction.getPatient(p);
+                Patient pa = GlobalCache.getCache().getCurrentPatient();
+
+                if (pa != null) {
+                    //patientId.setText("");
+                    name.setText(pa.getPatientName());
+                    sex.setText(pa.getSex());
+                    age.setText(pa.getAge());
+                    bedNo.setText(pa.getBedNo());
+                    doctor.setText(pa.getDoctorName());
+                }
                 break;
             case 3:
                 submitWithProgressDialog();

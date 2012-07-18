@@ -12,6 +12,12 @@
         <item name="android:background">@drawable/bg3</item>
     </style>
 
+    <style name="ModulePage">
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+    </style>
+
     <style name="MButton">
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:layout_width">fill_parent</item>
@@ -23,4 +29,5 @@
         <item name="android:textColor">@color/foreground1</item>
         <item name="android:background">@null</item>
     </style>
+
 </resources>
