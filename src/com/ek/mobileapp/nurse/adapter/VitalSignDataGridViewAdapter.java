@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,7 @@ public class VitalSignDataGridViewAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View gridView;
-        if (convertView == null) {
+        //if (convertView == null) {
             gridView = new View(context);
             gridView = inflater.inflate(R.layout.vitalsign_gridview_item, null);
 
@@ -34,12 +35,16 @@ public class VitalSignDataGridViewAdapter extends BaseAdapter {
             TextView textValue = (TextView) gridView.findViewById(R.id.grid_item_value);
 
             StringTokenizer s = new StringTokenizer(numList.get(position), "|");
-            textCode.setText(s.nextToken());
+            String code = s.nextToken();
+            textCode.setText(code);
             textLabel.setText(s.nextToken());
-            textValue.setText(s.nextToken());
-        } else {
-            gridView = (View) convertView;
-        }
+            textValue.setText(code);//s.nextToken());
+            if (code.equals("01")){
+                //convertView.setBackgroundColor(Color.GREEN);
+            }
+        //} else {
+        //    gridView = (View) convertView;
+        //}
 
         return gridView;
     }
