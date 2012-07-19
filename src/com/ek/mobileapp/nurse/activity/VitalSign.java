@@ -116,6 +116,7 @@ public class VitalSign extends Activity implements BlueToothReceive {
                     t_age.setText(pa.getAge());
                     t_bedNo.setText(pa.getBedNo());
                     t_doctor.setText(pa.getDoctorName());
+                    refreshData();
                 }
             }
         });
@@ -141,7 +142,12 @@ public class VitalSign extends Activity implements BlueToothReceive {
 
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, timeStr);
 
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         s_timePoint.setAdapter(adapter);
+
+        s_timePoint.setPrompt("选择时间点:");
+
         s_timePoint.setOnItemSelectedListener(new OnItemSelectedListener() {
 
             public void onItemSelected(AdapterView<?> adapter, View view, int selected, long arg3) {
@@ -456,56 +462,6 @@ public class VitalSign extends Activity implements BlueToothReceive {
                     e_busDate.setText(busDate);
                     GlobalCache.getCache().setBusDate(busDate);
 
-                    if (GlobalCache.getCache().getTimePoint() != null) {
-                        VitalSignAction.getOne(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate,
-                                GlobalCache.getCache().getTimePoint(), "");
-                    } else {
-                        VitalSignAction.getAll(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate);
-                    }
-
-                    final List<String> dataList1 = new ArrayList<String>();
-                    final List<String> dataList2 = new ArrayList<String>();
-                    List<VitalSignData> datas = GlobalCache.getCache().getVitalSignDatas();
-                    List<VitalSignItem> items = GlobalCache.getCache().getVitalSignItems();
-                    for (VitalSignItem vitalSignItem : items) {
-                        if (vitalSignItem.getTypeCode().equals(MobConstants.MOB_VITALSIGN_MORE)) {
-                            if (GlobalCache.getCache().getTimePoint() != null) {
-                                for (VitalSignData vsd : datas) {
-                                    if (vsd.getItemName().equals(vitalSignItem.getName())) {
-                                        dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
-                                                + vitalSignItem.getUnit() + ")" + "|" + vsd.getValue1());
-                                        break;
-                                    } else {
-                                        dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
-                                                + vitalSignItem.getUnit() + ")" + "| ");
-                                        break;
-                                    }
-                                }
-                            } else {
-                                dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
-                                        + vitalSignItem.getUnit() + ")" + "| ");
-                            }
-
-                        } else {
-
-                            for (VitalSignData vsd : datas) {
-                                if (vsd.getItemName().equals(vitalSignItem.getName())) {
-                                    dataList2.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
-                                            + vitalSignItem.getUnit() + ")" + "|" + vsd.getValue2());
-                                    break;
-                                } else {
-                                    dataList2.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
-                                            + vitalSignItem.getUnit() + ")" + "| ");
-                                    break;
-                                }
-                            }
-
-                        }
-
-                    }
-                    gridView1.setAdapter(new VitalSignDataGridViewAdapter(VitalSign.this, dataList1));
-                    gridView2.setAdapter(new VitalSignDataGridViewAdapter(VitalSign.this, dataList2));
-
                 }
             }
         });
@@ -519,5 +475,81 @@ public class VitalSign extends Activity implements BlueToothReceive {
                 }
             }
         });
+    }
+
+    private void refreshData() {
+        List<String> dataList1 = new ArrayList<String>();
+        List<String> dataList2 = new ArrayList<String>();
+
+        VitalSignAction.getAll(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate);
+
+        List<VitalSignData> datas = GlobalCache.getCache().getVitalSignDatas();
+        List<VitalSignItem> items = GlobalCache.getCache().getVitalSignItems();
+        for (VitalSignItem vitalSignItem : items) {
+            if (vitalSignItem.getTypeCode().equals(MobConstants.MOB_VITALSIGN_MORE)) {
+                if (GlobalCache.getCache().getTimePoint() == null) {
+                    dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                            + vitalSignItem.getUnit() + ")" + "| ");
+                }
+            } else {
+
+                boolean flag = true;
+                for (VitalSignData vsd : datas) {
+                    if (vsd.getItemName().equals(vitalSignItem.getName())) {
+                        dataList2.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                                + vitalSignItem.getUnit() + ")" + "|" + vsd.getValue2());
+                        flag = false;
+                        break;
+                    } else {
+                        continue;
+                    }
+
+                }
+                if (flag) {
+                    dataList2.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                            + vitalSignItem.getUnit() + ")" + "| ");
+                }
+
+            }
+
+        }
+
+        gridView2.setAdapter(new VitalSignDataGridViewAdapter(VitalSign.this, dataList2));
+
+        if (GlobalCache.getCache().getTimePoint() == null) {
+            gridView1.setAdapter(new VitalSignDataGridViewAdapter(VitalSign.this, dataList1));
+        } else {
+            dataList1 = new ArrayList<String>();
+            VitalSignAction.getOne(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate, GlobalCache
+                    .getCache().getTimePoint(), "");
+
+            datas = GlobalCache.getCache().getVitalSignDatas();
+            items = GlobalCache.getCache().getVitalSignItems();
+
+            for (VitalSignItem vitalSignItem : items) {
+                boolean flag = true;
+                if (vitalSignItem.getTypeCode().equals(MobConstants.MOB_VITALSIGN_MORE)) {
+
+                    for (VitalSignData vsd : datas) {
+                        if (vsd.getItemName().equals(vitalSignItem.getName())) {
+                            dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                                    + vitalSignItem.getUnit() + ")" + "|" + vsd.getValue1());
+                            flag = false;
+                            break;
+                        } else {
+                            continue;
+                        }
+                    }
+                    if (flag) {
+                        dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                                + vitalSignItem.getUnit() + ")" + "| ");
+                    }
+                }
+
+            }
+
+            gridView1.setAdapter(new VitalSignDataGridViewAdapter(VitalSign.this, dataList1));
+        }
+
     }
 }

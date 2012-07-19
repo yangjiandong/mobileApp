@@ -1,6 +1,18 @@
 android
 =======
 
+2012.07.19
+----------
+
+   1. 让控件在父容器中居中
+   android:layout_gravity= "center_vertical"
+   
+   在布局中使用scrollview
+ 　把原来的布局用
+   android:layout_width="fill_parent"
+   android:layout_height="wrap_content"
+   android:scrollbars="none">括起来即可实现视图的滚动。
+   
 2012.07.16
 ----------
 
