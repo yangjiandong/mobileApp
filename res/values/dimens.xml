@@ -10,12 +10,13 @@
     <dimen name="text_size_medium">18sp</dimen>
     <dimen name="text_size_large">22sp</dimen>
 
-    <dimen name="ButtonSize">80dp</dimen>
+    <dimen name="ButtonSize">50dp</dimen>
     <dimen name="ButtonSizeLand">76dp</dimen>
-    <dimen name="TextSize">30dp</dimen>
+    <dimen name="TextSize">35dp</dimen>
     <dimen name="TextSizeLand">30dp</dimen>
     <dimen name="TextSizeClearButton">20dp</dimen>
     <dimen name="TextSizeClearButtonLand">20dp</dimen>
+    <dimen name="TextSizeSureButton">28dp</dimen>
     <dimen name="ViewedTextSize">45dp</dimen>
     <dimen name="TextViewHeight">65dp</dimen>
     <dimen name="ButtonMargin">2dp</dimen>

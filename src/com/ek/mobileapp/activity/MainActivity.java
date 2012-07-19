@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.xmlpull.v1.XmlPullParser;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -12,9 +14,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.util.Xml;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -23,6 +28,7 @@ import android.widget.LinearLayout;
 
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
+import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.model.UserDTO;
 import com.ek.mobileapp.nurse.activity.VitalSign;
 import com.ek.mobileapp.query.activity.QueryActivity;
@@ -43,6 +49,7 @@ public class MainActivity extends Activity {
     SharedPreferences sharedPreferences;
     String ip = "";
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         createBtns();
@@ -102,7 +109,12 @@ public class MainActivity extends Activity {
                     modules.addView(one);
                 }
 
+                //Resources res = this.getResources();
+                //XmlPullParser parser = res.getXml(R.style.);
+                //AttributeSet attributes = Xml.asAttributeSet(parser);
                 Button bn = new Button(this, null, R.style.MButton);
+                bn.setTextAppearance(this, R.style.MButton);
+                bn.setGravity(R.style.MButton);
                 bn.setId(btns.get(code));
                 bn.setCompoundDrawablesWithIntrinsicBounds(0, this.btnsStyle.get(code), 0, 0);
                 bn.setText(module);
@@ -124,8 +136,9 @@ public class MainActivity extends Activity {
             if (i > 0) {
                 //ViewUtils.putViewsInLine(bns, getScreenWidth(), 0.1);
             }
-        } catch (NameNotFoundException e) {
-            Log.e("", e.getMessage());
+        } catch (Exception e) {
+            MobLogAction.mobLogError("main", e.getMessage());
+            //Log.e("", e.getMessage());
         }
 
     }
@@ -139,8 +152,8 @@ public class MainActivity extends Activity {
         btns.put("06", R.id.m06);
         //
         btnsStyle.put("01", R.drawable.hospital_button);
-        btnsStyle.put("02", R.drawable.doctor_button);
-        btnsStyle.put("03", R.drawable.doctor_button);
+        btnsStyle.put("02", R.drawable.nurse_button);
+        btnsStyle.put("03", R.drawable.nurse_button);
         btnsStyle.put("04", R.drawable.doctor_button);
         btnsStyle.put("05", R.drawable.doctor_button);
         btnsStyle.put("06", R.drawable.doctor_button);
@@ -198,7 +211,8 @@ public class MainActivity extends Activity {
                 startActivity(intent2);
                 break;
             case R.id.m03: // doStuff
-                actionBar.setTitle("03");
+                Intent intent3 = new Intent(MainActivity.this, InputDemoActivtiy.class);
+                startActivity(intent3);
                 break;
             case R.id.m04: // doStuff
                 actionBar.setTitle("04");

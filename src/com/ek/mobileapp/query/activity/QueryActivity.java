@@ -187,7 +187,7 @@ public class QueryActivity extends ActivityGroup {
 
     private void initSelectDate() {
         View view = mLayoutInflater.inflate(R.layout.activity_date, null);
-        date_picker = (DatePicker) view.findViewById(R.id.query_seldate);
+        date_picker = (DatePicker) view.findViewById(R.id.seldate);
         date_picker.init(TimeTool.getYear(), TimeTool.getMonth(), TimeTool.getDay(), new OnDateChangedListener() {
 
             public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -207,7 +207,7 @@ public class QueryActivity extends ActivityGroup {
         selectDateView.setFocusable(true);
         selectDateView.setAnimationStyle(-1);
         selectDateView.update();
-        Button okbtn = (Button) view.findViewById(R.id.query_date_ok);
+        Button okbtn = (Button) view.findViewById(R.id.date_ok);
         okbtn.setOnClickListener(new OnClickListener() {
 
             public void onClick(View v) {
@@ -223,7 +223,7 @@ public class QueryActivity extends ActivityGroup {
             }
         });
 
-        Button canelbtn = (Button) view.findViewById(R.id.query_date_cancle);
+        Button canelbtn = (Button) view.findViewById(R.id.date_cancle);
         canelbtn.setOnClickListener(new OnClickListener() {
 
             public void onClick(View v) {

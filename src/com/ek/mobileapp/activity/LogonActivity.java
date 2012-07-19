@@ -13,10 +13,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
@@ -44,7 +46,7 @@ import com.markupartist.android.widget.ActionBar;
 import com.markupartist.android.widget.ActionBar.Action;
 import com.markupartist.android.widget.ActionBar.IntentAction;
 
-public class LogonActivity extends Activity {
+public class LogonActivity extends Activity implements OnSharedPreferenceChangeListener {
     WebView host_info;
     EditText username;
     EditText password;
@@ -87,9 +89,9 @@ public class LogonActivity extends Activity {
         }
 
         TextView app_info = (TextView) findViewById(R.id.app_info);
-        app_info.setText("Copyright © "+vendor);
+        app_info.setText("Copyright © " + vendor);
         TextView app_info2 = (TextView) findViewById(R.id.app_info2);
-        app_info2.setText(" ver:"+version);
+        app_info2.setText(" ver:" + version);
 
         host_info = (WebView) findViewById(R.id.host_info);
         username = (EditText) findViewById(R.id.logon_username);
@@ -98,6 +100,7 @@ public class LogonActivity extends Activity {
         logonBtn = (Button) findViewById(R.id.logon_ok);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         //getSharedPreferences(SettingsUtils.PreferencesString, MODE_PRIVATE);
         String share_username = sharedPreferences.getString("username", "");
         String share_password = sharedPreferences.getString("password", "");
@@ -126,6 +129,7 @@ public class LogonActivity extends Activity {
         logonBtn.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 if (username.getEditableText().toString().trim().equals("")) {
+                    //username.setHintTextColor(Color.RED);
                     username.setError("用户名不能为空！");
                     return;
                 }
@@ -418,4 +422,12 @@ public class LogonActivity extends Activity {
             myFile.delete();
         }
     }
+
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals("setting_http_ip")) {
+            ip = sharedPreferences.getString(key, WebUtils.HOST);
+            host_info.loadUrl(WebUtils.HTTP + ip + WebUtils.NEWS);
+        }
+    }
+
 }

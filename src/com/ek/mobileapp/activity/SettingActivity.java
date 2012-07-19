@@ -1,6 +1,7 @@
 package com.ek.mobileapp.activity;
 
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
@@ -60,6 +61,10 @@ public class SettingActivity extends PreferenceActivity implements OnPreferenceC
 
         } else if (preference.getKey().equals("setting_http_ip")) {
             Log.v("SystemSetting", "ip is changed " + newValue);
+            //Editor edit = sharedPreferences.edit();
+            //edit.putString("setting_http_ip", newValue.toString());
+            //edit.commit();
+
         } else {
             //如果返回false表示不允许被改变
             return false;

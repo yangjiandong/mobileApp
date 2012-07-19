@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.MobLogAction;
@@ -28,7 +29,7 @@ import com.ek.mobileapp.utils.WebUtils;
 
 public class InputDemoActivtiy extends Activity {
     Map<Integer, Integer> btns = new HashMap<Integer, Integer>();
-    Button B1, B2, B3, B4, B5, B6, B7, B8, B9, B0,BClear, BDot, BEqual;
+    Button B1, B2, B3, B4, B5, B6, B7, B8, B9, B0, BClear, BDot, BEqual;
     //BSum, BDif, BMul, BDiv,
     EditText Result;
     SharedPreferences sharedPreferences;
@@ -44,11 +45,15 @@ public class InputDemoActivtiy extends Activity {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        RelativeLayout inputkey = (RelativeLayout) inflater.inflate(R.layout.inputkey, null);
+        try {
+            TableLayout inputkey = (TableLayout) inflater.inflate(R.layout.inputkey, null);
 
-        LinearLayout layout = (LinearLayout) findViewById(R.id.main);
-        layout.addView(inputkey);
-        initLayout();
+            LinearLayout layout = (LinearLayout) findViewById(R.id.main);
+            layout.addView(inputkey);
+            initLayout();
+        } catch (Exception e) {
+            MobLogAction.mobLogError("inputkey", e.getMessage());
+        }
 
         ClearAll();
 
@@ -78,7 +83,8 @@ public class InputDemoActivtiy extends Activity {
         };
         OnClickListener myListenerBDot = new OnClickListener() {
             public void onClick(View v) {
-                if (dotPressed) return;
+                if (dotPressed)
+                    return;
 
                 if (!syntaxError) {
                     //                mVibrator.vibrate(vibrationDuration);

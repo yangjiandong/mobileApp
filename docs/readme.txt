@@ -1,6 +1,11 @@
 android app
 ===========
 
+2012.07.19
+----------
+
+   1. logonActivity 实现OnSharedPreferenceChangeListener
+
 2012.07.13
 ----------
 

@@ -38,7 +38,7 @@ public class VitalSignDataGridViewAdapter extends BaseAdapter {
             String code = s.nextToken();
             textCode.setText(code);
             textLabel.setText(s.nextToken());
-            textValue.setText(code);//s.nextToken());
+            textValue.setText(s.nextToken());//s.nextToken());
             if (code.equals("01")){
                 //convertView.setBackgroundColor(Color.GREEN);
             }

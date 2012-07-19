@@ -1,5 +1,6 @@
 package com.ek.mobileapp.nurse.activity;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -13,16 +14,25 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.text.InputType;
+import android.util.TimeUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +40,9 @@ import android.widget.Toast;
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.model.MobConstants;
 import com.ek.mobileapp.model.Patient;
+import com.ek.mobileapp.model.TimePoint;
 import com.ek.mobileapp.model.UserDTO;
+import com.ek.mobileapp.model.VitalSignData;
 import com.ek.mobileapp.model.VitalSignItem;
 import com.ek.mobileapp.nurse.action.VitalSignAction;
 import com.ek.mobileapp.nurse.adapter.VitalSignDataGridViewAdapter;
@@ -38,26 +50,36 @@ import com.ek.mobileapp.utils.BarCodeUtils;
 import com.ek.mobileapp.utils.BlueToothConnector;
 import com.ek.mobileapp.utils.BlueToothReceive;
 import com.ek.mobileapp.utils.GlobalCache;
+import com.ek.mobileapp.utils.TimeTool;
 
 public class VitalSign extends Activity implements BlueToothReceive {
 
     SharedPreferences sharedPreferences;
 
-    TextView user_by;
+    TextView t_user_by;
     Button get_patient;
-    EditText patientId;
-    TextView name;
-    TextView sex;
-    TextView age;
-    TextView bedNo;
-    TextView doctor;
-    EditText busDate;
-    Spinner timePoint;
+    EditText e_patientId;
+    TextView t_name;
+    TextView t_sex;
+    TextView t_age;
+    TextView t_bedNo;
+    TextView t_doctor;
+    EditText e_busDate;
+    Spinner s_timePoint;
+
+    protected PopupWindow selectDateView;
+    protected LayoutInflater mLayoutInflater;
+    protected DatePicker date_picker;
+    private boolean date_changed = false;
+    private ArrayAdapter<String> adapter;
+
+    private String[] timeStr;
 
     GridView gridView1;
     GridView gridView2;
     //
     private int state = 0;
+    private String busDate = "";
     private String barcode = "";
     private static final int scanPatient = 0;
     private Patient currentPatient = null;
@@ -72,29 +94,83 @@ public class VitalSign extends Activity implements BlueToothReceive {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.vitalsign);
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        busDate = TimeTool.getDateFormated(TimeTool.getCurrentTime());
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mLayoutInflater = (LayoutInflater) VitalSign.this.getSystemService(LAYOUT_INFLATER_SERVICE);
         UserDTO user = GlobalCache.getCache().getLoginuser();
-        user_by = (TextView) findViewById(R.id.user_by);
-        user_by.setText(user.getName() + " - " + user.getDepartName());
+        t_user_by = (TextView) findViewById(R.id.user_by);
+        t_user_by.setText("操作人: " + user.getName() + " - " + user.getDepartName());
 
         get_patient = (Button) findViewById(R.id.get_patient);
         get_patient.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                if (patientId.getEditableText().toString().trim().equals("")) {
+                if (e_patientId.getEditableText().toString().trim().equals("")) {
                     return;
+                }
+                VitalSignAction.getPatient(e_patientId.getEditableText().toString().trim());
+                Patient pa = GlobalCache.getCache().getCurrentPatient();
+                if (pa != null) {
+                    t_name.setText(pa.getPatientName());
+                    t_sex.setText(pa.getSex());
+                    t_age.setText(pa.getAge());
+                    t_bedNo.setText(pa.getBedNo());
+                    t_doctor.setText(pa.getDoctorName());
                 }
             }
         });
 
-        patientId = (EditText) findViewById(R.id.vitalsign_patientId);
-        name = (TextView) findViewById(R.id.vitalsign_name);
-        sex = (TextView) findViewById(R.id.vitalsign_sex);
-        age = (TextView) findViewById(R.id.vitalsign_age);
-        bedNo = (TextView) findViewById(R.id.vitalsign_bedNo);
-        doctor = (TextView) findViewById(R.id.vitalsign_doctor);
-        busDate = (EditText) findViewById(R.id.vitalsign_busDate);
-        timePoint = (Spinner) findViewById(R.id.vitalsign_timePoint);
+        e_patientId = (EditText) findViewById(R.id.vitalsign_patientId);
+        t_name = (TextView) findViewById(R.id.vitalsign_name);
+        t_sex = (TextView) findViewById(R.id.vitalsign_sex);
+        t_age = (TextView) findViewById(R.id.vitalsign_age);
+        t_bedNo = (TextView) findViewById(R.id.vitalsign_bedNo);
+        t_doctor = (TextView) findViewById(R.id.vitalsign_doctor);
+        e_busDate = (EditText) findViewById(R.id.vitalsign_busDate);
+        e_busDate.setTextSize(12);
+        s_timePoint = (Spinner) findViewById(R.id.vitalsign_timePoint);
+
+        VitalSignAction.getTimePoint();
+        List<TimePoint> times = GlobalCache.getCache().getTimePoints();
+        timeStr = new String[times.size()];
+        int i = 0;
+        for (TimePoint a : times) {
+            timeStr[i] = a.getName();
+            i++;
+        }
+
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, timeStr);
+
+        s_timePoint.setAdapter(adapter);
+        s_timePoint.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+            public void onItemSelected(AdapterView<?> adapter, View view, int selected, long arg3) {
+                GlobalCache.getCache().setTimePoint(timeStr[selected]);
+            }
+
+            public void onNothingSelected(AdapterView<?> arg0) {
+
+            }
+        });
+
+        e_busDate.setInputType(InputType.TYPE_NULL);
+        e_busDate.setText(busDate);
+
+        e_busDate.setOnClickListener(new OnClickListener() {
+
+            public void onClick(View v) {
+                if (selectDateView == null) {
+                    initSelectDate();
+                }
+                if (!selectDateView.isShowing()) {
+                    View view = mLayoutInflater.inflate(R.layout.activity_query, null);
+                    selectDateView.showAtLocation(view, BIND_AUTO_CREATE, 0, 0);
+                } else {
+                    selectDateView.dismiss();
+                }
+            }
+
+        });
 
         //
         clearData();
@@ -118,8 +194,12 @@ public class VitalSign extends Activity implements BlueToothReceive {
         gridView1.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 String code = ((TextView) v.findViewById(R.id.grid_item_code)).getText().toString();
-                if (code.equals("01")) {
+                String name = ((TextView) v.findViewById(R.id.grid_item_label)).getText().toString();
+
+                if (code.equals("01") || code.equals("02") || code.equals("03") || code.equals("04")) {
                     Intent intent = new Intent(VitalSign.this, VitalSignEdit.class);
+                    intent.putExtra("code", code);
+                    intent.putExtra("name", name);
                     startActivity(intent);
 
                 } else if (code.equals("99")) {
@@ -147,12 +227,12 @@ public class VitalSign extends Activity implements BlueToothReceive {
     }
 
     private void clearData() {
-        patientId.setText("");
-        name.setText("");
-        sex.setText("");
-        age.setText("");
-        bedNo.setText("");
-        doctor.setText("");
+        e_patientId.setText("");
+        t_name.setText("");
+        t_sex.setText("");
+        t_age.setText("");
+        t_bedNo.setText("");
+        t_doctor.setText("");
     }
 
     private void sendMessage(String msg, int type) {
@@ -314,18 +394,18 @@ public class VitalSign extends Activity implements BlueToothReceive {
             case BlueToothConnector.READ:
                 //showMessage(msg.getData().getString("msg"));
                 String p = msg.getData().getString("msg");
-                patientId.setText(p);
+                e_patientId.setText(p);
 
                 VitalSignAction.getPatient(p);
                 Patient pa = GlobalCache.getCache().getCurrentPatient();
 
                 if (pa != null) {
                     //patientId.setText("");
-                    name.setText(pa.getPatientName());
-                    sex.setText(pa.getSex());
-                    age.setText(pa.getAge());
-                    bedNo.setText(pa.getBedNo());
-                    doctor.setText(pa.getDoctorName());
+                    t_name.setText(pa.getPatientName());
+                    t_sex.setText(pa.getSex());
+                    t_age.setText(pa.getAge());
+                    t_bedNo.setText(pa.getBedNo());
+                    t_doctor.setText(pa.getDoctorName());
                 }
                 break;
             case 3:
@@ -348,5 +428,96 @@ public class VitalSign extends Activity implements BlueToothReceive {
 
     public Handler getUIHandler() {
         return UIHandler;
+    }
+
+    private void initSelectDate() {
+        View view = mLayoutInflater.inflate(R.layout.activity_date, null);
+        date_picker = (DatePicker) view.findViewById(R.id.seldate);
+        date_picker.init(TimeTool.getYear(), TimeTool.getMonth(), TimeTool.getDay(), new OnDateChangedListener() {
+
+            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                date_changed = true;
+                busDate = TimeTool.getDateFormatedFromDataPicker(year, monthOfYear, dayOfMonth);
+
+            }
+
+        });
+
+        selectDateView = new PopupWindow(view, LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        selectDateView.setFocusable(true);
+        selectDateView.setAnimationStyle(-1);
+        selectDateView.update();
+        Button okbtn = (Button) view.findViewById(R.id.date_ok);
+        okbtn.setOnClickListener(new OnClickListener() {
+
+            public void onClick(View v) {
+                if (selectDateView != null && selectDateView.isShowing()) {
+                    selectDateView.dismiss();
+                    e_busDate.setText(busDate);
+                    GlobalCache.getCache().setBusDate(busDate);
+
+                    if (GlobalCache.getCache().getTimePoint() != null) {
+                        VitalSignAction.getOne(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate,
+                                GlobalCache.getCache().getTimePoint(), "");
+                    } else {
+                        VitalSignAction.getAll(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate);
+                    }
+
+                    final List<String> dataList1 = new ArrayList<String>();
+                    final List<String> dataList2 = new ArrayList<String>();
+                    List<VitalSignData> datas = GlobalCache.getCache().getVitalSignDatas();
+                    List<VitalSignItem> items = GlobalCache.getCache().getVitalSignItems();
+                    for (VitalSignItem vitalSignItem : items) {
+                        if (vitalSignItem.getTypeCode().equals(MobConstants.MOB_VITALSIGN_MORE)) {
+                            if (GlobalCache.getCache().getTimePoint() != null) {
+                                for (VitalSignData vsd : datas) {
+                                    if (vsd.getItemName().equals(vitalSignItem.getName())) {
+                                        dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                                                + vitalSignItem.getUnit() + ")" + "|" + vsd.getValue1());
+                                        break;
+                                    } else {
+                                        dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                                                + vitalSignItem.getUnit() + ")" + "| ");
+                                        break;
+                                    }
+                                }
+                            } else {
+                                dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                                        + vitalSignItem.getUnit() + ")" + "| ");
+                            }
+
+                        } else {
+
+                            for (VitalSignData vsd : datas) {
+                                if (vsd.getItemName().equals(vitalSignItem.getName())) {
+                                    dataList2.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                                            + vitalSignItem.getUnit() + ")" + "|" + vsd.getValue2());
+                                    break;
+                                } else {
+                                    dataList2.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                                            + vitalSignItem.getUnit() + ")" + "| ");
+                                    break;
+                                }
+                            }
+
+                        }
+
+                    }
+                    gridView1.setAdapter(new VitalSignDataGridViewAdapter(VitalSign.this, dataList1));
+                    gridView2.setAdapter(new VitalSignDataGridViewAdapter(VitalSign.this, dataList2));
+
+                }
+            }
+        });
+
+        Button canelbtn = (Button) view.findViewById(R.id.date_cancle);
+        canelbtn.setOnClickListener(new OnClickListener() {
+
+            public void onClick(View v) {
+                if (selectDateView != null && selectDateView.isShowing()) {
+                    selectDateView.dismiss();
+                }
+            }
+        });
     }
 }

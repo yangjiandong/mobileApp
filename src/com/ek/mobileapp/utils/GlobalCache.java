@@ -20,6 +20,9 @@ public class GlobalCache {
     private int screenWidth;
     private int screenHeight;
 
+    private String busDate = "";
+    private String timePoint = "";
+
     private List<Patient> patients = new ArrayList<Patient>();
     private List<VitalSignItem> vitalSignItems = new ArrayList<VitalSignItem>();
     private List<VitalSignData> vitalSignDatas = new ArrayList<VitalSignData>();
@@ -149,6 +152,22 @@ public class GlobalCache {
 
     public void setVitalSignData(VitalSignData vitalSignData) {
         this.vitalSignData = vitalSignData;
+    }
+
+    public String getBusDate() {
+        return busDate;
+    }
+
+    public void setBusDate(String busDate) {
+        this.busDate = busDate;
+    }
+
+    public String getTimePoint() {
+        return timePoint;
+    }
+
+    public void setTimePoint(String timePoint) {
+        this.timePoint = timePoint;
     }
 
 }

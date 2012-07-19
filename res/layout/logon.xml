@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Page" >
+    style="@style/Page"
+    >
 
     <com.markupartist.android.widget.ActionBar
         android:id="@+id/actionbar"
@@ -26,8 +27,9 @@
                 android:layout_above="@+id/host_info"
                 android:layout_alignParentLeft="true"
                 android:paddingLeft="2dp"
+                android:textColor="@color/foreground1"
                 android:text="soft"
-                android:textColor="#000000" />
+                />
 
             <TextView
                 android:id="@+id/app_info2"
@@ -36,8 +38,9 @@
                 android:layout_above="@+id/host_info"
                 android:layout_alignParentRight="true"
                 android:paddingRight="2dp"
+                android:textColor="@color/foreground1"
                 android:text="version"
-                android:textColor="#000000" />
+                />
 
             <WebView
                 android:id="@+id/host_info"
@@ -62,8 +65,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/logon_username"
-                    android:textColor="#ffffff"
                     android:textSize="20sp"
+                    android:textColor="@color/foreground1"
                     android:typeface="sans" />
 
                 <EditText
@@ -85,7 +88,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/logon_password"
-                    android:textColor="#ffffff"
+                    android:textColor="@color/foreground1"
                     android:textSize="20sp"
                     android:typeface="sans" />
 
@@ -104,6 +107,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/logon_save_passwrod"
                     android:textSize="20sp"
+                    android:textColor="@color/foreground1"
                     android:typeface="sans"/>
 
                 <Button
@@ -113,6 +117,7 @@
                     android:layout_marginTop="10dip"
                     android:textSize="20sp"
                     android:typeface="sans"
+                    android:textColor="@color/foreground1"
                     android:text="@string/ok" />
             </LinearLayout>
             <!-- Login Form Ends -->
