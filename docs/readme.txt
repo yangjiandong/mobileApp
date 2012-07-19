@@ -7,6 +7,7 @@ android app
    1. logonActivity 实现OnSharedPreferenceChangeListener
 
    2. 学习android 取数过程,一般通过thread实现取数,然后通过handler根据结果实现显示
+   activity/ConnectServerWithProgressActivity
 
 2012.07.13
 ----------
