@@ -1,6 +1,5 @@
 package com.ek.mobileapp.nurse.activity;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -15,7 +14,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.InputType;
-import android.util.TimeUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ek.mobileapp.R;
+import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.model.MobConstants;
 import com.ek.mobileapp.model.Patient;
 import com.ek.mobileapp.model.TimePoint;
@@ -108,6 +107,9 @@ public class VitalSign extends Activity implements BlueToothReceive {
                 if (e_patientId.getEditableText().toString().trim().equals("")) {
                     return;
                 }
+                showProcessingImage(R.id.loadingImageView);
+
+                //提取病人基本信息
                 VitalSignAction.getPatient(e_patientId.getEditableText().toString().trim());
                 Patient pa = GlobalCache.getCache().getCurrentPatient();
                 if (pa != null) {
@@ -116,7 +118,11 @@ public class VitalSign extends Activity implements BlueToothReceive {
                     t_age.setText(pa.getAge());
                     t_bedNo.setText(pa.getBedNo());
                     t_doctor.setText(pa.getDoctorName());
-                    refreshData();
+                    //取生命体征
+                    //refreshData();
+                    processGetData();
+                } else {
+                    stopAnimation(R.id.loadingImageView);
                 }
             }
         });
@@ -354,10 +360,13 @@ public class VitalSign extends Activity implements BlueToothReceive {
         AtomicBoolean isActive = new AtomicBoolean(false);
         this.connector.setIsActive(isActive);
 
-        connector.mystop();
-        connector.stop();
-        connector = null;
-
+        try {
+            connector.mystop();
+            connector.stop();
+            connector = null;
+        } catch (Exception e) {
+            MobLogAction.mobLogError("关闭蓝牙", e.getMessage());
+        }
         super.onDestroy();
     }
 
@@ -477,7 +486,152 @@ public class VitalSign extends Activity implements BlueToothReceive {
         });
     }
 
+    //回调函数，显示结果
+    Handler getDataHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            int type = msg.getData().getInt("type");
+
+            switch (type) {
+            case 1: {
+                refreshData();
+                break;
+            }
+            case 0: {
+                //error
+            }
+            default: {
+
+            }
+            }
+            stopAnimation(R.id.loadingImageView);
+            //super.handleMessage(msg);
+        }
+    };
+
+    //真正的取数过程
+    class GetVitalSignData implements Runnable {
+        Handler handler;
+
+        public GetVitalSignData(Handler h) {
+            this.handler = h;
+        }
+
+        public void run() {
+            Message message = Message.obtain();
+            try {
+                VitalSignAction.getAll(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate);
+
+                if (GlobalCache.getCache().getTimePoint() == null) {
+
+                } else {
+
+                    VitalSignAction.getOne(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate,
+                            GlobalCache.getCache().getTimePoint(), "");
+                }
+
+                Bundle bundle = new Bundle();
+                bundle.putInt("type", 1);
+                bundle.putString("msg", "ok");
+                message.setData(bundle);
+
+            } catch (Exception e) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("type", 0);
+                bundle.putString("msg", e.getMessage());
+                message.setData(bundle);
+            }
+            this.handler.sendMessage(message);
+        }
+
+    }
+
+    //开始处理取数
+    private void processGetData() {
+
+        GetVitalSignData getData = new GetVitalSignData(getDataHandler);
+
+        Thread thread = new Thread(getData);
+        thread.start();
+    }
+
+    //只负责显示数据
     private void refreshData() {
+        List<String> dataList1 = new ArrayList<String>();
+        List<String> dataList2 = new ArrayList<String>();
+
+        //VitalSignAction.getAll(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate);
+
+        List<VitalSignData> datas = GlobalCache.getCache().getVitalSignDatas();
+        List<VitalSignItem> items = GlobalCache.getCache().getVitalSignItems();
+        for (VitalSignItem vitalSignItem : items) {
+            if (vitalSignItem.getTypeCode().equals(MobConstants.MOB_VITALSIGN_MORE)) {
+                if (GlobalCache.getCache().getTimePoint() == null) {
+                    dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                            + vitalSignItem.getUnit() + ")" + "| ");
+                }
+            } else {
+
+                boolean flag = true;
+                for (VitalSignData vsd : datas) {
+                    if (vsd.getItemName().equals(vitalSignItem.getName())) {
+                        dataList2.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                                + vitalSignItem.getUnit() + ")" + "|" + vsd.getValue2());
+                        flag = false;
+                        break;
+                    } else {
+                        continue;
+                    }
+
+                }
+                if (flag) {
+                    dataList2.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                            + vitalSignItem.getUnit() + ")" + "| ");
+                }
+
+            }
+
+        }
+
+        gridView2.setAdapter(new VitalSignDataGridViewAdapter(VitalSign.this, dataList2));
+
+        if (GlobalCache.getCache().getTimePoint() == null) {
+            gridView1.setAdapter(new VitalSignDataGridViewAdapter(VitalSign.this, dataList1));
+        } else {
+            dataList1 = new ArrayList<String>();
+            //VitalSignAction.getOne(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate, GlobalCache
+            //        .getCache().getTimePoint(), "");
+
+            datas = GlobalCache.getCache().getVitalSignDatas();
+            items = GlobalCache.getCache().getVitalSignItems();
+
+            for (VitalSignItem vitalSignItem : items) {
+                boolean flag = true;
+                if (vitalSignItem.getTypeCode().equals(MobConstants.MOB_VITALSIGN_MORE)) {
+
+                    for (VitalSignData vsd : datas) {
+                        if (vsd.getItemName().equals(vitalSignItem.getName())) {
+                            dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                                    + vitalSignItem.getUnit() + ")" + "|" + vsd.getValue1());
+                            flag = false;
+                            break;
+                        } else {
+                            continue;
+                        }
+                    }
+                    if (flag) {
+                        dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                                + vitalSignItem.getUnit() + ")" + "| ");
+                    }
+                }
+
+            }
+
+            gridView1.setAdapter(new VitalSignDataGridViewAdapter(VitalSign.this, dataList1));
+        }
+
+    }
+
+    private void refreshData_old() {
         List<String> dataList1 = new ArrayList<String>();
         List<String> dataList2 = new ArrayList<String>();
 

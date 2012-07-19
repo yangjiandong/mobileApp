@@ -55,7 +55,7 @@
                 android:textSize="16dip"
                 android:layout_alignTop="@id/vitalsign_patientId"/>
             <ImageView
-                android:id="@+id/myPortfolioLoadingImageView"
+                android:id="@+id/loadingImageView"
                 android:layout_width="25px"
                 android:layout_height="25px"
                 android:layout_alignRight="@id/rlMyPortfolio"
