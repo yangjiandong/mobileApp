@@ -8,6 +8,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import com.alibaba.fastjson.JSON;
 import com.ek.mobileapp.model.MobLogDTO;
 import com.ek.mobileapp.model.UserDTO;
@@ -49,10 +51,12 @@ public class MobLogAction {
     }
 
     public static int mobLogInfo(String event, String infos, String ip) {
+        Log.e(event, infos);
         return mobLog(event, infos, "info", ip);
     }
 
     public static int mobLogError(String event, String infos, String ip) {
+        Log.i(event, infos);
         return mobLog(event, infos, "error", ip);
     }
 
@@ -91,10 +95,12 @@ public class MobLogAction {
     }
 
     public static int mobLogInfo(String event, String infos) {
+        Log.i(event, infos);
         return mobLog(event, infos, "info");
     }
 
     public static int mobLogError(String event, String infos) {
+        Log.e(event, infos);
         return mobLog(event, infos, "error");
     }
 }

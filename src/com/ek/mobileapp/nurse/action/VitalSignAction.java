@@ -15,6 +15,7 @@ import com.ek.mobileapp.model.Patient;
 import com.ek.mobileapp.model.TimePoint;
 import com.ek.mobileapp.model.VitalSignData;
 import com.ek.mobileapp.model.VitalSignItem;
+import com.ek.mobileapp.nurse.activity.VitalSign;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.HttpTool;
 import com.ek.mobileapp.utils.WebUtils;
@@ -117,7 +118,7 @@ public class VitalSignAction {
         }
     }
 
-    public static void getOne(String patientId, String busDate, String timePoint, String itemName) {
+    public static void getOne(String patientId, String busDate, String timePoint, String itemCode) {
         String ip = GlobalCache.getCache().getHostIp();
         Long userId = GlobalCache.getCache().getLoginuser().getId();
         String url = "http://" + ip + WebUtils.VITALSIGN_GET_ONE;
@@ -125,7 +126,7 @@ public class VitalSignAction {
         params.add(new BasicNameValuePair("patientId", patientId));
         params.add(new BasicNameValuePair("busDate", busDate));
         params.add(new BasicNameValuePair("timePoint", timePoint));
-        params.add(new BasicNameValuePair("itemName", itemName));
+        params.add(new BasicNameValuePair("itemCode", itemCode));
         params.add(new BasicNameValuePair("userId", String.valueOf(userId)));
         JSONObject res = HttpTool.getTool().post(url, params);
         if (res == null)
@@ -152,7 +153,6 @@ public class VitalSignAction {
         }
     }
 
-    
     public static void getAll(String patientId, String busDate) {
         String ip = GlobalCache.getCache().getHostIp();
         Long userId = GlobalCache.getCache().getLoginuser().getId();
@@ -175,31 +175,70 @@ public class VitalSignAction {
                 JSONObject p = (JSONObject) arrays.get(i);
                 vitalSignDatas.add(JSON.parseObject(p.toString(), VitalSignData.class));
             }
-            GlobalCache.getCache().setVitalSignDatas(vitalSignDatas);
+            GlobalCache.getCache().setVitalSignDatas_all(vitalSignDatas);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public static void saveVitalSign(String patientId, String busDate, String itemName, String timePoint,
-            String itemCode, String timeCode, String value1, String value2, String unit, String measureTypeCode) {
+    public static String saveVitalSign() {
         String ip = GlobalCache.getCache().getHostIp();
+        VitalSignData data = GlobalCache.getCache().getVitalSignData();
         Long userId = GlobalCache.getCache().getLoginuser().getId();
-        String url = "http://" + ip + WebUtils.VITALSIGN_GET_ALL;
+        String url = "http://" + ip + WebUtils.VITALSIGN_SAVE;
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("userId", String.valueOf(userId)));
-        params.add(new BasicNameValuePair("patientId", patientId));
-        params.add(new BasicNameValuePair("busDate", busDate));
-        params.add(new BasicNameValuePair("itemName", itemName));
-        params.add(new BasicNameValuePair("timePoint", timePoint));
-        params.add(new BasicNameValuePair("itemCode", itemCode));
-        params.add(new BasicNameValuePair("timeCode", timeCode));
-        params.add(new BasicNameValuePair("value1", value1));
-        params.add(new BasicNameValuePair("value2", value2));
-        params.add(new BasicNameValuePair("unit", unit));
-        params.add(new BasicNameValuePair("measureTypeCode", measureTypeCode));
-        HttpTool.getTool().post(url, params);
+        params.add(new BasicNameValuePair("patientId", data.getPatientId()));
+        params.add(new BasicNameValuePair("busDate", data.getAddDate()));
+        params.add(new BasicNameValuePair("itemName", data.getItemName()));
+        params.add(new BasicNameValuePair("timePoint", data.getTimePoint()));
+        params.add(new BasicNameValuePair("itemCode", data.getItemCode()));
+        params.add(new BasicNameValuePair("timeCode", data.getTimeCode()));
+        params.add(new BasicNameValuePair("value1", data.getValue1()));
+        params.add(new BasicNameValuePair("value2", data.getValue2()));
+        params.add(new BasicNameValuePair("unit", data.getUnit()));
+        params.add(new BasicNameValuePair("measureTypeCode", data.getMeasureTypeCode()));
 
+        JSONObject res = HttpTool.getTool().post(url, params);
+        if (res == null)
+            return "-1";
+
+        try {
+            if (!res.getBoolean("success")) {
+                return res.getString("message");
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return "1";
+    }
+
+    public static String commitHis() {
+        String ip = GlobalCache.getCache().getHostIp();
+        VitalSignData data = GlobalCache.getCache().getVitalSignData();
+        Long userId = GlobalCache.getCache().getLoginuser().getId();
+        String url = "http://" + ip + WebUtils.VITALSIGN_COMMIT_HIS;
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("userId", String.valueOf(userId)));
+        params.add(new BasicNameValuePair("patientId", data.getPatientId()));
+        params.add(new BasicNameValuePair("busDate", data.getAddDate()));
+
+        JSONObject res = HttpTool.getTool().post(url, params);
+        if (res == null)
+            return "-1";
+
+        try {
+            if (!res.getBoolean("success")) {
+                return res.getString("message");
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return "1";
     }
 
     public static void getPatientAll(String deptCode) {

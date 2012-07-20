@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,25 +25,22 @@ public class VitalSignDataGridViewAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View gridView;
-        //if (convertView == null) {
-            gridView = new View(context);
-            gridView = inflater.inflate(R.layout.vitalsign_gridview_item, null);
 
-            TextView textCode = (TextView) gridView.findViewById(R.id.grid_item_code);
-            TextView textLabel = (TextView) gridView.findViewById(R.id.grid_item_label);
-            TextView textValue = (TextView) gridView.findViewById(R.id.grid_item_value);
+        gridView = new View(context);
+        gridView = inflater.inflate(R.layout.vitalsign_gridview_item, null);
 
-            StringTokenizer s = new StringTokenizer(numList.get(position), "|");
-            String code = s.nextToken();
-            textCode.setText(code);
-            textLabel.setText(s.nextToken());
-            textValue.setText(s.nextToken());//s.nextToken());
-            if (code.equals("01")){
-                //convertView.setBackgroundColor(Color.GREEN);
-            }
-        //} else {
-        //    gridView = (View) convertView;
-        //}
+        TextView textCode = (TextView) gridView.findViewById(R.id.grid_item_code);
+        TextView textLabel = (TextView) gridView.findViewById(R.id.grid_item_label);
+        TextView textValue = (TextView) gridView.findViewById(R.id.grid_item_value);
+
+        StringTokenizer s = new StringTokenizer(numList.get(position), "|");
+        String code = s.nextToken();
+        textCode.setText(code);
+        textLabel.setText(s.nextToken());
+        textValue.setText(s.nextToken());//s.nextToken());
+        if (code.equals("01")) {
+            //convertView.setBackgroundColor(Color.GREEN);
+        }
 
         return gridView;
     }

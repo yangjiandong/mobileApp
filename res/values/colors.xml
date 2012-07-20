@@ -7,6 +7,7 @@
    <color name="darkgray">#333</color>
    <color name="lightgray">#CCC</color>
    <color name="white">#FFF</color>
+   <color name="green">#91C56A</color>
 
     <color name="title_background">#000</color>
     <color name="title_text">#ffffffff</color>

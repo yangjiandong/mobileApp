@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.text.InputType;
@@ -89,6 +91,7 @@ public class VitalSignEdit extends Activity {
             TableLayout inputkey = (TableLayout) inflater.inflate(R.layout.inputkey, null);
 
             LinearLayout layout = (LinearLayout) findViewById(R.id.vitalsign_edit_inputkey);
+
             layout.addView(inputkey);
             initLayout();
         } catch (Exception e) {
@@ -125,26 +128,20 @@ public class VitalSignEdit extends Activity {
                     return;
 
                 if (!syntaxError) {
-                    //                mVibrator.vibrate(vibrationDuration);
-                    //                if (num1 == -1) {
-                    //                    num1 = 0;
-                    //                } else if (num2 == -1 && op != ' ') {
-                    //                    num2 = 0;
-                    //                    Result.append("0");
-                    //                }
-                    //                if (syntaxError)
-                    //                    Result.setText("0.");
-                    //                else if (!dotPressed)
-                    //                    Result.append(".");
-                    //                if (num1 == 0 && num2 == -1 && op == ' ' && Float.parseFloat(Result.getText().toString()) != 0) {
-                    //                    Result.setText("0");
-                    //                }
-                    //                syntaxError = false;
+
                     NumPressed(".");
                     dotPressed = true;
                 }
             }
         };
+        OnClickListener myListenerBSave = new OnClickListener() {
+            public void onClick(View v) {
+                GlobalCache.getCache().getVitalSignData().setValue1(e_text.getText().toString().trim());
+                GlobalCache.getCache().getVitalSignData().setMeasureTypeCode(measureTypeCode.toString());
+                processSaveData();
+            }
+        };
+
         B1.setOnClickListener(myListenerNum);
         B2.setOnClickListener(myListenerNum);
         B3.setOnClickListener(myListenerNum);
@@ -157,6 +154,7 @@ public class VitalSignEdit extends Activity {
         B0.setOnClickListener(myListenerNum);
         BDot.setOnClickListener(myListenerBDot);
         BClear.setOnClickListener(myListenerBClear);
+        BEqual.setOnClickListener(myListenerBSave);
 
         if (pa != null) {
             e_patientId.setText(pa.getPatientId());
@@ -176,12 +174,12 @@ public class VitalSignEdit extends Activity {
         try {
 
             if (pa != null && busDate != null && timePoint != null && timePoint.length() > 0 && busDate.length() > 0)
-                VitalSignAction.getOne(pa.getPatientId(), busDate, timePoint, itemName);
+                VitalSignAction.getOne(pa.getPatientId(), busDate, timePoint, itemCode);
 
             VitalSignData data = GlobalCache.getCache().getVitalSignData();
 
             if (data != null) {
-                if (data.getValue1() != null && data.getValue1().length() > 0)
+                if (data.getValue1() != null && data.getValue1().length() > 0 && data.getItemCode().equals(itemCode))
                     e_text.setText(data.getValue1());
             }
 
@@ -189,8 +187,11 @@ public class VitalSignEdit extends Activity {
             list = GlobalCache.getCache().getMeasureTypes();
             for (MeasureType a : list) {
                 RadioButton rb = new RadioButton(this, null);
-                if (data != null) {
-                    if (a.getName().equals(data.getMeasureTypeCode()))
+                rb.setButtonDrawable(android.R.color.transparent);
+                rb.setButtonDrawable(R.drawable.radio_button);
+
+                if (data != null && data.getItemCode().equals(itemCode)) {
+                    if (a.getCode().equals(data.getMeasureTypeCode()))
                         rb.setChecked(true);
                 }
 
@@ -302,5 +303,88 @@ public class VitalSignEdit extends Activity {
                 }
             }
         });
+    }
+
+    //开始处理取数
+    private void processSaveData() {
+
+        SaveVitalSignData saveData = new SaveVitalSignData(saveDataHandler);
+
+        Thread thread = new Thread(saveData);
+        thread.start();
+    }
+
+    //回调函数，显示结果
+    Handler saveDataHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            int type = msg.getData().getInt("type");
+
+            switch (type) {
+            case 1: {
+                getBack();
+                break;
+            }
+            case 0: {
+                //error
+            }
+            default: {
+
+            }
+            }
+            //super.handleMessage(msg);
+        }
+    };
+
+    public void getBack() {
+        Intent intent = new Intent(VitalSignEdit.this, VitalSign.class);
+        intent.putExtra("isSave", "1");
+        startActivity(intent);
+    }
+
+    //真正的取数过程
+    class SaveVitalSignData implements Runnable {
+        Handler handler;
+
+        public SaveVitalSignData(Handler h) {
+            this.handler = h;
+        }
+
+        public void run() {
+            Message message = Message.obtain();
+            try {
+
+                //保存生命体征
+                String ret = VitalSignAction.saveVitalSign();
+                if (ret.equals("1")) {
+
+                    String ret2 = VitalSignAction.commitHis();
+                    if (ret2.equals("1")) {
+
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("type", 1);
+                        bundle.putString("msg", "ok");
+                        message.setData(bundle);
+                    } else {
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("type", 0);
+                        bundle.putString("msg", ret2);
+                        message.setData(bundle);
+                    }
+                } else {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("type", 0);
+                    bundle.putString("msg", ret);
+                    message.setData(bundle);
+                }
+
+            } catch (Exception e) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("type", 0);
+                bundle.putString("msg", e.getMessage());
+                message.setData(bundle);
+            }
+            this.handler.sendMessage(message);
+        }
+
     }
 }

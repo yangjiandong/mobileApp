@@ -25,6 +25,7 @@ public class GlobalCache {
 
     private List<Patient> patients = new ArrayList<Patient>();
     private List<VitalSignItem> vitalSignItems = new ArrayList<VitalSignItem>();
+    private List<VitalSignData> vitalSignDatas_all = new ArrayList<VitalSignData>();
     private List<VitalSignData> vitalSignDatas = new ArrayList<VitalSignData>();
     private List<MeasureType> measureTypes = new ArrayList<MeasureType>();
     private List<TimePoint> timePoints = new ArrayList<TimePoint>();
@@ -168,6 +169,14 @@ public class GlobalCache {
 
     public void setTimePoint(String timePoint) {
         this.timePoint = timePoint;
+    }
+
+    public List<VitalSignData> getVitalSignDatas_all() {
+        return vitalSignDatas_all;
+    }
+
+    public void setVitalSignDatas_all(List<VitalSignData> vitalSignDatas_all) {
+        this.vitalSignDatas_all = vitalSignDatas_all;
     }
 
 }

@@ -34,21 +34,22 @@
                 android:id="@+id/vitalsign_patientLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="住院号:"
+                android:text="住院号"
                 android:textSize="16dip"
                 android:layout_centerVertical="true"/>
             <EditText
                 android:id="@+id/vitalsign_patientId"
                 android:layout_width="170dp"
-                android:layout_height="wrap_content"
+                android:layout_height="45dp"
                 android:layout_toRightOf="@id/vitalsign_patientLabel"
                 android:singleLine="true"
                 android:textSize="20dip"
-                android:layout_marginTop="5dp"/>
+                android:layout_marginTop="5dp"
+                android:gravity="bottom"/>
             <Button
                 android:id="@+id/get_patient"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="45dp"
                 android:layout_toRightOf="@id/vitalsign_patientId"
                 android:focusable="false"
                 android:text="提取"
@@ -67,119 +68,116 @@
     <LinearLayout
         android:id="@+id/pa_info1"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_below="@id/rlFavQuote"
         android:orientation="horizontal"
-        android:padding="4dp">
+        android:padding="1dp">
+
         <TextView
             android:id="@+id/vitalsign_nameLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="姓名:"
+            android:text="姓名"
             android:textSize="16dip"
             android:layout_centerVertical="true"/>
         <TextView
+            style="@style/InfoText"
             android:id="@+id/vitalsign_name"
             android:layout_width="64dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:text="TextView"
-            android:textSize="16dip"/>
+            android:text="TextView"/>
         <TextView
             android:id="@+id/vitalsign_sexLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:text="性别:"
+            android:text="性别"
             android:textSize="16dip"/>
         <TextView
+            style="@style/InfoText"
             android:id="@+id/vitalsign_sex"
             android:layout_width="64dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
             android:text="TextView"
-            android:textSize="16dip"/>
+            />
         <TextView
             android:id="@+id/vitalsign_ageLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:text="年龄:"
+            android:text="年龄"
             android:textSize="16dip"/>
         <TextView
+            style="@style/InfoText"
             android:id="@+id/vitalsign_age"
             android:layout_width="64dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:text="TextView"
-            android:textSize="16dip"/>
-    </LinearLayout>
-
+            android:text="TextView"/>
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/pa_info2"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_below="@+id/pa_info1"
         android:orientation="horizontal"
-        android:padding="4dp">
+        android:padding="1dp" >
+
         <TextView
             android:id="@+id/vitalsign_bedNoLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="床号:"
+            android:text="床号"
             android:textSize="16dip"
             android:layout_centerVertical="true"/>
         <TextView
+            style="@style/InfoText"
             android:id="@+id/vitalsign_bedNo"
             android:layout_width="64dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
             android:text="TextView"
-            android:textSize="16dip"/>
+            />
         <TextView
             android:id="@+id/vitalsign_doctorLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:text="医生:"
+            android:text="医生"
             android:textSize="16dip"/>
         <TextView
+            style="@style/InfoText"
             android:id="@+id/vitalsign_doctor"
             android:layout_width="64dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
             android:text="TextView"
-            android:textSize="16dip"/>
+            />
     </LinearLayout>
-
+
     <LinearLayout
         android:id="@+id/pa_info3"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/pa_info2"
         android:orientation="horizontal"
-        android:padding="4dp">
+        android:padding="1dp" >
+
         <TextView
             android:id="@+id/vitalsign_busDateLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="日期:"
+            android:text="日期"
             android:textSize="16dip"
             android:layout_centerVertical="true"/>
 
         <EditText
             android:id="@+id/vitalsign_busDate"
             android:layout_width="140dp"
-            android:layout_height="45dp"
+            android:layout_height="37dp"
             android:layout_marginLeft="5dp"
-            android:ems="10"/>
+            android:ems="10"
+            android:gravity="bottom"
+            android:singleLine="true"/>
 
         <Spinner
             android:id="@+id/vitalsign_timePoint"
             android:layout_width="90dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_marginLeft="5dp"
-            android:layout_marginTop="-4dp"
+            android:layout_marginTop="-2dp"
             android:textSize="16dip"/>
     </LinearLayout>
 
@@ -215,7 +213,7 @@
             android:columnWidth="150dp"
             android:gravity="center"
             android:numColumns="auto_fit"
-            android:stretchMode="columnWidth" >
+            android:stretchMode="columnWidth">
         </GridView>
     </LinearLayout>
 

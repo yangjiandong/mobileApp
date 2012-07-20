@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -45,11 +46,11 @@ import com.ek.mobileapp.model.VitalSignData;
 import com.ek.mobileapp.model.VitalSignItem;
 import com.ek.mobileapp.nurse.action.VitalSignAction;
 import com.ek.mobileapp.nurse.adapter.VitalSignDataGridViewAdapter;
-import com.ek.mobileapp.utils.BarCodeUtils;
 import com.ek.mobileapp.utils.BlueToothConnector;
 import com.ek.mobileapp.utils.BlueToothReceive;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.TimeTool;
+import com.ek.mobileapp.utils.ToastUtils;
 
 public class VitalSign extends Activity implements BlueToothReceive {
 
@@ -70,7 +71,7 @@ public class VitalSign extends Activity implements BlueToothReceive {
     protected LayoutInflater mLayoutInflater;
     protected DatePicker date_picker;
     private boolean date_changed = false;
-    private ArrayAdapter<String> adapter;
+    private ArrayAdapter<String> timePointAdapter;
 
     private String[] timeStr;
 
@@ -79,13 +80,12 @@ public class VitalSign extends Activity implements BlueToothReceive {
     //
     private int state = 0;
     private String busDate = "";
-    private String barcode = "";
     private static final int scanPatient = 0;
     private Patient currentPatient = null;
 
     protected ProgressDialog proDialog;
     protected String submitString = "正在传输数据...";
-    protected BlueToothConnector connector;
+    protected BlueToothConnector blueTootheConnector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,21 +109,8 @@ public class VitalSign extends Activity implements BlueToothReceive {
                 }
                 showProcessingImage(R.id.loadingImageView);
 
-                //提取病人基本信息
-                VitalSignAction.getPatient(e_patientId.getEditableText().toString().trim());
-                Patient pa = GlobalCache.getCache().getCurrentPatient();
-                if (pa != null) {
-                    t_name.setText(pa.getPatientName());
-                    t_sex.setText(pa.getSex());
-                    t_age.setText(pa.getAge());
-                    t_bedNo.setText(pa.getBedNo());
-                    t_doctor.setText(pa.getDoctorName());
-                    //取生命体征
-                    //refreshData();
-                    processGetData();
-                } else {
-                    stopAnimation(R.id.loadingImageView);
-                }
+                processGetData();
+
             }
         });
 
@@ -134,28 +121,33 @@ public class VitalSign extends Activity implements BlueToothReceive {
         t_bedNo = (TextView) findViewById(R.id.vitalsign_bedNo);
         t_doctor = (TextView) findViewById(R.id.vitalsign_doctor);
         e_busDate = (EditText) findViewById(R.id.vitalsign_busDate);
-        e_busDate.setTextSize(12);
+        e_busDate.setTextSize(16);
         s_timePoint = (Spinner) findViewById(R.id.vitalsign_timePoint);
 
-        VitalSignAction.getTimePoint();
+        //时间点
+        if (GlobalCache.getCache().getTimePoints() == null || GlobalCache.getCache().getTimePoints().size() == 0) {
+            VitalSignAction.getTimePoint();
+        }
         List<TimePoint> times = GlobalCache.getCache().getTimePoints();
         timeStr = new String[times.size()];
         int i = 0;
+        int t = 0;
+        String timePoint = "";
         for (TimePoint a : times) {
+            if (GlobalCache.getCache().getTimePoint() != null
+                    && GlobalCache.getCache().getTimePoint().equals(a.getName())) {
+                t = i;
+                timePoint = GlobalCache.getCache().getTimePoint();
+            }
             timeStr[i] = a.getName();
             i++;
         }
 
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, timeStr);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        s_timePoint.setAdapter(adapter);
-
+        timePointAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, timeStr);
+        timePointAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        s_timePoint.setAdapter(timePointAdapter);
         s_timePoint.setPrompt("选择时间点:");
-
         s_timePoint.setOnItemSelectedListener(new OnItemSelectedListener() {
-
             public void onItemSelected(AdapterView<?> adapter, View view, int selected, long arg3) {
                 GlobalCache.getCache().setTimePoint(timeStr[selected]);
             }
@@ -164,12 +156,20 @@ public class VitalSign extends Activity implements BlueToothReceive {
 
             }
         });
+        if (timePoint != null && timePoint.length() > 0) {
+            GlobalCache.getCache().setTimePoint(timePoint);
+            s_timePoint.setSelection(t);
+        }
 
+        //日期
         e_busDate.setInputType(InputType.TYPE_NULL);
-        e_busDate.setText(busDate);
-
+        if (GlobalCache.getCache().getBusDate() != null) {
+            e_busDate.setText(GlobalCache.getCache().getBusDate());
+            busDate = GlobalCache.getCache().getBusDate();
+        } else {
+            e_busDate.setText(busDate);
+        }
         e_busDate.setOnClickListener(new OnClickListener() {
-
             public void onClick(View v) {
                 if (selectDateView == null) {
                     initSelectDate();
@@ -181,11 +181,13 @@ public class VitalSign extends Activity implements BlueToothReceive {
                     selectDateView.dismiss();
                 }
             }
-
         });
 
         //
         clearData();
+        if (GlobalCache.getCache().getCurrentPatient() != null) {
+            e_patientId.setText(GlobalCache.getCache().getCurrentPatient().getPatientId());
+        }
 
         gridView1 = (GridView) findViewById(R.id.gridView1);
         final List<String> numsList = new ArrayList<String>();
@@ -194,10 +196,11 @@ public class VitalSign extends Activity implements BlueToothReceive {
         List<VitalSignItem> vas = GlobalCache.getCache().getVitalSignItems();
         for (VitalSignItem vitalSignItem : vas) {
             if (vitalSignItem.getTypeCode().equals(MobConstants.MOB_VITALSIGN_MORE)) {
-                numsList.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + vitalSignItem.getUnit() + "|000");
+                numsList.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "(" + vitalSignItem.getUnit()
+                        + ")" + "| ");
             } else {
-                numsList2.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + vitalSignItem.getUnit()
-                        + "|000");
+                numsList2.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "(" + vitalSignItem.getUnit()
+                        + ")" + "| ");
             }
 
         }
@@ -225,7 +228,6 @@ public class VitalSign extends Activity implements BlueToothReceive {
 
         gridView2 = (GridView) findViewById(R.id.gridView2);
         gridView2.setAdapter(new VitalSignDataGridViewAdapter(this, numsList2));
-
         gridView2.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 Toast.makeText(getApplicationContext(), ((TextView) v.findViewById(R.id.grid_item_code)).getText(),
@@ -233,9 +235,20 @@ public class VitalSign extends Activity implements BlueToothReceive {
 
             }
         });
-        connector = new BlueToothConnector(this);
-        connector.setDaemon(true);
-        connector.start();
+
+        //蓝牙设备
+        blueTootheConnector = new BlueToothConnector(this);
+        blueTootheConnector.setDaemon(true);
+        blueTootheConnector.start();
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            String isSave = intent.getStringExtra("isSave");
+            if (isSave != null && isSave.equals("1")) {
+                processGetData();
+            }
+        }
+
     }
 
     private void clearData() {
@@ -245,15 +258,6 @@ public class VitalSign extends Activity implements BlueToothReceive {
         t_age.setText("");
         t_bedNo.setText("");
         t_doctor.setText("");
-    }
-
-    private void sendMessage(String msg, int type) {
-        Message message = new Message();
-        Bundle bundle = new Bundle();
-        bundle.putInt("type", type);
-        bundle.putString("msg", msg);
-        message.setData(bundle);
-        getUIHandler().sendMessage(message);
     }
 
     private void showMessage(String msg) {
@@ -266,63 +270,8 @@ public class VitalSign extends Activity implements BlueToothReceive {
         //        e.printStackTrace();
         //    }
         //} else {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        ToastUtils.show(this, msg);
         //}
-    }
-
-    protected void submitDate() {
-        if (state == scanPatient) {
-            //medicines = null;
-            //currentPatient = CheckMedicineAction.GetPatient(barcode);
-        }
-        //else if (state == scanMedicine) {
-        //    medicines = null;
-        //    if (currentPatient != null)
-        //        medicines = CheckMedicineAction.GetMedicine(barcode,
-        //                currentPatient.getPatientid());
-        //}
-    }
-
-    private class SubmitHandler extends Thread {
-        @Override
-        public void run() {
-            submitDate();
-            Message message = new Message();
-            Bundle bundle = new Bundle();
-            bundle.putInt("type", -2);
-            message.setData(bundle);
-            getUIHandler().sendMessage(message);
-            proDialog.dismiss();
-        }
-    }
-
-    protected void submitWithProgressDialog() {
-        proDialog = ProgressDialog.show(this, "", submitString, true, true);
-        SubmitHandler t = new SubmitHandler();
-        t.start();
-    }
-
-    private void setMessage() {
-        if (currentPatient == null) {
-            //清除病人信息
-            clearData();
-            return;
-        }
-        //from currentPatient 装载病人信息
-        //patientInfo.setText(res);
-    }
-
-    protected void afterSubmit() {
-        if (state == scanPatient) {
-            if (currentPatient == null) {
-                showMessage("不能识别当前病人");
-                setMessage();
-            } else {
-                showMessage("当前病人" + currentPatient.getPatientName());
-                setMessage();
-            }
-
-        }
     }
 
     private void showProcessingImage(int imageViewId) {
@@ -358,91 +307,20 @@ public class VitalSign extends Activity implements BlueToothReceive {
     @Override
     public void onDestroy() {
         AtomicBoolean isActive = new AtomicBoolean(false);
-        this.connector.setIsActive(isActive);
+        this.blueTootheConnector.setIsActive(isActive);
 
         try {
-            connector.mystop();
-            connector.stop();
-            connector = null;
+            //没有蓝牙设备时,
+            if (blueTootheConnector.isHasBlueToothDevice()) {
+                // Stop the Bluetooth chat services
+                blueTootheConnector.mystop();
+                blueTootheConnector.stop();
+                blueTootheConnector = null;
+            }
         } catch (Exception e) {
             MobLogAction.mobLogError("关闭蓝牙", e.getMessage());
         }
         super.onDestroy();
-    }
-
-    public void receiveBlueToothMessage(String msg, int type) {
-        if (type == BlueToothConnector.CONNECTED) {
-            sendMessage(msg, type);
-        } else {
-            if (BarCodeUtils.isPatientTM(msg)) {
-                state = scanPatient;
-                barcode = msg;
-                sendMessage("", 3);
-                submitWithProgressDialog();
-            } else if (BarCodeUtils.isMedicineTM(msg)) {
-                if (currentPatient == null) {
-                    sendMessage("请先扫描病人条码", type);
-                } else {
-                    //state = scanMedicine;
-                    barcode = msg;
-                    sendMessage("", 4);
-                    // submitWithProgressDialog();
-                }
-            } else {
-                sendMessage("请检查条码重新扫描", type);
-            }
-        }
-    }
-
-    public Context getContext() {
-        return this;
-    }
-
-    Handler UIHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            int type = msg.getData().getInt("type");
-            switch (type) {
-            case BlueToothConnector.CONNECTED:
-                //有蓝牙设备
-                showMessage(msg.getData().getString("msg"));
-                break;
-            case BlueToothConnector.READ:
-                //showMessage(msg.getData().getString("msg"));
-                String p = msg.getData().getString("msg");
-                e_patientId.setText(p);
-
-                VitalSignAction.getPatient(p);
-                Patient pa = GlobalCache.getCache().getCurrentPatient();
-
-                if (pa != null) {
-                    //patientId.setText("");
-                    t_name.setText(pa.getPatientName());
-                    t_sex.setText(pa.getSex());
-                    t_age.setText(pa.getAge());
-                    t_bedNo.setText(pa.getBedNo());
-                    t_doctor.setText(pa.getDoctorName());
-                }
-                break;
-            case 3:
-                submitWithProgressDialog();
-                break;
-            case 4:
-                submitWithProgressDialog();
-                break;
-            case -2: {
-                afterSubmit();
-                break;
-            }
-            default: {
-
-            }
-            }
-            super.handleMessage(msg);
-        }
-    };
-
-    public Handler getUIHandler() {
-        return UIHandler;
     }
 
     private void initSelectDate() {
@@ -497,7 +375,10 @@ public class VitalSign extends Activity implements BlueToothReceive {
                 break;
             }
             case 0: {
-                //error
+                String mss = msg.getData().getString("msg");
+                ToastUtils.show(VitalSign.this, "提取数据出错,请联系管理员");
+                MobLogAction.mobLogError("提取数据出错,请联系管理员", mss);
+                break;
             }
             default: {
 
@@ -519,6 +400,8 @@ public class VitalSign extends Activity implements BlueToothReceive {
         public void run() {
             Message message = Message.obtain();
             try {
+                //提取病人基本信息
+                VitalSignAction.getPatient(e_patientId.getEditableText().toString().trim());
                 VitalSignAction.getAll(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate);
 
                 if (GlobalCache.getCache().getTimePoint() == null) {
@@ -547,97 +430,37 @@ public class VitalSign extends Activity implements BlueToothReceive {
 
     //开始处理取数
     private void processGetData() {
-
         GetVitalSignData getData = new GetVitalSignData(getDataHandler);
-
         Thread thread = new Thread(getData);
         thread.start();
     }
 
     //只负责显示数据
     private void refreshData() {
-        List<String> dataList1 = new ArrayList<String>();
-        List<String> dataList2 = new ArrayList<String>();
 
-        //VitalSignAction.getAll(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate);
-
-        List<VitalSignData> datas = GlobalCache.getCache().getVitalSignDatas();
-        List<VitalSignItem> items = GlobalCache.getCache().getVitalSignItems();
-        for (VitalSignItem vitalSignItem : items) {
-            if (vitalSignItem.getTypeCode().equals(MobConstants.MOB_VITALSIGN_MORE)) {
-                if (GlobalCache.getCache().getTimePoint() == null) {
-                    dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
-                            + vitalSignItem.getUnit() + ")" + "| ");
-                }
-            } else {
-
-                boolean flag = true;
-                for (VitalSignData vsd : datas) {
-                    if (vsd.getItemName().equals(vitalSignItem.getName())) {
-                        dataList2.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
-                                + vitalSignItem.getUnit() + ")" + "|" + vsd.getValue2());
-                        flag = false;
-                        break;
-                    } else {
-                        continue;
-                    }
-
-                }
-                if (flag) {
-                    dataList2.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
-                            + vitalSignItem.getUnit() + ")" + "| ");
-                }
-
-            }
-
-        }
-
-        gridView2.setAdapter(new VitalSignDataGridViewAdapter(VitalSign.this, dataList2));
-
-        if (GlobalCache.getCache().getTimePoint() == null) {
-            gridView1.setAdapter(new VitalSignDataGridViewAdapter(VitalSign.this, dataList1));
+        Patient pa = GlobalCache.getCache().getCurrentPatient();
+        if (pa != null) {
+            t_name.setText(pa.getPatientName());
+            t_sex.setText(pa.getSex());
+            t_age.setText(pa.getAge());
+            t_bedNo.setText(pa.getBedNo());
+            t_doctor.setText(pa.getDoctorName());
+            //取生命体征
+            refreshGrid();
         } else {
-            dataList1 = new ArrayList<String>();
-            //VitalSignAction.getOne(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate, GlobalCache
-            //        .getCache().getTimePoint(), "");
-
-            datas = GlobalCache.getCache().getVitalSignDatas();
-            items = GlobalCache.getCache().getVitalSignItems();
-
-            for (VitalSignItem vitalSignItem : items) {
-                boolean flag = true;
-                if (vitalSignItem.getTypeCode().equals(MobConstants.MOB_VITALSIGN_MORE)) {
-
-                    for (VitalSignData vsd : datas) {
-                        if (vsd.getItemName().equals(vitalSignItem.getName())) {
-                            dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
-                                    + vitalSignItem.getUnit() + ")" + "|" + vsd.getValue1());
-                            flag = false;
-                            break;
-                        } else {
-                            continue;
-                        }
-                    }
-                    if (flag) {
-                        dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
-                                + vitalSignItem.getUnit() + ")" + "| ");
-                    }
-                }
-
-            }
-
-            gridView1.setAdapter(new VitalSignDataGridViewAdapter(VitalSign.this, dataList1));
+            stopAnimation(R.id.loadingImageView);
+            ToastUtils.show(this, "没有找到对应病人");
         }
 
     }
 
-    private void refreshData_old() {
+    //只负责显示数据
+    private void refreshGrid() {
+
         List<String> dataList1 = new ArrayList<String>();
         List<String> dataList2 = new ArrayList<String>();
 
-        VitalSignAction.getAll(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate);
-
-        List<VitalSignData> datas = GlobalCache.getCache().getVitalSignDatas();
+        List<VitalSignData> datas = GlobalCache.getCache().getVitalSignDatas_all();
         List<VitalSignItem> items = GlobalCache.getCache().getVitalSignItems();
         for (VitalSignItem vitalSignItem : items) {
             if (vitalSignItem.getTypeCode().equals(MobConstants.MOB_VITALSIGN_MORE)) {
@@ -674,9 +497,6 @@ public class VitalSign extends Activity implements BlueToothReceive {
             gridView1.setAdapter(new VitalSignDataGridViewAdapter(VitalSign.this, dataList1));
         } else {
             dataList1 = new ArrayList<String>();
-            VitalSignAction.getOne(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate, GlobalCache
-                    .getCache().getTimePoint(), "");
-
             datas = GlobalCache.getCache().getVitalSignDatas();
             items = GlobalCache.getCache().getVitalSignItems();
 
@@ -704,6 +524,48 @@ public class VitalSign extends Activity implements BlueToothReceive {
 
             gridView1.setAdapter(new VitalSignDataGridViewAdapter(VitalSign.this, dataList1));
         }
+    }
 
+    //需实现的方法
+    public void receiveBlueToothMessage(String msg, int type) {
+        //
+    }
+
+    public Context getContext() {
+        return this;
+    }
+
+    Handler UIHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            int type = msg.getData().getInt("type");
+            switch (type) {
+            case BlueToothConnector.CONNECTED:
+                //有蓝牙设备
+                showMessage(msg.getData().getString("msg"));
+                break;
+            case BlueToothConnector.READ:
+
+                String p = msg.getData().getString("msg");
+                e_patientId.setText(p);
+
+                //振动器
+                final Vibrator mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                final int vibrationDuration = 33;
+                mVibrator.vibrate(vibrationDuration);
+
+                processGetData();
+
+                break;
+
+            default: {
+
+            }
+            }
+            //super.handleMessage(msg);
+        }
+    };
+
+    public Handler getUIHandler() {
+        return UIHandler;
     }
 }

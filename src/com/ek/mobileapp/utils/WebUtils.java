@@ -22,6 +22,8 @@ public class WebUtils {
 
     //保存生命体征
     public static final String VITALSIGN_SAVE = "/vital_sign/save_vitalsign_data?type=mobile";
+    //提交给HIS
+    public static final String VITALSIGN_COMMIT_HIS = "/vital_sign/commit_his?type=mobile";
     //查询一个病人
     public static final String VITALSIGN_GET_PATIENT = "/vital_sign/get_patient?type=mobile";
     //查询一个病区所有病人

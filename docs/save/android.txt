@@ -1,18 +1,31 @@
 android
 =======
 
+2012.07.20
+----------
+
+   1. SparseArray vs Hashmap
+   http://mobile.dzone.com/articles/tweaking-your-android
+   In Android (and mobile programming in general) having more than 10,000 objects in a data structure in memory seems to be an upper limit.
+   For smaller arrays (under 1,000) the performance of the SparseArray and the Hashmap are very comparable
+   For arrays larger than 10,000, if you are adding more than retrieving elements, try the SparseArray.
+   For arrays larger than 100,000, give the SparseArray a shot… or fix your application design so you don’t have any insanely large in-memory data structures.
+
+   2. android maven eclipse
+   https://github.com/github/android/wiki/Building-From-Eclipse
+
 2012.07.19
 ----------
 
    1. 让控件在父容器中居中
    android:layout_gravity= "center_vertical"
-   
+
    在布局中使用scrollview
  　把原来的布局用
    android:layout_width="fill_parent"
    android:layout_height="wrap_content"
    android:scrollbars="none">括起来即可实现视图的滚动。
-   
+
 2012.07.16
 ----------
 
