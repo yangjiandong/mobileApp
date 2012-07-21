@@ -19,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.AdapterView;
@@ -31,8 +33,10 @@ import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +55,7 @@ import com.ek.mobileapp.utils.BlueToothReceive;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.TimeTool;
 import com.ek.mobileapp.utils.ToastUtils;
+import com.ek.mobileapp.utils.UtilString;
 
 public class VitalSign extends Activity implements BlueToothReceive {
 
@@ -91,7 +96,20 @@ public class VitalSign extends Activity implements BlueToothReceive {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.vitalsign);
+
+        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        try {
+            LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.vitalsign_patient_info, null);
+
+            LinearLayout layout = (LinearLayout) findViewById(R.id.pa_infos);
+            layout.addView(inputkey);
+
+        } catch (Exception e) {
+            MobLogAction.mobLogError("病人信息", e.getMessage());
+        }
 
         busDate = TimeTool.getDateFormated(TimeTool.getCurrentTime());
 
@@ -104,7 +122,7 @@ public class VitalSign extends Activity implements BlueToothReceive {
         get_patient = (Button) findViewById(R.id.get_patient);
         get_patient.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                if (e_patientId.getEditableText().toString().trim().equals("")) {
+                if (e_patientId.getText().toString().trim().equals("")) {
                     return;
                 }
                 showProcessingImage(R.id.loadingImageView);
@@ -163,11 +181,12 @@ public class VitalSign extends Activity implements BlueToothReceive {
 
         //日期
         e_busDate.setInputType(InputType.TYPE_NULL);
-        if (GlobalCache.getCache().getBusDate() != null) {
+        if (GlobalCache.getCache().getBusDate() != null && GlobalCache.getCache().getBusDate().length() > 0) {
             e_busDate.setText(GlobalCache.getCache().getBusDate());
             busDate = GlobalCache.getCache().getBusDate();
         } else {
             e_busDate.setText(busDate);
+            GlobalCache.getCache().setBusDate(busDate);
         }
         e_busDate.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
@@ -212,6 +231,11 @@ public class VitalSign extends Activity implements BlueToothReceive {
                 String name = ((TextView) v.findViewById(R.id.grid_item_label)).getText().toString();
 
                 if (code.equals("01") || code.equals("02") || code.equals("03") || code.equals("04")) {
+                    if (UtilString.isBlank(e_patientId.getText().toString().trim())
+                            || GlobalCache.getCache().getCurrentPatient() == null) {
+                        ToastUtils.show(VitalSign.this, "请先选择一个病人");
+                        return;
+                    }
                     Intent intent = new Intent(VitalSign.this, VitalSignEdit.class);
                     intent.putExtra("code", code);
                     intent.putExtra("name", name);
@@ -240,14 +264,6 @@ public class VitalSign extends Activity implements BlueToothReceive {
         blueTootheConnector = new BlueToothConnector(this);
         blueTootheConnector.setDaemon(true);
         blueTootheConnector.start();
-
-        Intent intent = getIntent();
-        if (intent != null) {
-            String isSave = intent.getStringExtra("isSave");
-            if (isSave != null && isSave.equals("1")) {
-                processGetData();
-            }
-        }
 
     }
 
@@ -289,8 +305,20 @@ public class VitalSign extends Activity implements BlueToothReceive {
         imageView.setImageResource(0);
     }
 
+    private void connectBLuetoothImage() {
+        ImageView imageView = (ImageView) findViewById(R.id.showBluetooth);
+        imageView.setImageResource(R.drawable.bluetooth);//scanner);
+    }
+
+    private void unConnectBLuetoothImage() {
+        ImageView imageView = (ImageView) findViewById(R.id.showBluetooth);
+        imageView.clearAnimation();
+        imageView.setImageResource(0);
+    }
+
     @Override
     public void onPause() {
+        //ToastUtils.show(this, "onPause");
         super.onPause();
         //isActive.set(false);
         //AtomicBoolean isActive=new AtomicBoolean(false);
@@ -298,17 +326,27 @@ public class VitalSign extends Activity implements BlueToothReceive {
     }
 
     public void onResume() {
+        //ToastUtils.show(this, "onResume");
         super.onResume();
 
-        //AtomicBoolean isActive=new AtomicBoolean(true);
-        //this.connector.setIsActive(isActive);
+        processGetData();
+    }
+
+    protected void onStop() {
+        //ToastUtils.show(this, "onStop");
+        super.onStop();
+    }
+
+    protected void onStart() {
+        //ToastUtils.show(this, "onStart");
+        super.onStart();
     }
 
     @Override
     public void onDestroy() {
         AtomicBoolean isActive = new AtomicBoolean(false);
         this.blueTootheConnector.setIsActive(isActive);
-
+        //ToastUtils.show(this, "onDestroy");
         try {
             //没有蓝牙设备时,
             if (blueTootheConnector.isHasBlueToothDevice()) {
@@ -376,7 +414,7 @@ public class VitalSign extends Activity implements BlueToothReceive {
             }
             case 0: {
                 String mss = msg.getData().getString("msg");
-                ToastUtils.show(VitalSign.this, "提取数据出错,请联系管理员");
+                ToastUtils.show(VitalSign.this, mss);
                 MobLogAction.mobLogError("提取数据出错,请联系管理员", mss);
                 break;
             }
@@ -401,21 +439,28 @@ public class VitalSign extends Activity implements BlueToothReceive {
             Message message = Message.obtain();
             try {
                 //提取病人基本信息
-                VitalSignAction.getPatient(e_patientId.getEditableText().toString().trim());
-                VitalSignAction.getAll(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate);
-
-                if (GlobalCache.getCache().getTimePoint() == null) {
-
+                String ret = VitalSignAction.getPatient(e_patientId.getText().toString().trim());
+                if (ret.equals("-1")) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("type", 0);
+                    bundle.putString("msg", "找不到住院号为" + e_patientId.getText().toString().trim() + "的病人");
+                    message.setData(bundle);
                 } else {
+                    VitalSignAction.getAll(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate);
 
-                    VitalSignAction.getOne(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate,
-                            GlobalCache.getCache().getTimePoint(), "");
+                    if (GlobalCache.getCache().getTimePoint() == null) {
+
+                    } else {
+
+                        VitalSignAction.getOne(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate,
+                                GlobalCache.getCache().getTimePoint(), "");
+                    }
+
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("type", 1);
+                    bundle.putString("msg", "ok");
+                    message.setData(bundle);
                 }
-
-                Bundle bundle = new Bundle();
-                bundle.putInt("type", 1);
-                bundle.putString("msg", "ok");
-                message.setData(bundle);
 
             } catch (Exception e) {
                 Bundle bundle = new Bundle();
@@ -539,9 +584,14 @@ public class VitalSign extends Activity implements BlueToothReceive {
         public void handleMessage(Message msg) {
             int type = msg.getData().getInt("type");
             switch (type) {
+            case BlueToothConnector.UNCONNECTED:
+                //showMessage(msg.getData().getString("msg"));
+                unConnectBLuetoothImage();
+                break;
             case BlueToothConnector.CONNECTED:
                 //有蓝牙设备
-                showMessage(msg.getData().getString("msg"));
+                //showMessage(msg.getData().getString("msg"));
+                connectBLuetoothImage();
                 break;
             case BlueToothConnector.READ:
 

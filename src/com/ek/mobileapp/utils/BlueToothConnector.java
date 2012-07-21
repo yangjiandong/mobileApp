@@ -21,7 +21,8 @@ import com.ek.mobileapp.action.MobLogAction;
 
 public class BlueToothConnector extends Thread {
     public static final int CONNECTED = 1;
-    public static final int READ = 0;
+    public static final int UNCONNECTED = 0;
+    public static final int READ = 2;
 
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     //获取蓝牙本地对象
@@ -136,7 +137,7 @@ public class BlueToothConnector extends Thread {
                 //reader.close();
             } catch (IOException e) {
                 MobLogAction.mobLogError("蓝牙设备", e.getMessage());
-                sendResult("蓝牙未连接", CONNECTED);
+                sendResult("蓝牙未连接", UNCONNECTED);
                 try {
                     mmSocket.close();
                     if (reader != null)

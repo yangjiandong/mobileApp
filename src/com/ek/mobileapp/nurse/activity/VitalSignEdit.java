@@ -22,6 +22,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -35,6 +37,7 @@ import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.activity.InputDemoActivtiy;
 import com.ek.mobileapp.model.MeasureType;
 import com.ek.mobileapp.model.Patient;
+import com.ek.mobileapp.model.UserDTO;
 import com.ek.mobileapp.model.VitalSignData;
 import com.ek.mobileapp.nurse.action.VitalSignAction;
 import com.ek.mobileapp.utils.GlobalCache;
@@ -53,6 +56,7 @@ public class VitalSignEdit extends Activity {
     TextView t_sex;
     TextView t_bedNo;
     TextView t_doctor;
+    TextView t_user_by;
 
     TextView t_label;
     EditText e_text;
@@ -66,8 +70,23 @@ public class VitalSignEdit extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.vitalsignedit);
+        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        try {
+            LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.vitalsign_patient_info, null);
+
+            LinearLayout layout = (LinearLayout) findViewById(R.id.pa_infos);
+            layout.addView(inputkey);
+
+        } catch (Exception e) {
+            MobLogAction.mobLogError("病人信息", e.getMessage());
+        }
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        UserDTO user = GlobalCache.getCache().getLoginuser();
+        t_user_by = (TextView) findViewById(R.id.user_by);
+        t_user_by.setText("操作人: " + user.getName() + " - " + user.getDepartName());
 
         Intent intent = getIntent();
         String itemCode = intent.getStringExtra("code");
@@ -77,21 +96,18 @@ public class VitalSignEdit extends Activity {
         String busDate = GlobalCache.getCache().getBusDate();
         String timePoint = GlobalCache.getCache().getTimePoint();
 
-        e_patientId = (EditText) findViewById(R.id.vitalsign_edit_patientId);
+        e_patientId = (EditText) findViewById(R.id.vitalsign_patientId);
         e_patientId.setInputType(InputType.TYPE_NULL);
-        t_patientName = (TextView) findViewById(R.id.vitalsign_edit_patientName);
+        t_patientName = (TextView) findViewById(R.id.vitalsign_name);
 
-        t_age = (TextView) findViewById(R.id.vitalsign_edit_age);
-        t_sex = (TextView) findViewById(R.id.vitalsign_edit_sex);
-        t_bedNo = (TextView) findViewById(R.id.vitalsign_edit_bedNo);
-        t_doctor = (TextView) findViewById(R.id.vitalsign_edit_doctor);
+        t_age = (TextView) findViewById(R.id.vitalsign_age);
+        t_sex = (TextView) findViewById(R.id.vitalsign_sex);
+        t_bedNo = (TextView) findViewById(R.id.vitalsign_bedNo);
+        t_doctor = (TextView) findViewById(R.id.vitalsign_doctor);
 
-        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         try {
             TableLayout inputkey = (TableLayout) inflater.inflate(R.layout.inputkey, null);
-
             LinearLayout layout = (LinearLayout) findViewById(R.id.vitalsign_edit_inputkey);
-
             layout.addView(inputkey);
             initLayout();
         } catch (Exception e) {
@@ -111,8 +127,7 @@ public class VitalSignEdit extends Activity {
                         NumPressed(n.toString());
                     }
                 } catch (Exception e) {
-                    String ip = sharedPreferences.getString("setting_http_ip", WebUtils.HOST);
-                    MobLogAction.mobLogError(InputDemoActivtiy.class.getName(), e.getMessage(), ip);
+                    MobLogAction.mobLogError(InputDemoActivtiy.class.getName(), e.getMessage());
                 }
             }
         };
@@ -187,8 +202,6 @@ public class VitalSignEdit extends Activity {
             list = GlobalCache.getCache().getMeasureTypes();
             for (MeasureType a : list) {
                 RadioButton rb = new RadioButton(this, null);
-                rb.setButtonDrawable(android.R.color.transparent);
-                rb.setButtonDrawable(R.drawable.radio_button);
 
                 if (data != null && data.getItemCode().equals(itemCode)) {
                     if (a.getCode().equals(data.getMeasureTypeCode()))
@@ -198,11 +211,13 @@ public class VitalSignEdit extends Activity {
                 if (i < count) {
                     rb.setId(a.getId().intValue());
                     rb.setText(a.getName());
+                    //rb.setTextColor(getResources().getColor(R.color.black));
                     rb.setOnClickListener(new ClickEvent());
                     measures.addView(rb);
                 } else {
                     rb.setId(a.getId().intValue());
                     rb.setText(a.getName());
+                    //rb.setTextColor(getResources().getColor(R.color.black));
                     rb.setOnClickListener(new ClickEvent());
                     measures2.addView(rb);
                 }
@@ -277,10 +292,6 @@ public class VitalSignEdit extends Activity {
         B8 = (Button) findViewById(R.id.button8);
         B9 = (Button) findViewById(R.id.button9);
         B0 = (Button) findViewById(R.id.button0);
-        //BSum = (Button) findViewById(R.id.buttonSum);
-        //BDif = (Button) findViewById(R.id.buttonDif);
-        //BMul = (Button) findViewById(R.id.buttonMul);
-        //BDiv = (Button) findViewById(R.id.buttonDiv);
         BClear = (Button) findViewById(R.id.buttonClear);
         BDot = (Button) findViewById(R.id.buttonDot);
         BEqual = (Button) findViewById(R.id.buttonEq);
@@ -321,7 +332,7 @@ public class VitalSignEdit extends Activity {
 
             switch (type) {
             case 1: {
-                getBack();
+                finish();
                 break;
             }
             case 0: {
@@ -334,12 +345,6 @@ public class VitalSignEdit extends Activity {
             //super.handleMessage(msg);
         }
     };
-
-    public void getBack() {
-        Intent intent = new Intent(VitalSignEdit.this, VitalSign.class);
-        intent.putExtra("isSave", "1");
-        startActivity(intent);
-    }
 
     //真正的取数过程
     class SaveVitalSignData implements Runnable {

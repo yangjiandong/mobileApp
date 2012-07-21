@@ -314,7 +314,6 @@ public final class UtilString {
 
     public static final int ACCESSOR_PREFIX_LENGTH = "get".length();
 
-
     /**
      * 判断一个String是否是一个合法的javaBean的setter方法的名字。
      */
@@ -329,4 +328,16 @@ public final class UtilString {
         return s.indexOf(GETTER_PREFIX) == 0 && Character.isUpperCase(s.charAt(ACCESSOR_PREFIX_LENGTH));
     }
 
+    public static boolean isBlank(String str) {
+        int strLen;
+        if (str == null || (strLen = str.length()) == 0) {
+            return true;
+        }
+        for (int i = 0; i < strLen; i++) {
+            if ((Character.isWhitespace(str.charAt(i)) == false)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

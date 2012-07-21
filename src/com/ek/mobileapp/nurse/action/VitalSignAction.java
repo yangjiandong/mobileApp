@@ -15,7 +15,6 @@ import com.ek.mobileapp.model.Patient;
 import com.ek.mobileapp.model.TimePoint;
 import com.ek.mobileapp.model.VitalSignData;
 import com.ek.mobileapp.model.VitalSignItem;
-import com.ek.mobileapp.nurse.activity.VitalSign;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.HttpTool;
 import com.ek.mobileapp.utils.WebUtils;
@@ -47,7 +46,7 @@ public class VitalSignAction {
     }
 
     //取一个病人
-    public static void getPatient(String patientId) {
+    public static String getPatient(String patientId) {
         String ip = GlobalCache.getCache().getHostIp();
         Long userId = GlobalCache.getCache().getLoginuser().getId();
         String url = "http://" + ip + WebUtils.VITALSIGN_GET_PATIENT;
@@ -56,18 +55,20 @@ public class VitalSignAction {
         params.add(new BasicNameValuePair("userId", String.valueOf(userId)));
         JSONObject res = HttpTool.getTool().post(url, params);
         if (res == null)
-            return;
+            return "-1";
 
         try {
             if (!res.getBoolean("success")) {
-                return;
+                return "-1";
             }
             Patient patient = JSON.parseObject(res.getJSONObject("patient").toString(), Patient.class);
 
             GlobalCache.getCache().setCurrentPatient(patient);
         } catch (JSONException e) {
             e.printStackTrace();
+            return "-1";
         }
+        return "1";
     }
 
     public static void getMeasureType() {
@@ -146,6 +147,15 @@ public class VitalSignAction {
 
             if (vitalSignDatas.size() == 1) {
                 GlobalCache.getCache().setVitalSignData(vitalSignDatas.get(0));
+            } else {
+                VitalSignData entity = new VitalSignData();
+                entity.setAddDate(busDate);
+                entity.setPatientId(patientId);
+                entity.setTimePoint(timePoint);
+                entity.setItemCode(itemCode);
+                entity.setUserId(userId);
+                GlobalCache.getCache().setVitalSignData(entity);
+
             }
 
         } catch (JSONException e) {
