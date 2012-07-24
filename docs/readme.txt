@@ -1,11 +1,24 @@
 android app
 ===========
 
+2012.07.24
+----------
+
+   1. ant build deploy
+   具体操作参考svn/mobileDocs/docs/android/ant.txt
+   --只实现了签名
+
+   2. 护理移动模块程序调整,需实现语音蓝牙功能的,统一继承 NurseBaseActivity
+
+   3. 手说安装包
+   http://stephen830.iteye.com/blog/1183326
+   http://shoushuo.com/index.html
+
 2012.07.20
 ----------
 
    1. 增加github android 项目的utils
-   
+
 2012.07.19
 ----------
 

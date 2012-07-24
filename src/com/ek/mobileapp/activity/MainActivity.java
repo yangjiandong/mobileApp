@@ -5,21 +5,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.xmlpull.v1.XmlPullParser;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.util.Xml;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -30,6 +24,7 @@ import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
 import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.model.UserDTO;
+import com.ek.mobileapp.nurse.activity.DrugCheck;
 import com.ek.mobileapp.nurse.activity.VitalSign;
 import com.ek.mobileapp.query.activity.QueryActivity;
 import com.ek.mobileapp.utils.GlobalCache;
@@ -211,7 +206,7 @@ public class MainActivity extends Activity {
                 startActivity(intent2);
                 break;
             case R.id.m03: // doStuff
-                Intent intent3 = new Intent(MainActivity.this, InputDemoActivtiy.class);
+                Intent intent3 = new Intent(MainActivity.this, DrugCheck.class);
                 startActivity(intent3);
                 break;
             case R.id.m04: // doStuff

@@ -47,8 +47,18 @@
         <plugin>
           <groupId>com.jayway.maven.plugins.android.generation2</groupId>
           <artifactId>android-maven-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.3.0</version>
           <extensions>true</extensions>
+          <configuration>
+            <sdk>
+              <platform>10</platform>
+            </sdk>
+            <undeployBeforeDeploy>true</undeployBeforeDeploy>
+            <proguard>
+              <skip>false</skip>
+              <config>proguard.cfg</config>
+            </proguard>
+          </configuration>
         </plugin>
 
         <plugin>
@@ -172,10 +182,10 @@
                   <includes>
                     <include>target/*.apk</include>
                   </includes>
-                  <keystore>path/to/keystore</keystore>
-                  <storepass>storepasword</storepass>
-                  <keypass>keypassword</keypass>
-                  <alias>key-alias</alias>
+                  <keystore>android.keystore</keystore>
+                  <storepass>123456789</storepass>
+                  <keypass>123456789</keypass>
+                  <alias>android.keystore</alias>
                   <arguments>
                     <argument>-sigalg</argument>
                     <argument>MD5withRSA</argument>

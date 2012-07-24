@@ -18,7 +18,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +25,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -40,6 +40,7 @@ import android.widget.Toast;
 
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
+import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.SettingsUtils;
 import com.ek.mobileapp.utils.WebUtils;
 import com.markupartist.android.widget.ActionBar;
@@ -53,6 +54,7 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
     Button logonBtn;
     CheckBox savepassword;
     SharedPreferences sharedPreferences;
+    TelephonyManager tm;
 
     public static final int LOGINACTION = 12;
     private ProgressDialog proDialog;
@@ -75,6 +77,8 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
         final Action otherAction = new IntentAction(this, new Intent(this, SettingActivity.class),
                 R.drawable.ic_title_export_default);
         actionBar.addAction(otherAction);
+
+        tm = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
 
         String version = "x.xx";
         String vendor = "鑫亿";
@@ -100,6 +104,7 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
         logonBtn = (Button) findViewById(R.id.logon_ok);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        //监听
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         //getSharedPreferences(SettingsUtils.PreferencesString, MODE_PRIVATE);
         String share_username = sharedPreferences.getString("username", "");
@@ -177,6 +182,8 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
                 if (savepassword.isChecked()) {
                     setPreferences(loginname, psd);
                 }
+                GlobalCache.getCache().setDeviceId(tm.getDeviceId());
+
                 Intent intent = new Intent(LogonActivity.this, MainActivity.class);
                 //startActivity(intent);
                 startActivityForResult(intent, LOGINACTION);

@@ -38,5 +38,14 @@ public class WebUtils {
     public static final String VITALSIGN_GET_TIMEPOINT = "/vital_sign/get_timepoint?type=mobile";
     //查询测量类别
     public static final String VITALSIGN_GET_MEASURETYPE = "/vital_sign/get_measuretype?type=mobile";
+    //查询皮试
+    public static final String VITALSIGN_GET_SKINTEST = "/vital_sign/get_skintest?type=mobile";
+
+    //用药核对,查询病人
+    public static final String DRUGCHECK_GET_PATIENT = "/drug_check/get_patient?type=mobile";
+    //用药核对,查询条码
+    public static final String DRUGCHECK_GET_DATA = "/drug_check/get_drugcheck_data?type=mobile";
+    //用药核对,提交HIS
+    public static final String DRUGCHECK_COMMIT_HIS = "/drug_check/commit_his?type=mobile";
 
 }

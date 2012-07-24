@@ -1,7 +1,6 @@
 package com.ek.mobileapp.activity;
 
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;

@@ -3,13 +3,13 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="1dp" >
+    android:padding="0dp" >
 
     <TextView
         android:id="@+id/grid_item_code"
         android:layout_width="1px"
         android:layout_height="1px"
-        android:layout_marginTop="1px"
+        android:layout_marginTop="0px"
         android:text=""
         android:textSize="1dip" >
     </TextView>
@@ -18,7 +18,7 @@
         android:id="@+id/grid_item_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1px"
+        android:layout_marginTop="-2px"
         android:text="@+id/label"
         android:textSize="15dip" >
     </TextView>
@@ -27,7 +27,7 @@
         android:id="@+id/grid_item_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1px"
+        android:layout_marginTop="-2px"
         android:textColor="@color/green"
         android:text=""
         android:textSize="15dip" >

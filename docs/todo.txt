@@ -1,6 +1,16 @@
 TODO
 ====
 
+2012.07.24
+----------
+
+   1. maven 打包,签名、混淆
+
+2012.07.22
+----------
+
+   1. 蓝牙服务 VitalSignByBluetoothService,BluetoothService,DeviceListActivity
+
 2012.07.20
 ----------
 

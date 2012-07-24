@@ -5,23 +5,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.text.Selection;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -33,17 +36,15 @@ import com.ek.mobileapp.model.Patient;
 import com.ek.mobileapp.model.UserDTO;
 import com.ek.mobileapp.model.VitalSignData;
 import com.ek.mobileapp.nurse.action.VitalSignAction;
-import com.ek.mobileapp.utils.BlueToothConnector;
 import com.ek.mobileapp.utils.GlobalCache;
 
-//维护生命体征,按时间点
-public class VitalSignEdit extends NurseBaseActivity {
+//入量,尿量,身高,体重指标
+//一次录入一个指标
+public class VitalSignEdit2 extends Activity {
     List<MeasureType> list = new ArrayList<MeasureType>();
     Map<Integer, Integer> btns = new HashMap<Integer, Integer>();
     Button B1, B2, B3, B4, B5, B6, B7, B8, B9, B0, BClear, BDot, BEqual;
 
-    RadioGroup measures;
-    RadioGroup measures2;
     EditText e_patientId;
     TextView t_patientName;
     TextView t_age;
@@ -58,13 +59,14 @@ public class VitalSignEdit extends NurseBaseActivity {
     boolean textCursor = false;
     boolean dotPressed = false;
     boolean syntaxError = false;
-
-    private static Long measureTypeCode = 0L;
+    SharedPreferences sharedPreferences;
 
     @Override
-    protected void createUi() {
-        setContentView(R.layout.vitalsignedit);
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.vitalsignedit_2);
         final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         try {
             LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.vitalsign_patient_info, null);
@@ -75,7 +77,7 @@ public class VitalSignEdit extends NurseBaseActivity {
         } catch (Exception e) {
             MobLogAction.mobLogError("病人信息", e.getMessage());
         }
-
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         UserDTO user = GlobalCache.getCache().getLoginuser();
         t_user_by = (TextView) findViewById(R.id.user_by);
         t_user_by.setText("操作人: " + user.getName() + " - " + user.getDepartName());
@@ -102,7 +104,7 @@ public class VitalSignEdit extends NurseBaseActivity {
 
         try {
             TableLayout inputkey = (TableLayout) inflater.inflate(R.layout.inputkey, null);
-            LinearLayout layout = (LinearLayout) findViewById(R.id.vitalsign_edit_inputkey);
+            LinearLayout layout = (LinearLayout) findViewById(R.id.vitalsign_edit_2_inputkey);
             layout.addView(inputkey);
             initLayout();
         } catch (Exception e) {
@@ -137,16 +139,6 @@ public class VitalSignEdit extends NurseBaseActivity {
                 if (dotPressed)
                     return;
 
-                //有可能原有数据已有小数点
-                if (!syntaxError){
-                    StringBuffer sb = new StringBuffer(e_text.getText().toString().trim());
-                    sb.append(".");
-                    try{
-                        double d = Double.valueOf(sb.toString());
-                    }catch (Exception e) {
-                        syntaxError = true;
-                    }
-                }
                 if (!syntaxError) {
 
                     NumPressed(".");
@@ -156,8 +148,7 @@ public class VitalSignEdit extends NurseBaseActivity {
         };
         OnClickListener myListenerBSave = new OnClickListener() {
             public void onClick(View v) {
-                GlobalCache.getCache().getVitalSignData().setValue1(e_text.getText().toString().trim());
-                GlobalCache.getCache().getVitalSignData().setMeasureTypeCode(measureTypeCode.toString());
+                GlobalCache.getCache().getVitalSignData().setValue2(e_text.getText().toString().trim());
                 processSaveData();
             }
         };
@@ -187,10 +178,6 @@ public class VitalSignEdit extends NurseBaseActivity {
 
         t_label.setText(itemName);
 
-        measures = (RadioGroup) findViewById(R.id.vitalsign_edit_measures);
-        measures2 = (RadioGroup) findViewById(R.id.vitalsign_edit_measures2);
-        int count = 4;
-        int i = 0;
         try {
 
             if (pa != null && busDate != null && timePoint != null && timePoint.length() > 0 && busDate.length() > 0)
@@ -199,66 +186,23 @@ public class VitalSignEdit extends NurseBaseActivity {
             VitalSignData data = GlobalCache.getCache().getVitalSignData();
 
             if (data != null) {
-                if (data.getValue1() != null && data.getValue1().length() > 0 && data.getItemCode().equals(itemCode))
-                    e_text.setText(data.getValue1());
-            }
-
-            VitalSignAction.getMeasureType();
-            list = GlobalCache.getCache().getMeasureTypes();
-            for (MeasureType a : list) {
-                RadioButton rb = new RadioButton(this, null);
-
-                if (data != null && data.getItemCode().equals(itemCode)) {
-                    if (a.getCode().equals(data.getMeasureTypeCode()))
-                        rb.setChecked(true);
-                }
-
-                if (i < count) {
-                    rb.setId(a.getId().intValue());
-                    rb.setText(a.getName());
-                    //rb.setTextColor(getResources().getColor(R.color.black));
-                    rb.setOnClickListener(new ClickEvent());
-                    measures.addView(rb);
-                } else {
-                    rb.setId(a.getId().intValue());
-                    rb.setText(a.getName());
-                    //rb.setTextColor(getResources().getColor(R.color.black));
-                    rb.setOnClickListener(new ClickEvent());
-                    measures2.addView(rb);
-                }
-
-                i++;
+                if (data.getValue2() != null && data.getValue2().length() > 0 && data.getItemCode().equals(itemCode))
+                    e_text.setText(data.getValue2());
             }
 
         } catch (Exception e) {
             Log.e("", e.getMessage());
-            MobLogAction.mobLogError("构建生命体征界面", e.getMessage());
+            MobLogAction.mobLogError("构建生命体征界面" + itemName, e.getMessage());
         }
 
-    }
-
-    class ClickEvent implements View.OnClickListener {
-
-        public void onClick(View v) {
-            measureTypeCode = Long.valueOf(v.getId());
-            if (v.getId() < 5) {
-                measures2.clearCheck();
-            } else {
-                measures.clearCheck();
-            }
-
-        }
     }
 
     private void ClearAll() {
-        syntaxError = false;
         dotPressed = false;
         e_text.setText("");
     }
 
     private void NumPressed(String key) {
-        showMessageByVoice(key);
-
         Log.v("Test click", "The button " + key + " has been pressed!");
 
         //设置一个变量判断是否有光标
@@ -275,6 +219,7 @@ public class VitalSignEdit extends NurseBaseActivity {
         } else {
             e_text.setText(e_text.getText().toString().trim() + key);
         }
+
     }
 
     private void initLayout() {
@@ -304,9 +249,9 @@ public class VitalSignEdit extends NurseBaseActivity {
         BDot = (Button) findViewById(R.id.buttonDot);
         BEqual = (Button) findViewById(R.id.buttonEq);
 
-        e_text = (EditText) findViewById(R.id.vitalsign_edit_text);
+        e_text = (EditText) findViewById(R.id.vitalsign_edit_2_text);
         e_text.setInputType(InputType.TYPE_NULL); // 关闭软键盘
-        t_label = (TextView) findViewById(R.id.vitalsign_edit_label);
+        t_label = (TextView) findViewById(R.id.vitalsign_edit_2_label);
 
         e_text.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
@@ -317,13 +262,14 @@ public class VitalSignEdit extends NurseBaseActivity {
                 }
             }
         });
+
     }
 
     //开始处理取数
     private void processSaveData() {
-        showProcessingImage(R.id.loadingImageView);
 
         SaveVitalSignData saveData = new SaveVitalSignData(saveDataHandler);
+
         Thread thread = new Thread(saveData);
         thread.start();
     }
@@ -331,9 +277,8 @@ public class VitalSignEdit extends NurseBaseActivity {
     //回调函数，显示结果
     Handler saveDataHandler = new Handler() {
         public void handleMessage(Message msg) {
-            stopAnimation(R.id.loadingImageView);
-
             int type = msg.getData().getInt("type");
+
             switch (type) {
             case 1: {
                 finish();
@@ -395,50 +340,5 @@ public class VitalSignEdit extends NurseBaseActivity {
             this.handler.sendMessage(message);
         }
 
-    }
-
-    //需实现的方法
-    public void receiveBlueToothMessage(String msg, int type) {
-        //
-    }
-
-    public Context getContext() {
-        return this;
-    }
-
-    Handler UIHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            int type = msg.getData().getInt("type");
-            switch (type) {
-            case BlueToothConnector.UNCONNECTED:
-                unConnectBLuetoothImage();
-                break;
-            case BlueToothConnector.CONNECTED:
-                //有蓝牙设备
-                connectBLuetoothImage();
-                break;
-            case BlueToothConnector.READ:
-
-                String p = msg.getData().getString("msg");
-                e_patientId.setText(p);
-
-                //振动器
-                final Vibrator mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                final int vibrationDuration = 33;
-                mVibrator.vibrate(vibrationDuration);
-
-                //processGetData();
-
-                break;
-
-            default: {
-
-            }
-            }
-        }
-    };
-
-    public Handler getUIHandler() {
-        return UIHandler;
     }
 }

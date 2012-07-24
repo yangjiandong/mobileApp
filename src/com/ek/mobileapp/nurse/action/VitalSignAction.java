@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import com.alibaba.fastjson.JSON;
 import com.ek.mobileapp.model.MeasureType;
 import com.ek.mobileapp.model.Patient;
+import com.ek.mobileapp.model.SkinTest;
 import com.ek.mobileapp.model.TimePoint;
 import com.ek.mobileapp.model.VitalSignData;
 import com.ek.mobileapp.model.VitalSignItem;
@@ -90,6 +91,30 @@ public class VitalSignAction {
                 measureTypes.add(JSON.parseObject(p.toString(), MeasureType.class));
             }
             GlobalCache.getCache().setMeasureTypes(measureTypes);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void getSkinTest() {
+        String ip = GlobalCache.getCache().getHostIp();
+        String url = "http://" + ip + WebUtils.VITALSIGN_GET_SKINTEST;
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        JSONObject res = HttpTool.getTool().post(url, params);
+        if (res == null)
+            return;
+
+        List<SkinTest> skinTests = new ArrayList<SkinTest>();
+        try {
+            if (!res.getBoolean("success")) {
+                return;
+            }
+            JSONArray arrays = res.getJSONArray("skinTest");
+            for (int i = 0; i < arrays.length(); i++) {
+                JSONObject p = (JSONObject) arrays.get(i);
+                skinTests.add(JSON.parseObject(p.toString(), SkinTest.class));
+            }
+            GlobalCache.getCache().setSkinTests(skinTests);
         } catch (JSONException e) {
             e.printStackTrace();
         }

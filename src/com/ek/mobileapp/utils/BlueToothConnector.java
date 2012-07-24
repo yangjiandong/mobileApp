@@ -30,14 +30,14 @@ public class BlueToothConnector extends Thread {
     BlueToothReceive blueToothReceive;
     AtomicBoolean isActive = new AtomicBoolean(true);
     boolean hasBlueToothDevice = false;
-    ConnectThread mConnectThread;
+    InputThread inputThread;
 
-    public ConnectThread getmConnectThread() {
-        return mConnectThread;
+    public InputThread getmConnectThread() {
+        return inputThread;
     }
 
-    public void setmConnectThread(ConnectThread mConnectThread) {
-        this.mConnectThread = mConnectThread;
+    public void setmConnectThread(InputThread mConnectThread) {
+        this.inputThread = mConnectThread;
     }
 
     public BlueToothConnector(BlueToothReceive blueToothReceive) {
@@ -46,9 +46,9 @@ public class BlueToothConnector extends Thread {
     }
 
     public void mystop() {
-        mConnectThread.cancel();
-        mConnectThread.stop();
-        mConnectThread = null;
+        inputThread.cancel();
+        inputThread.stop();
+        inputThread = null;
     }
 
     public void run() {
@@ -85,8 +85,8 @@ public class BlueToothConnector extends Thread {
         if (pairedDevices.size() > 0) {
             for (BluetoothDevice device : pairedDevices) {
                 if (device.getName().equals(name)) {
-                    mConnectThread = new ConnectThread(device, this.blueToothReceive);
-                    mConnectThread.start();
+                    inputThread = new InputThread(device, this.blueToothReceive);
+                    inputThread.start();
                 }
             }
         } else {
@@ -95,12 +95,12 @@ public class BlueToothConnector extends Thread {
     }
 
     //扫描
-    private class ConnectThread extends Thread {
+    private class InputThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
         BlueToothReceive blueToothReceive;
 
-        public ConnectThread(BluetoothDevice device, BlueToothReceive blueToothReceive) {
+        public InputThread(BluetoothDevice device, BlueToothReceive blueToothReceive) {
             BluetoothSocket tmp = null;
             this.mmDevice = device;
             this.blueToothReceive = blueToothReceive;

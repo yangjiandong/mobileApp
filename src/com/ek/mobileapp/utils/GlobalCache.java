@@ -3,7 +3,9 @@ package com.ek.mobileapp.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ek.mobileapp.model.DrugCheckData;
 import com.ek.mobileapp.model.Patient;
+import com.ek.mobileapp.model.SkinTest;
 import com.ek.mobileapp.model.UserDTO;
 import com.ek.mobileapp.model.VitalSignItem;
 import com.ek.mobileapp.model.VitalSignData;
@@ -20,6 +22,8 @@ public class GlobalCache {
     private int screenWidth;
     private int screenHeight;
 
+    private String deviceId;
+
     private String busDate = "";
     private String timePoint = "";
 
@@ -29,10 +33,14 @@ public class GlobalCache {
     private List<VitalSignData> vitalSignDatas = new ArrayList<VitalSignData>();
     private List<MeasureType> measureTypes = new ArrayList<MeasureType>();
     private List<TimePoint> timePoints = new ArrayList<TimePoint>();
+    private List<SkinTest> skinTests = new ArrayList<SkinTest>();
 
     private Patient currentPatient;
 
     private VitalSignData vitalSignData;
+    private VitalSignData vitalSignData2;
+
+    private List<DrugCheckData> drugCheckDatas = new ArrayList<DrugCheckData>();
 
     private GlobalCache() {
     }
@@ -177,6 +185,38 @@ public class GlobalCache {
 
     public void setVitalSignDatas_all(List<VitalSignData> vitalSignDatas_all) {
         this.vitalSignDatas_all = vitalSignDatas_all;
+    }
+
+    public List<SkinTest> getSkinTests() {
+        return skinTests;
+    }
+
+    public void setSkinTests(List<SkinTest> skinTests) {
+        this.skinTests = skinTests;
+    }
+
+    public VitalSignData getVitalSignData2() {
+        return vitalSignData2;
+    }
+
+    public void setVitalSignData2(VitalSignData vitalSignData2) {
+        this.vitalSignData2 = vitalSignData2;
+    }
+
+    public List<DrugCheckData> getDrugCheckDatas() {
+        return drugCheckDatas;
+    }
+
+    public void setDrugCheckDatas(List<DrugCheckData> drugCheckDatas) {
+        this.drugCheckDatas = drugCheckDatas;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
 }
