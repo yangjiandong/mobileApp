@@ -44,12 +44,10 @@ public class SettingActivity extends PreferenceActivity implements OnPreferenceC
     }
 
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-        //Log.v("SystemSetting", "preference is changed");
-        //Log.v("Key_SystemSetting", preference.getKey());
-        String ip = sharedPreferences.getString("setting_http_ip", WebUtils.HOST);
+
         try {
             //用户没有登录,异常
-            MobLogAction.mobLogInfo("SystemSetting", preference.getKey() + ":" + newValue, ip);
+            MobLogAction.mobLogInfo("SystemSetting", preference.getKey() + ":" + newValue);
         } catch (Exception e) {
             Log.e("Key_SystemSetting", e.getMessage());
         }

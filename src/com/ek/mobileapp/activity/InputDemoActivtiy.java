@@ -70,8 +70,8 @@ public class InputDemoActivtiy extends Activity {
                         NumPressed(n.toString());
                     }
                 } catch (Exception e) {
-                    String ip = sharedPreferences.getString("setting_http_ip", WebUtils.HOST);
-                    MobLogAction.mobLogError(InputDemoActivtiy.class.getName(), e.getMessage(), ip);
+
+                    MobLogAction.mobLogError(InputDemoActivtiy.class.getName(), e.getMessage());
                 }
             }
         };
