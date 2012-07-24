@@ -8,6 +8,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
@@ -18,9 +19,16 @@ import com.ek.mobileapp.utils.HttpTool;
 import com.ek.mobileapp.utils.WebUtils;
 
 public class MobLogAction {
+    private static MobLogAction me = null;
+
+    public static MobLogAction getMobLogAction() {
+        if (me == null)
+            me = new MobLogAction();
+        return me;
+    }
 
     //
-    public static int mobLog(String event, String infos, String type) {
+    private int mobLog(String event, String infos, String type) {
         UserDTO u = GlobalCache.getCache().getLoginuser();
         if (u == null)
             return WebUtils.WEBERROR;
@@ -53,29 +61,51 @@ public class MobLogAction {
         }
     }
 
-    public static void mobLogInfo(String event, String infos) {
-        final String events = event;
-        final String infoss = infos;
+    private class MobLogTask extends AsyncTask<String, Void, Integer> {
+        protected Integer doInBackground(String... params) {
+
+            String event = params[0];
+            String infos = params[0];
+            String type = params[0];
+            mobLog(event, infos, type);
+
+            return 1;
+        }
+
+        protected void onPostExecute(String result) {
+            //textView.setText(result);
+        }
+    }
+
+    public void mobLogInfo(String event, String infos) {
+
         Log.i(event, infos);
-        Runnable runLog = new Runnable() {
-            public void run() {                    //
-                mobLog(events, infoss, "info");
-            }
-        };
-        new Thread(runLog).start();
+
+        MobLogTask log = new MobLogTask();
+        log.execute(new String[] { event, infos, "info" });
+
+        //Runnable runLog = new Runnable() {
+        //    public void run() {                    //
+        //        mobLog(events, infoss, "info");
+        //    }
+        //};
+        //new Thread(runLog).start();
         //return mobLog(event, infos, "info");
     }
 
-    public static void mobLogError(String event, String infos) {
-        final String events = event;
-        final String infoss = infos;
+    public void mobLogError(String event, String infos) {
+
         Log.e(event, infos);
-        Runnable runLog = new Runnable() {
-            public void run() {                    //
-                mobLog(events, infoss, "error");
-            }
-        };
-        new Thread(runLog).start();
+
+        MobLogTask log = new MobLogTask();
+        log.execute(new String[] { event, infos, "error" });
+
+        //        Runnable runLog = new Runnable() {
+        //            public void run() {                    //
+        //                mobLog(events, infoss, "error");
+        //            }
+        //        };
+        // new Thread(runLog).start();
         //return mobLog(event, infos, "error");
     }
 }

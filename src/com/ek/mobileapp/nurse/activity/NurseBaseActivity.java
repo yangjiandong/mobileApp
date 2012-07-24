@@ -179,7 +179,7 @@ public abstract class NurseBaseActivity extends Activity implements BlueToothRec
                 blueTootheConnector = null;
             }
         } catch (Exception e) {
-            MobLogAction.mobLogError("关闭蓝牙", e.getMessage());
+            MobLogAction.getMobLogAction().mobLogError("关闭蓝牙", e.getMessage());
         }
         if (ttsBound) {
             ttsBound = false;
@@ -205,7 +205,7 @@ public abstract class NurseBaseActivity extends Activity implements BlueToothRec
                 blueTootheConnector = null;
             }
         } catch (Exception e) {
-            MobLogAction.mobLogError("关闭蓝牙", e.getMessage());
+            MobLogAction.getMobLogAction().mobLogError("关闭蓝牙", e.getMessage());
         }
     }
 

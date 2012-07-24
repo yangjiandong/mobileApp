@@ -120,7 +120,7 @@ public class VitalSignByBluetoothService extends Activity {
             layout.addView(inputkey);
 
         } catch (Exception e) {
-            MobLogAction.mobLogError("病人信息", e.getMessage());
+            MobLogAction.getMobLogAction().mobLogError("病人信息", e.getMessage());
         }
 
         busDate = TimeTool.getDateFormated(TimeTool.getCurrentTime());
@@ -441,7 +441,7 @@ public class VitalSignByBluetoothService extends Activity {
             case 0: {
                 String mss = msg.getData().getString("msg");
                 ToastUtils.show(VitalSignByBluetoothService.this, mss);
-                MobLogAction.mobLogError("提取数据出错,请联系管理员", mss);
+                MobLogAction.getMobLogAction().mobLogError("提取数据出错,请联系管理员", mss);
                 break;
             }
             default: {

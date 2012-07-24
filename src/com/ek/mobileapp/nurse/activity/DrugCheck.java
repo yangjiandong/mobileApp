@@ -63,7 +63,7 @@ public class DrugCheck extends NurseBaseActivity {
             layout.addView(inputkey);
 
         } catch (Exception e) {
-            MobLogAction.mobLogError("病人信息", e.getMessage());
+            MobLogAction.getMobLogAction().mobLogError("病人信息", e.getMessage());
         }
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         UserDTO user = GlobalCache.getCache().getLoginuser();

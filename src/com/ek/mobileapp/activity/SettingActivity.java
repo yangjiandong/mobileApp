@@ -47,7 +47,7 @@ public class SettingActivity extends PreferenceActivity implements OnPreferenceC
 
         try {
             //用户没有登录,异常
-            MobLogAction.mobLogInfo("SystemSetting", preference.getKey() + ":" + newValue);
+            MobLogAction.getMobLogAction().mobLogInfo("SystemSetting", preference.getKey() + ":" + newValue);
         } catch (Exception e) {
             Log.e("Key_SystemSetting", e.getMessage());
         }

@@ -72,7 +72,7 @@ public class VitalSignEdit4 extends Activity {
             layout.addView(inputkey);
 
         } catch (Exception e) {
-            MobLogAction.mobLogError("病人信息", e.getMessage());
+            MobLogAction.getMobLogAction().mobLogError("病人信息", e.getMessage());
         }
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         UserDTO user = GlobalCache.getCache().getLoginuser();
@@ -105,7 +105,7 @@ public class VitalSignEdit4 extends Activity {
             layout.addView(inputkey);
             initLayout();
         } catch (Exception e) {
-            MobLogAction.mobLogError("inputkey", e.getMessage());
+            MobLogAction.getMobLogAction().mobLogError("inputkey", e.getMessage());
         }
 
         if (pa != null) {
@@ -128,7 +128,7 @@ public class VitalSignEdit4 extends Activity {
 
         } catch (Exception e) {
             Log.e("", e.getMessage());
-            MobLogAction.mobLogError("构建生命体征界面" + itemName, e.getMessage());
+            MobLogAction.getMobLogAction().mobLogError("构建生命体征界面" + itemName, e.getMessage());
         }
 
     }

@@ -52,7 +52,7 @@ public class InputDemoActivtiy extends Activity {
             layout.addView(inputkey);
             initLayout();
         } catch (Exception e) {
-            MobLogAction.mobLogError("inputkey", e.getMessage());
+            MobLogAction.getMobLogAction().mobLogError("inputkey", e.getMessage());
         }
 
         ClearAll();
@@ -71,7 +71,7 @@ public class InputDemoActivtiy extends Activity {
                     }
                 } catch (Exception e) {
 
-                    MobLogAction.mobLogError(InputDemoActivtiy.class.getName(), e.getMessage());
+                    MobLogAction.getMobLogAction().mobLogError(InputDemoActivtiy.class.getName(), e.getMessage());
                 }
             }
         };

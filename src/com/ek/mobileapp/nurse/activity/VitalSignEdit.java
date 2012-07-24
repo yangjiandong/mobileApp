@@ -73,7 +73,7 @@ public class VitalSignEdit extends NurseBaseActivity {
             layout.addView(inputkey);
 
         } catch (Exception e) {
-            MobLogAction.mobLogError("病人信息", e.getMessage());
+            MobLogAction.getMobLogAction().mobLogError("病人信息", e.getMessage());
         }
 
         UserDTO user = GlobalCache.getCache().getLoginuser();
@@ -106,7 +106,7 @@ public class VitalSignEdit extends NurseBaseActivity {
             layout.addView(inputkey);
             initLayout();
         } catch (Exception e) {
-            MobLogAction.mobLogError("inputkey", e.getMessage());
+            MobLogAction.getMobLogAction().mobLogError("inputkey", e.getMessage());
         }
 
         //振动器
@@ -122,7 +122,7 @@ public class VitalSignEdit extends NurseBaseActivity {
                         NumPressed(n.toString());
                     }
                 } catch (Exception e) {
-                    MobLogAction.mobLogError(InputDemoActivtiy.class.getName(), e.getMessage());
+                    MobLogAction.getMobLogAction().mobLogError(InputDemoActivtiy.class.getName(), e.getMessage());
                 }
             }
         };
@@ -231,8 +231,8 @@ public class VitalSignEdit extends NurseBaseActivity {
             }
 
         } catch (Exception e) {
-            Log.e("", e.getMessage());
-            MobLogAction.mobLogError("构建生命体征界面", e.getMessage());
+
+            MobLogAction.getMobLogAction().mobLogError("构建生命体征界面", e.getMessage());
         }
 
     }

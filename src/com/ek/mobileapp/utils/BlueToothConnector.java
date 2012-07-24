@@ -110,7 +110,7 @@ public class BlueToothConnector extends Thread {
             try {
                 tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
             } catch (IOException e) {
-                MobLogAction.mobLogError("create蓝牙设备", e.getMessage());
+                MobLogAction.getMobLogAction().mobLogError("create蓝牙设备", e.getMessage());
             }
             mmSocket = tmp;
         }
@@ -136,7 +136,7 @@ public class BlueToothConnector extends Thread {
                 }
                 //reader.close();
             } catch (IOException e) {
-                MobLogAction.mobLogError("蓝牙设备", e.getMessage());
+                MobLogAction.getMobLogAction().mobLogError("蓝牙设备", e.getMessage());
                 sendResult("蓝牙未连接", UNCONNECTED);
                 try {
                     mmSocket.close();

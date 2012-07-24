@@ -149,7 +149,7 @@ public class MainActivity extends Activity {
                 //ViewUtils.putViewsInLine(bns, getScreenWidth(), 0.1);
             }
         } catch (Exception e) {
-            MobLogAction.mobLogError("main", e.getMessage());
+            MobLogAction.getMobLogAction().mobLogError("main", e.getMessage());
             //Log.e("", e.getMessage());
         }
 

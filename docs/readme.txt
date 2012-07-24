@@ -14,6 +14,9 @@ android app
    http://stephen830.iteye.com/blog/1183326
    http://shoushuo.com/index.html
 
+   4. 保证程序符合android标准,所有涉及服务端的操作一定要采用thread or AsyncTask
+   如果不采用以上写法,android 4.0 出现NetworkOnMainThreadException
+
 2012.07.20
 ----------
 
