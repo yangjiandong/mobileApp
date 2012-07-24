@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -47,6 +48,22 @@ public class MainActivity extends Activity {
     @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//
+//        //if (DEVELOPER_MODE) {
+//            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+//            .detectDiskReads()
+//            .detectDiskWrites()
+//            .detectNetwork()   // or .detectAll() for all detectable problems
+//            .penaltyLog()
+//            .build());
+//             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+//            .detectLeakedSqlLiteObjects()
+//            //.detectLeakedClosableObjects()
+//            .penaltyLog()
+//            .penaltyDeath()
+//            .build());
+//        //}
+
         createBtns();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
@@ -193,7 +210,13 @@ public class MainActivity extends Activity {
     class ClickEvent implements View.OnClickListener {
 
         public void onClick(View v) {
-            LogonAction.userLog(moduels.get(v.getId()), ip);
+            final View v2 = v;
+            Runnable runLog = new Runnable() {
+                public void run() {                    //
+                    LogonAction.userLog(moduels.get(v2.getId()), ip);
+                }
+            };
+            new Thread(runLog).start();
 
             switch (v.getId()) {
             case R.id.m01: // doStuff

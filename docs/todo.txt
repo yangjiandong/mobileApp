@@ -6,6 +6,10 @@ TODO
 
    1. maven 打包,签名、混淆
 
+   2. android 4.0 NetworkOnMainThreadException
+   http://daibalusu.iteye.com/blog/1586251
+   --开线程处理关于网络的事物，然后用handler发送消息来处理更新UI
+
 2012.07.22
 ----------
 

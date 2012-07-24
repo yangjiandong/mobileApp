@@ -11,6 +11,7 @@ import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
@@ -51,6 +52,21 @@ public abstract class NurseBaseActivity extends Activity implements BlueToothRec
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//
+//            //if (DEVELOPER_MODE) {
+//                StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+//                .detectDiskReads()
+//                .detectDiskWrites()
+//                .detectNetwork()   // or .detectAll() for all detectable problems
+//                .penaltyLog()
+//                .build());
+//                 StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+//                .detectLeakedSqlLiteObjects()
+//                //.detectLeakedClosableObjects()
+//                .penaltyLog()
+//                .penaltyDeath()
+//                .build());
+//            //}
 
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);

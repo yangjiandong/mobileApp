@@ -3,11 +3,8 @@ package com.ek.mobileapp.nurse.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -32,13 +28,13 @@ import com.ek.mobileapp.model.UserDTO;
 import com.ek.mobileapp.nurse.action.DrugCheckAction;
 import com.ek.mobileapp.nurse.adapter.DrugCheckDataListAdapter;
 import com.ek.mobileapp.utils.BarCodeUtils;
-import com.ek.mobileapp.utils.BluetoothService;
+import com.ek.mobileapp.utils.BlueToothConnector;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.ToastUtils;
 import com.ek.mobileapp.utils.UtilString;
 
 //用药核对
-public class DrugCheck extends Activity {
+public class DrugCheck extends NurseBaseActivity {
     List<DrugCheckData> list = new ArrayList<DrugCheckData>();
 
     EditText e_barCode;
@@ -54,17 +50,8 @@ public class DrugCheck extends Activity {
 
     SharedPreferences sharedPreferences;
 
-    // Name of the connected device
-    private String mConnectedDeviceName = null;
-    private BluetoothAdapter mBluetoothAdapter = null;
-    // Member object for the chat services
-    private com.ek.mobileapp.utils.BluetoothService bluetoothService = null;
-    private Object lock = new Object();
-    private String numcode = "";
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void createUi() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.drugcheck);
@@ -103,19 +90,7 @@ public class DrugCheck extends Activity {
 
         infolist = (ListView) findViewById(R.id.drugcheck_list);
         infolist.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        refreshList();
-
-        //蓝牙设备
-        // Get local Bluetooth adapter
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        // If the adapter is null, then Bluetooth is not supported
-        if (mBluetoothAdapter == null) {
-            unConnectBLuetoothImage();
-        } else {
-            //TODO
-            connectBLuetoothImage();
-        }
+        refreshPatientInfo();
 
     }
 
@@ -129,17 +104,12 @@ public class DrugCheck extends Activity {
         t_deptName.setText("");
     }
 
-    private void stopAnimation(int imageViewId) {
-        ImageView imageView = (ImageView) findViewById(imageViewId);
-        imageView.clearAnimation();
-        imageView.setImageResource(0);
-    }
-
     //只负责显示数据
     private void refreshPatientInfo() {
 
         Patient pa = GlobalCache.getCache().getCurrentPatient();
         if (pa != null) {
+            t_patientId.setText(pa.getPatientId());
             t_patientName.setText(pa.getPatientName());
             t_sex.setText(pa.getSex());
             t_age.setText(pa.getAge());
@@ -163,10 +133,6 @@ public class DrugCheck extends Activity {
 
     }
 
-    private void playSound(String soundContent) {
-
-    }
-
     //开始处理取数
     private void processGetData() {
 
@@ -185,16 +151,16 @@ public class DrugCheck extends Activity {
             switch (type) {
             case 1: {
                 refreshPatientInfo();
-                playSound(message);
+                showMessage(message);
                 break;
             }
             case 2: {
                 refreshList();
-                playSound(message);
+                showMessage(message);
                 break;
             }
             case 3: {
-                playSound(message);
+                showMessage(message);
                 break;
             }
             case 0: {
@@ -261,94 +227,30 @@ public class DrugCheck extends Activity {
 
     }
 
-    private void connectBLuetoothImage() {
-        ImageView imageView = (ImageView) findViewById(R.id.showBluetooth);
-        imageView.setImageResource(R.drawable.bluetooth);//scanner);
+    //需实现的方法
+    public void receiveBlueToothMessage(String msg, int type) {
+        //
     }
 
-    private void unConnectBLuetoothImage() {
-        ImageView imageView = (ImageView) findViewById(R.id.showBluetooth);
-        imageView.clearAnimation();
-        imageView.setImageResource(0);
+    public Context getContext() {
+        return this;
     }
 
-    private synchronized void setupConnect() {
-        // Initialize the BluetoothChatService to perform bluetooth connections
-        bluetoothService = new BluetoothService(this, getUIHandler());
-
-        // Initialize the buffer for outgoing messages
-        // mOutStringBuffer = new StringBuffer("");
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        switch (requestCode) {
-        case BluetoothService.REQUEST_CONNECT_DEVICE:
-            // When DeviceListActivity returns with a device to connect
-            if (resultCode == Activity.RESULT_OK) {
-                // Get the device MAC address
-                String address = data.getExtras().getString(BluetoothService.EXTRA_DEVICE_ADDRESS);
-                // Get the BLuetoothDevice object
-                BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-                // Attempt to connect to the device
-                bluetoothService.connect(device);
-            }
-            break;
-        case BluetoothService.REQUEST_ENABLE_BT:
-            // When the request to enable Bluetooth returns
-            if (resultCode == Activity.RESULT_OK) {
-                // Bluetooth is now enabled, so set up a chat session
-                setupConnect();
-            } else {
-                // User did not enable Bluetooth or an error occured
-
-                //Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
-                //finish();
-            }
-        }
-    }
-
-    //蓝牙处理
     Handler UIHandler = new Handler() {
         public void handleMessage(Message msg) {
-            switch (msg.what) {
-            case BluetoothService.MESSAGE_STATE_CHANGE:
-
-                switch (msg.arg1) {
-                case BluetoothService.STATE_CONNECTED:
-
-                    break;
-                case BluetoothService.STATE_CONNECTING:
-                    connectBLuetoothImage();
-
-                    break;
-                case BluetoothService.STATE_LISTEN:
-                case BluetoothService.STATE_NONE:
-                    unConnectBLuetoothImage();
-                    break;
-                }
+            int type = msg.getData().getInt("type");
+            switch (type) {
+            case BlueToothConnector.UNCONNECTED:
+                unConnectBLuetoothImage();
                 break;
-            case BluetoothService.MESSAGE_WRITE:
-                byte[] writeBuf = (byte[]) msg.obj;
-                // construct a string from the buffer
-                String writeMessage = new String(writeBuf);
-
+            case BlueToothConnector.CONNECTED:
+                //有蓝牙设备
+                connectBLuetoothImage();
                 break;
-            case BluetoothService.MESSAGE_READ:
-                //              MessageRead messageRead = new MessageRead(mConversationArrayAdapter,msg);
-                //              messageRead.start();
-                synchronized (lock) {
-                    byte[] readBuf = (byte[]) msg.obj;
-                    String readMessage = new String(readBuf, 0, msg.arg1);
-                    if (readMessage.indexOf("\r") != -1) {
-                        readMessage = readMessage.replace("\r", "");
-                        numcode = numcode + readMessage;
-                        numcode = "";
-                    } else if (readMessage.indexOf("\r") == -1) {
-                        numcode = numcode + readMessage;
-                    }
-                }
-                e_barCode.setText(numcode);
+            case BlueToothConnector.READ:
+
+                String p = msg.getData().getString("msg");
+                e_barCode.setText(p);
 
                 //振动器
                 final Vibrator mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -358,16 +260,11 @@ public class DrugCheck extends Activity {
                 processGetData();
 
                 break;
-            case BluetoothService.MESSAGE_DEVICE_NAME:
-                mConnectedDeviceName = msg.getData().getString(BluetoothService.DEVICE_NAME);
-                ToastUtils.show(DrugCheck.this, "连接" + mConnectedDeviceName);
 
-                break;
-            case BluetoothService.MESSAGE_TOAST:
-                ToastUtils.show(DrugCheck.this, msg.getData().getString(BluetoothService.TOAST));
-                break;
+            default: {
+
             }
-
+            }
         }
     };
 

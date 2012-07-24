@@ -27,11 +27,11 @@
             android:layout_height="25px"
             android:layout_alignRight="@id/rlMyPortfolio"
             android:layout_marginLeft="5px" />
-
+
         <TextView
             android:id="@+id/drugcheck_patientId"
             style="@style/InfoText"
-            android:layout_width="150dp"
+            android:layout_width="100dp"
             android:layout_alignBaseline="@+id/drugcheck_patientLabel"
             android:layout_alignBottom="@+id/drugcheck_patientLabel"
             android:layout_toRightOf="@+id/drugcheck_patientLabel"
@@ -99,24 +99,10 @@
         android:padding="1dp" >
 
         <TextView
-            android:id="@+id/drugcheck_deptLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="病区"
-            android:textSize="16dip" />
-
-        <TextView
-            android:id="@+id/drugcheck_deptName"
-            style="@style/InfoText"
-            android:layout_width="64dp"
-            android:text="TextView" />
-
-        <TextView
             android:id="@+id/drugcheck_bedNoLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
             android:text="床号"
             android:textSize="16dip" />
 
@@ -139,6 +125,26 @@
             style="@style/InfoText"
             android:layout_width="64dp"
             android:text="TextView" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/drugcheck_deptLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="病区"
+            android:textSize="16dip" />
+
+        <TextView
+            android:id="@+id/drugcheck_deptName"
+            style="@style/InfoText"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
     </LinearLayout>
 
 </LinearLayout>
