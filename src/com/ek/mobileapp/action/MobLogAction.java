@@ -61,14 +61,19 @@ public class MobLogAction {
         }
     }
 
-    private class MobLogTask extends AsyncTask<String, Void, Integer> {
+    //暂时有问题
+    //蓝牙服务调用时报
+    //Can't create handler inside thread that has not called Looper.prepare()
+    private class MobLogTask2 extends AsyncTask<String, Void, Integer> {
         protected Integer doInBackground(String... params) {
+            //Looper.prepare();
 
             String event = params[0];
-            String infos = params[0];
-            String type = params[0];
+            String infos = params[1];
+            String type = params[2];
             mobLog(event, infos, type);
 
+            //Looper.loop();
             return 1;
         }
 
@@ -78,34 +83,33 @@ public class MobLogAction {
     }
 
     public void mobLogInfo(String event, String infos) {
-
-        Log.i(event, infos);
-
-        MobLogTask log = new MobLogTask();
-        log.execute(new String[] { event, infos, "info" });
-
-        //Runnable runLog = new Runnable() {
-        //    public void run() {                    //
-        //        mobLog(events, infoss, "info");
-        //    }
-        //};
-        //new Thread(runLog).start();
+        //Log.i(event, infos);
+        final String events = event;
+        final String infoss = infos;
+        Runnable runLog = new Runnable() {
+            public void run() { //
+                mobLog(events, infoss, "info");
+            }
+        };
+        new Thread(runLog).start();
         //return mobLog(event, infos, "info");
     }
 
     public void mobLogError(String event, String infos) {
 
-        Log.e(event, infos);
+        //Log.e(event, infos);
+        final String events = event;
+        final String infoss = infos;
 
-        MobLogTask log = new MobLogTask();
-        log.execute(new String[] { event, infos, "error" });
+        //MobLogTask log = new MobLogTask();
+        //log.execute(new String[] { event, infos, "error" });
 
-        //        Runnable runLog = new Runnable() {
-        //            public void run() {                    //
-        //                mobLog(events, infoss, "error");
-        //            }
-        //        };
-        // new Thread(runLog).start();
+        Runnable runLog = new Runnable() {
+            public void run() { //
+                mobLog(events, infoss, "error");
+            }
+        };
+        new Thread(runLog).start();
         //return mobLog(event, infos, "error");
     }
 }

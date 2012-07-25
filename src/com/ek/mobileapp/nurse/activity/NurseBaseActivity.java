@@ -23,6 +23,7 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 
+import com.ek.mobileapp.MainApplication;
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.utils.BlueToothConnector;
@@ -52,21 +53,7 @@ public abstract class NurseBaseActivity extends Activity implements BlueToothRec
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//
-//            //if (DEVELOPER_MODE) {
-//                StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-//                .detectDiskReads()
-//                .detectDiskWrites()
-//                .detectNetwork()   // or .detectAll() for all detectable problems
-//                .penaltyLog()
-//                .build());
-//                 StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-//                .detectLeakedSqlLiteObjects()
-//                //.detectLeakedClosableObjects()
-//                .penaltyLog()
-//                .penaltyDeath()
-//                .build());
-//            //}
+        MainApplication.getInstance().addActivity(this);
 
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -205,7 +192,7 @@ public abstract class NurseBaseActivity extends Activity implements BlueToothRec
                 blueTootheConnector = null;
             }
         } catch (Exception e) {
-            MobLogAction.getMobLogAction().mobLogError("关闭蓝牙", e.getMessage());
+            //MobLogAction.getMobLogAction().mobLogError("关闭蓝牙", e.getMessage());
         }
     }
 

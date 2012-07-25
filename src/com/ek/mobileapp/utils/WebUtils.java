@@ -43,7 +43,7 @@ public class WebUtils {
 
     //用药核对,查询病人
     public static final String DRUGCHECK_GET_PATIENT = "/drug_check/get_patient?type=mobile";
-    //用药核对,查询条码
+    //用药核对,通过条码返回核对信息
     public static final String DRUGCHECK_GET_DATA = "/drug_check/get_drugcheck_data?type=mobile";
     //用药核对,提交HIS
     public static final String DRUGCHECK_COMMIT_HIS = "/drug_check/commit_his?type=mobile";

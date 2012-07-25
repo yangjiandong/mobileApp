@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="MyProject" default="zipalign" basedir=".">
+    <property name="target" value="android-8"/>
+    <!--property file="default.properties" /-->
+    <property name="encoding" value="UTF-8"/>
+
+    <!-- dirs -->
+    <property name="sdk.dir" location="Location of Android SDK"/>
+    <property name="proguard.dir" value="proguard" />
+    <property name="src.dir" value="src"/>
+    <property name="gen.dir" value="gen"/>
+    <property name="res.dir" value="res"/>
+    <property name="assets.dir" value="assets"/>
+    <property name="libs.dir" value="libs"/>
+    <property name="out.classes.unoptimized.dir" value="out"/>
+    <property name="out.classes.optimized.dir" value="out/optimized"/>
+
+    <!-- files -->
+    <property name="manifest.file" value="AndroidManifest.xml"/>
+    <property name="signed.apk" value="${ant.project.name}-signed.apk"/>
+    <property name="unsigned.apk" value="${ant.project.name}-unsigned.apk"/>
+    <property name="final.apk" value="${ant.project.name}.apk"/>
+    <property name="android.jar" value="${sdk.dir}/tools/platforms/${target}/android.jar"/>
+    <property name="unoptimized" value="unoptimized.jar" />
+    <property name="optimized" value="optimized.jar" />
+    <property name="proguard.config" value="${proguard.dir}/proguard.cfg"/>
+
+    <!-- tools -->
+    <property name="dx.jar" value="${sdk.dir}/platform-tools/lib/dx.jar"/>
+    <property name="aapt" value="${sdk.dir}/platforms/${target}/tools/aapt.exe"/>
+    <property name="zipalign" value="${sdk.dir}/tools/zipalign.exe"/>
+    <property name="jarsign" value="jarsigner.exe location is here"/>
+    <property name="keystore" value="Your key store is here"/>
+    <property name="keyalias" value="Your key alias is here"/>
+
+
+    <path id="android.antlibs">
+        <pathelement path="${sdk.dir}/tools/lib/anttasks.jar" />
+        <pathelement path="${sdk.dir}/tools/lib/sdklib.jar" />
+        <pathelement path="${sdk.dir}/tools/lib/androidprefs.jar" />
+        <pathelement path="${sdk.dir}/tools/lib/apkbuilder.jar" />
+        <pathelement path="${sdk.dir}/tools/lib/jarutils.jar" />
+    </path>
+
+    <taskdef name="setup"
+        classname="com.android.ant.SetupTask"
+        classpathref="android.antlibs" />
+    <setup import="false"/>
+
+    <!--taskdef name="aaptexec"
+            classname="com.android.ant.AaptExecLoopTask"
+            classpathref="android.antlibs" /-->
+
+    <target name="clean" description="Removes output files created by other targets.">
+        <echo>Cleaning...</echo>
+        <delete dir="${out.classes.unoptimized.dir}" verbose="true" />
+        <delete dir="${out.classes.optimized.dir}" verbose="true" />
+    </target>
+
+    <target name="dirs">
+        <echo>Creating output directories if needed...</echo>
+        <mkdir dir="${out.classes.unoptimized.dir}" />
+        <mkdir dir="${out.classes.optimized.dir}" />
+    </target>
+
+    <!-- Compiles this project's .java files into .class files. -->
+    <target name="compile" depends="dirs"
+            description="Compiles project's .java files into .class files">
+        <echo>Compiling sources...</echo>
+        <javac encoding="${encoding}" target="1.6" debug="true" extdirs=""
+                destdir="${out.classes.unoptimized.dir}"
+                bootclasspathref="android.target.classpath"
+                includeantruntime="true">
+            <src path="${src.dir}" />
+            <src path="${gen.dir}" />
+            <classpath>
+                <fileset dir="${libs.dir}" includes="*.jar" />
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="preobfuscate" depends="compile">
+        <echo>Preparing to obfuscation...</echo>
+    <jar destfile="${unoptimized}"
+       basedir="${out.classes.unoptimized.dir}"
+       includes="**/**"
+       excludes="optimized/**"
+       />
+    </target>
+
+    <!--  Obfuscation with ProGuard   -->
+    <target name="optimize" unless="nooptimize" depends="preobfuscate">
+        <echo>Proguard obfuscation...</echo>
+        <java jar="${proguard.dir}/proguard.jar" fork="true" failonerror="true">
+            <jvmarg value="-Dmaximum.inlined.code.length=16" />
+            <arg value="@${proguard.dir}/proguard.cfg" />
+            <arg value="-injars ${unoptimized}" />
+            <arg value="-outjars ${optimized}" />
+            <arg value="-libraryjars ${android.jar}" />
+        </java>
+        <unzip src="${optimized}" dest="${out.classes.optimized.dir}" />
+        <!-- Delete optimized jar (now unzipped into bin directory)  -->
+        <delete file="${optimized}"/>
+        <delete file="${unoptimized}"/>
+    </target>
+
+    <target name="dex" description="Converting JVM bytecodes into Dalvik bytecodes" depends="optimize">
+        <echo>Converting bytecodes to Dalvik VM bytecodes...</echo>
+        <java jar="${dx.jar}" fork="true">
+            <arg line="--dex --verbose --output=${out.classes.optimized.dir}/classes.dex ${out.classes.optimized.dir}"/>
+        </java>
+    </target>
+
+    <target name="aapt" depends="dex" description="compile resources">
+        <echo>Packing resources...</echo>
+        <exec executable="${aapt}" logerror="true" osfamily="windows">
+            <arg line="p
+            -f
+            -M ${manifest.file}
+            -I ${android.jar}
+            -S ${res.dir}
+            -A ${assets.dir}
+            -F ${out.classes.optimized.dir}/${unsigned.apk}
+            -m -J ${gen.dir}"/>
+        </exec>
+    </target>
+
+    <target name="sign" depends="aapt" description="sign apk">
+        <input message="Please enter keystore password (store:${keystore}):"
+                       addproperty="keystore.password" />
+        <echo>Signing apk...</echo>
+        <exec executable="${jarsign}" logerror="true" osfamily="windows">
+            <arg line="-verbose
+            -keystore ${keystore}
+            -storepass ${keystore.password}
+            -signedjar ${out.classes.optimized.dir}/${signed.apk}
+            ${out.classes.optimized.dir}/${unsigned.apk} ${keyalias}"/>
+        </exec>
+    </target>
+
+    <target name="zipalign" depends="sign" description="zip align">
+        <echo>Aligning apk...</echo>
+        <exec executable="${zipalign}" logerror="true" osfamily="windows">
+            <arg line="-f
+            -v
+            4
+            ${out.classes.optimized.dir}/${signed.apk}
+            ${final.apk}"/>
+        </exec>
+    </target>
+
+</project>

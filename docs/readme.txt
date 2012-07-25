@@ -6,7 +6,10 @@ android app
 
    1. ant build deploy
    具体操作参考svn/mobileDocs/docs/android/ant.txt
-   --只实现了签名
+   --实现了签名
+
+   ant clean
+   ant release
 
    2. 护理移动模块程序调整,需实现语音蓝牙功能的,统一继承 NurseBaseActivity
 
@@ -16,6 +19,21 @@ android app
 
    4. 保证程序符合android标准,所有涉及服务端的操作一定要采用thread or AsyncTask
    如果不采用以上写法,android 4.0 出现NetworkOnMainThreadException
+   --线程只是用来下载数据的和其他操作的，操作完成了发送个Message到Handler()函数，然后再里面处理UI
+   example
+   handler = new Handler();
+   Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() { // This thread runs in the UI
+                    @Override
+                    public void run() {
+                        progress.setProgress("anything"); // Update the UI
+                    }
+                });
+            }
+        };
+        new Thread(runnable).start();
 
 2012.07.20
 ----------

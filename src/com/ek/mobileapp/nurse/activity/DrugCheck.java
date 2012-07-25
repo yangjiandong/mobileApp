@@ -3,9 +3,9 @@ package com.ek.mobileapp.nurse.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,8 +13,11 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -47,6 +50,10 @@ public class DrugCheck extends NurseBaseActivity {
     TextView t_user_by;
     TextView t_deptName;;
     ListView infolist;
+
+    MediaPlayer mMediaPlayer;
+
+    Button commitBtn;
 
     SharedPreferences sharedPreferences;
 
@@ -82,6 +89,19 @@ public class DrugCheck extends NurseBaseActivity {
         t_doctor = (TextView) findViewById(R.id.drugcheck_doctor);
         t_deptName = (TextView) findViewById(R.id.drugcheck_deptName);
 
+        commitBtn = (Button) findViewById(R.id.drugcheck_commit);
+        commitBtn.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                if (t_patientId.getText().toString().trim().equals("")) {
+                    return;
+                }
+                showProcessingImage(R.id.loadingImageView);
+
+                processCommitData();
+
+            }
+        });
+
         clearData();
         //振动器
         final Vibrator mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -90,7 +110,8 @@ public class DrugCheck extends NurseBaseActivity {
 
         infolist = (ListView) findViewById(R.id.drugcheck_list);
         infolist.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        refreshPatientInfo();
+
+        mMediaPlayer = MediaPlayer.create(DrugCheck.this, R.raw.voice);
 
     }
 
@@ -133,6 +154,75 @@ public class DrugCheck extends NurseBaseActivity {
 
     }
 
+    //开始处理提交
+    private void processCommitData() {
+
+        CommitData commit = new CommitData(commitDataHandler);
+
+        Thread thread = new Thread(commit);
+        thread.start();
+    }
+
+    //回调函数，显示结果
+    Handler commitDataHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            int type = msg.getData().getInt("type");
+            String message = msg.getData().getString("msg");
+
+            switch (type) {
+            case 1: {
+                GlobalCache.getCache().setDrugCheckDatas(new ArrayList<DrugCheckData>());
+                refreshList();
+                showMessage(message);
+                break;
+            }
+            case 0: {
+                showMessage(message);
+            }
+            default: {
+
+            }
+            }
+            stopAnimation(R.id.loadingImageView);
+        }
+    };
+
+    //真正的取数过程
+    class CommitData implements Runnable {
+        Handler handler;
+
+        public CommitData(Handler h) {
+            this.handler = h;
+        }
+
+        public void run() {
+            Message message = Message.obtain();
+            try {
+
+                String ret = DrugCheckAction.commitHis();
+                if (ret.equals("-1")) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("type", 0);
+                    bundle.putString("msg", "提交失败");
+                    message.setData(bundle);
+                } else {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("type", 1);
+                    bundle.putString("msg", "提交成功");
+                    message.setData(bundle);
+                }
+
+            } catch (Exception e) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("type", 0);
+                bundle.putString("msg", e.getMessage());
+                message.setData(bundle);
+            }
+            this.handler.sendMessage(message);
+        }
+
+    }
+
     //开始处理取数
     private void processGetData() {
 
@@ -160,6 +250,7 @@ public class DrugCheck extends NurseBaseActivity {
                 break;
             }
             case 3: {
+                mMediaPlayer.start();
                 showMessage(message);
                 break;
             }
@@ -171,6 +262,7 @@ public class DrugCheck extends NurseBaseActivity {
             }
             }
             //super.handleMessage(msg);
+            stopAnimation(R.id.loadingImageView);
         }
     };
 
@@ -271,4 +363,20 @@ public class DrugCheck extends NurseBaseActivity {
     public Handler getUIHandler() {
         return UIHandler;
     }
+
+    // 释放播放器资源
+    private void releaseMediaPlayer() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        // TODO Auto-generated method stub
+        super.onDestroy();
+        releaseMediaPlayer();
+    }
+
 }

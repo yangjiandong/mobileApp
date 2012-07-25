@@ -5,10 +5,16 @@ TODO
 ----------
 
    1. maven 打包,签名、混淆
+   ant 打包,签名、混淆
+   http://developer.android.com/tools/help/proguard.html
+   http://stackoverflow.com/questions/4629444/ant-build-for-android-proguard-obfuscation
+   save/build.example.xml
 
-   2. android 4.0 NetworkOnMainThreadException
+ok   2. android 4.0 NetworkOnMainThreadException
    http://daibalusu.iteye.com/blog/1586251
    --开线程处理关于网络的事物，然后用handler发送消息来处理更新UI
+
+   3. android 后台任务, thread pool
 
 2012.07.22
 ----------

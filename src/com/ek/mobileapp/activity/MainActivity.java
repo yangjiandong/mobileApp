@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -21,10 +20,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.ek.mobileapp.MainApplication;
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
 import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.model.UserDTO;
+import com.ek.mobileapp.nurse.action.VitalSignAction;
 import com.ek.mobileapp.nurse.activity.DrugCheck;
 import com.ek.mobileapp.nurse.activity.VitalSign;
 import com.ek.mobileapp.query.activity.QueryActivity;
@@ -48,21 +49,17 @@ public class MainActivity extends Activity {
     @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//
-//        //if (DEVELOPER_MODE) {
-//            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-//            .detectDiskReads()
-//            .detectDiskWrites()
-//            .detectNetwork()   // or .detectAll() for all detectable problems
-//            .penaltyLog()
-//            .build());
-//             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-//            .detectLeakedSqlLiteObjects()
-//            //.detectLeakedClosableObjects()
-//            .penaltyLog()
-//            .penaltyDeath()
-//            .build());
-//        //}
+        MainApplication.getInstance().addActivity(this);
+
+        //统一取数
+        Runnable runLog = new Runnable() {
+            public void run() { //
+                //
+                VitalSignAction.getTimePoint();
+                VitalSignAction.getItem("");
+            }
+        };
+        new Thread(runLog).start();
 
         createBtns();
         super.onCreate(savedInstanceState);
@@ -188,8 +185,24 @@ public class MainActivity extends Activity {
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                setResult(result);
-                System.exit(0);
+                //完全退出,以下方法都没效果
+                //setResult(result);
+                //System.exit(0);
+
+                //
+                //Intent startMain = new Intent(Intent.ACTION_MAIN);
+                //startMain.addCategory(Intent.CATEGORY_HOME);
+                //startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                //startActivity(startMain);
+                //System.exit(0);
+
+                //android.os.Process.killProcess(android.os.Process.myPid());    //获取PID
+                //System.exit(0);   //常规java、c#的标准退出法，返回值为0代表正常退出
+
+                //ActivityManager am = (ActivityManager)getSystemService (Context.ACTIVITY_SERVICE);
+                //am.restartPackage(getPackageName());
+
+                MainApplication.getInstance().exit();
             }
         });
 

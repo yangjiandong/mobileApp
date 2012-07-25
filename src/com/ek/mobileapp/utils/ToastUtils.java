@@ -16,6 +16,7 @@
 package com.ek.mobileapp.utils;
 
 import static android.widget.Toast.LENGTH_LONG;
+import static android.widget.Toast.LENGTH_SHORT;
 import android.app.Activity;
 import android.app.Application;
 import android.text.TextUtils;
@@ -44,7 +45,7 @@ public class ToastUtils {
         final Application application = activity.getApplication();
         activity.runOnUiThread(new Runnable() {
             public void run() {
-                Toast.makeText(application, message, LENGTH_LONG).show();
+                Toast.makeText(application, message, LENGTH_SHORT).show();
             }
         });
     }
@@ -76,8 +77,7 @@ public class ToastUtils {
      * @param e
      * @param defaultMessage
      */
-    public static void show(final Activity activity, final Exception e,
-            final int defaultMessage) {
+    public static void show(final Activity activity, final Exception e, final int defaultMessage) {
         if (activity == null)
             return;
 

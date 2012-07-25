@@ -10,6 +10,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.ek.mobileapp.MainApplication;
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.utils.WebUtils;
@@ -26,6 +27,8 @@ public class SettingActivity extends PreferenceActivity implements OnPreferenceC
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        MainApplication.getInstance().addActivity(this);
+
         super.onCreate(savedInstanceState);
         //从xml文件中添加Preference项
         addPreferencesFromResource(R.xml.setting);

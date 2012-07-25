@@ -46,6 +46,13 @@
 
             <requestFocus />
         </EditText>
+
+        <Button
+            android:id="@+id/drugcheck_commit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:text="提交" />
 
     </LinearLayout>
 
@@ -70,20 +77,12 @@
 
     </FrameLayout>
 
-    <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
+    <ListView
+        android:id="@+id/drugcheck_list"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true" >
-
-        <ListView
-            android:id="@+id/drugcheck_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:headerDividersEnabled="false" >
-
-        </ListView>
-
-    </ScrollView>
+        android:layout_weight="1"
+        android:headerDividersEnabled="false" >
+    </ListView>
 
 </LinearLayout>

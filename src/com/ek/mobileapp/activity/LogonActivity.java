@@ -124,11 +124,12 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
         isupdate = sharedPreferences.getBoolean("setting_update", false);
         //自动更新
         if (isupdate) {
-            //TODO
             //检查后台
-            //String ip = sharedPreferences.getString("setting_http_ip", WebUtils.HOST);
-            //String uriPath = "http://" + ip + WebUtils.UPDATE;
-            //update(uriPath);
+            //TODO
+
+            String ip = sharedPreferences.getString("setting_http_ip", WebUtils.HOST);
+            String uriPath = "http://" + ip + "/common/downloadFile?type=mobile";
+            update(uriPath);
         }
 
         logonBtn.setOnClickListener(new OnClickListener() {
@@ -283,6 +284,7 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
         dialog.show();
     }
 
+    @SuppressWarnings("unused")
     private Bitmap textAsBitmap(Bitmap image, String version, String vendor, float textSize, int textColor) {
         Paint paint = new Paint();
         paint.setTextSize(textSize);

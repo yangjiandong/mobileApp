@@ -416,9 +416,17 @@ public class VitalSign extends NurseBaseActivity {
         s_timePoint = (Spinner) findViewById(R.id.vitalsign_timePoint);
 
         //时间点
-        if (GlobalCache.getCache().getTimePoints() == null || GlobalCache.getCache().getTimePoints().size() == 0) {
-            VitalSignAction.getTimePoint();
-        }
+        //if (GlobalCache.getCache().getTimePoints() == null || GlobalCache.getCache().getTimePoints().size() == 0) {
+            //VitalSignAction.getTimePoint();
+        //showProcessingImage(R.id.loadingImageView);
+        //processUiData();
+
+        showUi();
+        //}
+        //
+    }
+
+    private void showUi(){
         List<TimePoint> times = GlobalCache.getCache().getTimePoints();
         timeStr = new String[times.size()];
         int i = 0;
@@ -489,7 +497,7 @@ public class VitalSign extends NurseBaseActivity {
         gridView1 = (GridView) findViewById(R.id.gridView1);
         final List<String> numsList = new ArrayList<String>();
         final List<String> numsList2 = new ArrayList<String>();
-        VitalSignAction.getItem("");
+        //VitalSignAction.getItem("");
         List<VitalSignItem> vas = GlobalCache.getCache().getVitalSignItems();
         for (VitalSignItem vitalSignItem : vas) {
             if (vitalSignItem.getTypeCode().equals(MobConstants.MOB_VITALSIGN_MORE)) {
@@ -553,6 +561,69 @@ public class VitalSign extends NurseBaseActivity {
 
             }
         });
+    }
+
+    //TODO
+    //比较慢,统一到MainActivity
+    //取后台数据
+    private void processUiData() {
+        GetPorcessUiData getData = new GetPorcessUiData(processUiHandler);
+        Thread thread = new Thread(getData);
+        thread.start();
+    }
+
+    //真正的取数过程
+    class GetPorcessUiData implements Runnable {
+        Handler handler;
+
+        public GetPorcessUiData(Handler h) {
+            this.handler = h;
+        }
+
+        public void run() {
+            Message message = Message.obtain();
+            try {
+                if (GlobalCache.getCache().getTimePoints() == null || GlobalCache.getCache().getTimePoints().size() == 0) {
+                    VitalSignAction.getTimePoint();
+                }
+                VitalSignAction.getItem("");
+
+                Bundle bundle = new Bundle();
+                bundle.putInt("type", 1);
+                bundle.putString("msg", "ok");
+                message.setData(bundle);
+
+            } catch (Exception e) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("type", 0);
+                bundle.putString("msg", e.getMessage());
+                message.setData(bundle);
+            }
+            this.handler.sendMessage(message);
+        }
 
     }
+    //回调函数，显示结果
+    Handler processUiHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            int type = msg.getData().getInt("type");
+
+            switch (type) {
+            case 1: {
+                showUi();
+                break;
+            }
+            case 0: {
+                String mss = msg.getData().getString("msg");
+                showMessage(mss);
+                MobLogAction.getMobLogAction().mobLogError("提取数据出错,请联系管理员", mss);
+                break;
+            }
+            default: {
+
+            }
+            }
+            stopAnimation(R.id.loadingImageView);
+        }
+    };
 }

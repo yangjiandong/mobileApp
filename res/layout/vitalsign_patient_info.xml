@@ -65,12 +65,11 @@
             android:layout_centerVertical="true"
             android:text="姓名"
             android:textSize="16dip" />
-
+
         <TextView
             android:id="@+id/vitalsign_name"
             style="@style/InfoText"
-            android:layout_width="64dp"
-            android:text="TextView" />
+            android:layout_width="64dp" />
 
         <TextView
             android:id="@+id/vitalsign_sexLabel"
@@ -84,7 +83,7 @@
             android:id="@+id/vitalsign_sex"
             style="@style/InfoText"
             android:layout_width="64dp"
-            android:text="TextView" />
+            />
 
         <TextView
             android:id="@+id/vitalsign_ageLabel"
@@ -98,7 +97,7 @@
             android:id="@+id/vitalsign_age"
             style="@style/InfoText"
             android:layout_width="64dp"
-            android:text="TextView" />
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -121,7 +120,7 @@
             android:id="@+id/vitalsign_bedNo"
             style="@style/InfoText"
             android:layout_width="64dp"
-            android:text="TextView" />
+            />
 
         <TextView
             android:id="@+id/vitalsign_doctorLabel"
@@ -135,7 +134,7 @@
             android:id="@+id/vitalsign_doctor"
             style="@style/InfoText"
             android:layout_width="64dp"
-            android:text="TextView" />
+            />
     </LinearLayout>
 
 </LinearLayout>
