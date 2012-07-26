@@ -5,10 +5,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.os.Vibrator;
+import android.content.res.Configuration;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -34,33 +31,20 @@ import android.widget.Toast;
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.model.MobConstants;
-import com.ek.mobileapp.model.Patient;
 import com.ek.mobileapp.model.TimePoint;
-import com.ek.mobileapp.model.UserDTO;
 import com.ek.mobileapp.model.VitalSignData;
 import com.ek.mobileapp.model.VitalSignItem;
-import com.ek.mobileapp.nurse.action.VitalSignAction;
 import com.ek.mobileapp.nurse.adapter.VitalSignDataGridViewAdapter;
-import com.ek.mobileapp.utils.BlueToothConnector;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.TimeTool;
 import com.ek.mobileapp.utils.UtilString;
 
-public class VitalSign extends NurseBaseActivity {
+public class VitalSign extends VitalSignBase {
 
-    TextView t_user_by;
-    Button get_patient;
-    EditText e_patientId;
-    TextView t_name;
-    TextView t_sex;
-    TextView t_age;
-    TextView t_bedNo;
-    TextView t_doctor;
     EditText e_busDate;
     Spinner s_timePoint;
 
     protected PopupWindow selectDateView;
-    protected LayoutInflater mLayoutInflater;
     protected DatePicker date_picker;
     private ArrayAdapter<String> timePointAdapter;
 
@@ -71,44 +55,28 @@ public class VitalSign extends NurseBaseActivity {
     //
     private String busDate = "";
 
-    //
-    //protected void onCreate(Bundle savedInstanceState) {}
-
-    private void clearData() {
-        e_patientId.setText("");
-        t_name.setText("");
-        t_sex.setText("");
-        t_age.setText("");
-        t_bedNo.setText("");
-        t_doctor.setText("");
-    }
-
     @Override
-    public void onPause() {
-        //ToastUtils.show(this, "onPause");
-        super.onPause();
-    }
+    public void HenorShu() {
+        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        try {
 
-    public void onResume() {
-        //ToastUtils.show(this, "onResume");
-        super.onResume();
-        get_patient.setVisibility(View.VISIBLE);
-        processGetData();
-    }
+            if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                Toast.makeText(getApplicationContext(), "切换为横屏", Toast.LENGTH_SHORT).show();
+                this.setContentView(R.layout.vitalsign_land);
+                LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.vitalsign_patient_info_land, null);
+                LinearLayout layout = (LinearLayout) findViewById(R.id.pa_infos_land);
+                layout.addView(inputkey);
 
-    protected void onStop() {
-        //ToastUtils.show(this, "onStop");
-        super.onStop();
-    }
-
-    protected void onStart() {
-        //ToastUtils.show(this, "onStart");
-        super.onStart();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+            } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                Toast.makeText(getApplicationContext(), "切换为竖屏", Toast.LENGTH_SHORT).show();
+                this.setContentView(R.layout.vitalsign);
+                LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.vitalsign_patient_info, null);
+                LinearLayout layout = (LinearLayout) findViewById(R.id.pa_infos);
+                layout.addView(inputkey);
+            }
+        } catch (Exception e) {
+            MobLogAction.getMobLogAction().mobLogError("病人信息", e.getMessage());
+        }
     }
 
     private void initSelectDate() {
@@ -147,110 +115,6 @@ public class VitalSign extends NurseBaseActivity {
                 }
             }
         });
-    }
-
-    //回调函数，显示结果
-    Handler getDataHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            int type = msg.getData().getInt("type");
-
-            switch (type) {
-            case 1: {
-                refreshData();
-                break;
-            }
-            case 0: {
-                String mss = msg.getData().getString("msg");
-                showMessage(mss);
-                MobLogAction.getMobLogAction().mobLogError("提取数据出错,请联系管理员", mss);
-                break;
-            }
-            default: {
-
-            }
-            }
-            stopAnimation(R.id.loadingImageView);
-        }
-    };
-
-    //真正的取数过程
-    class GetVitalSignData implements Runnable {
-        Handler handler;
-
-        public GetVitalSignData(Handler h) {
-            this.handler = h;
-        }
-
-        public void run() {
-            Message message = Message.obtain();
-            try {
-                //提取病人基本信息
-                String ret = VitalSignAction.getPatient(e_patientId.getText().toString().trim());
-                if (UtilString.isBlank(e_patientId.getText().toString()) && ret.equals("-1")) {
-                    return;
-                } else if (!UtilString.isBlank(e_patientId.getText().toString()) && ret.equals("-1")) {
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("type", 0);
-                    bundle.putString("msg", "找不到住院号为" + e_patientId.getText().toString().trim() + "的病人");
-                    message.setData(bundle);
-                } else {
-                    //取出全部生命体征数据
-                    VitalSignAction.getAll(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate);
-
-                    if (GlobalCache.getCache().getTimePoint() == null) {
-
-                    } else {
-                        //时间点
-                        VitalSignAction.getOne(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate,
-                                GlobalCache.getCache().getTimePoint(), "");
-                    }
-
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("type", 1);
-                    bundle.putString("msg", "ok");
-                    message.setData(bundle);
-                }
-
-            } catch (Exception e) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("type", 0);
-                bundle.putString("msg", e.getMessage());
-                message.setData(bundle);
-            }
-            this.handler.sendMessage(message);
-        }
-
-    }
-
-    //开始处理取数
-    private void processGetData() {
-        if (e_patientId.getText().toString().trim().equals("")) {
-            return;
-        }
-        showProcessingImage(R.id.loadingImageView);
-        GetVitalSignData getData = new GetVitalSignData(getDataHandler);
-        Thread thread = new Thread(getData);
-        thread.start();
-    }
-
-    //只负责显示数据
-    private void refreshData() {
-
-        Patient pa = GlobalCache.getCache().getCurrentPatient();
-        if (pa != null) {
-            t_name.setText(pa.getPatientName());
-            t_sex.setText(pa.getSex());
-            t_age.setText(pa.getAge());
-            t_bedNo.setText(pa.getBedNo());
-            t_doctor.setText(pa.getDoctorName());
-            //取生命体征
-            showMessageByVoice("当前病人" + pa.getPatientName());
-            refreshGrid();
-        } else {
-            stopAnimation(R.id.loadingImageView);
-            showMessage("没有找到对应病人");
-        }
-
     }
 
     //只负责显示数据
@@ -325,108 +189,25 @@ public class VitalSign extends NurseBaseActivity {
         }
     }
 
-    //需实现的方法
-    public void receiveBlueToothMessage(String msg, int type) {
-        //
-    }
-
-    public Context getContext() {
-        return this;
-    }
-
-    Handler UIHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            int type = msg.getData().getInt("type");
-            switch (type) {
-            case BlueToothConnector.UNCONNECTED:
-                unConnectBLuetoothImage();
-                break;
-            case BlueToothConnector.CONNECTED:
-                //有蓝牙设备
-                connectBLuetoothImage();
-                break;
-            case BlueToothConnector.READ:
-
-                String p = msg.getData().getString("msg");
-                e_patientId.setText(p);
-
-                //振动器
-                final Vibrator mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                final int vibrationDuration = 33;
-                mVibrator.vibrate(vibrationDuration);
-
-                processGetData();
-
-                break;
-
-            default: {
-
-            }
-            }
-        }
-    };
-
-    public Handler getUIHandler() {
-        return UIHandler;
+    @Override
+    public void refreshOther() {
+        refreshGrid();
     }
 
     @Override
-    protected void createUi() {
+    public void initBase() {
         setContentView(R.layout.vitalsign);
 
-        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        try {
-            LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.vitalsign_patient_info, null);
+    }
 
-            LinearLayout layout = (LinearLayout) findViewById(R.id.pa_infos);
-            layout.addView(inputkey);
+    @Override
+    public void showUi() {
 
-        } catch (Exception e) {
-            MobLogAction.getMobLogAction().mobLogError("病人信息", e.getMessage());
-        }
-
-        busDate = TimeTool.getDateFormated(TimeTool.getCurrentTime());
-        mLayoutInflater = (LayoutInflater) VitalSign.this.getSystemService(LAYOUT_INFLATER_SERVICE);
-        UserDTO user = GlobalCache.getCache().getLoginuser();
-        t_user_by = (TextView) findViewById(R.id.user_by);
-        t_user_by.setText("操作人: " + user.getName() + " - " + user.getDepartName());
-
-        get_patient = (Button) findViewById(R.id.get_patient);
-        get_patient.setVisibility(View.VISIBLE);
-        get_patient.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                if (e_patientId.getText().toString().trim().equals("")) {
-                    return;
-                }
-                showProcessingImage(R.id.loadingImageView);
-
-                processGetData();
-
-            }
-        });
-
-        e_patientId = (EditText) findViewById(R.id.vitalsign_patientId);
-        t_name = (TextView) findViewById(R.id.vitalsign_name);
-        t_sex = (TextView) findViewById(R.id.vitalsign_sex);
-        t_age = (TextView) findViewById(R.id.vitalsign_age);
-        t_bedNo = (TextView) findViewById(R.id.vitalsign_bedNo);
-        t_doctor = (TextView) findViewById(R.id.vitalsign_doctor);
         e_busDate = (EditText) findViewById(R.id.vitalsign_busDate);
         e_busDate.setTextSize(16);
         s_timePoint = (Spinner) findViewById(R.id.vitalsign_timePoint);
+        busDate = TimeTool.getDateFormated(TimeTool.getCurrentTime());
 
-        //时间点
-        //if (GlobalCache.getCache().getTimePoints() == null || GlobalCache.getCache().getTimePoints().size() == 0) {
-            //VitalSignAction.getTimePoint();
-        //showProcessingImage(R.id.loadingImageView);
-        //processUiData();
-
-        showUi();
-        //}
-        //
-    }
-
-    private void showUi(){
         List<TimePoint> times = GlobalCache.getCache().getTimePoints();
         timeStr = new String[times.size()];
         int i = 0;
@@ -488,8 +269,6 @@ public class VitalSign extends NurseBaseActivity {
             }
         });
 
-        //
-        clearData();
         if (GlobalCache.getCache().getCurrentPatient() != null) {
             e_patientId.setText(GlobalCache.getCache().getCurrentPatient().getPatientId());
         }
@@ -563,67 +342,4 @@ public class VitalSign extends NurseBaseActivity {
         });
     }
 
-    //TODO
-    //比较慢,统一到MainActivity
-    //取后台数据
-    private void processUiData() {
-        GetPorcessUiData getData = new GetPorcessUiData(processUiHandler);
-        Thread thread = new Thread(getData);
-        thread.start();
-    }
-
-    //真正的取数过程
-    class GetPorcessUiData implements Runnable {
-        Handler handler;
-
-        public GetPorcessUiData(Handler h) {
-            this.handler = h;
-        }
-
-        public void run() {
-            Message message = Message.obtain();
-            try {
-                if (GlobalCache.getCache().getTimePoints() == null || GlobalCache.getCache().getTimePoints().size() == 0) {
-                    VitalSignAction.getTimePoint();
-                }
-                VitalSignAction.getItem("");
-
-                Bundle bundle = new Bundle();
-                bundle.putInt("type", 1);
-                bundle.putString("msg", "ok");
-                message.setData(bundle);
-
-            } catch (Exception e) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("type", 0);
-                bundle.putString("msg", e.getMessage());
-                message.setData(bundle);
-            }
-            this.handler.sendMessage(message);
-        }
-
-    }
-    //回调函数，显示结果
-    Handler processUiHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            int type = msg.getData().getInt("type");
-
-            switch (type) {
-            case 1: {
-                showUi();
-                break;
-            }
-            case 0: {
-                String mss = msg.getData().getString("msg");
-                showMessage(mss);
-                MobLogAction.getMobLogAction().mobLogError("提取数据出错,请联系管理员", mss);
-                break;
-            }
-            default: {
-
-            }
-            }
-            stopAnimation(R.id.loadingImageView);
-        }
-    };
 }

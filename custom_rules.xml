@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="custom_rules">
+  <xmlproperty file="AndroidManifest.xml" prefix="mymanifest" collapseAttributes="true" />
+  <property name="copy.dir" value="bin/copy/" />
+  <property name="app.name" value="${ant.project.name}" />
+  <property name="build.file" value="${ant.project.name}_${mymanifest.manifest.android:versionCode}_${mymanifest.manifest.android:versionName}.apk" />
+
+  <target name="-post-build">
+    <delete dir="${copy.dir}" />
+    <echo>build file is ${build.file}</echo>
+    <copy file="${out.final.file}" tofile="${copy.dir}${build.file}" overwrite="true" />
+  </target>
+</project>

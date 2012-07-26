@@ -62,6 +62,37 @@ public class DrugCheckAction {
                 return "-1";
             }
             JSONArray arrays = res.getJSONArray("drugCheckData");
+            if (arrays.length() == GlobalCache.getCache().getDrugCheckDatas().size())
+                return "-1";
+            for (int i = 0; i < arrays.length(); i++) {
+                JSONObject p = (JSONObject) arrays.get(i);
+                drugCheckDatas.add(JSON.parseObject(p.toString(), DrugCheckData.class));
+            }
+            GlobalCache.getCache().setDrugCheckDatas(drugCheckDatas);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "1";
+    }
+
+    public static String queryData(String patientId) {
+        String ip = GlobalCache.getCache().getHostIp();
+        Long userId = GlobalCache.getCache().getLoginuser().getId();
+        String url = "http://" + ip + WebUtils.DRUGCHECK_QUERY_DATA;
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("patientId", patientId));
+        params.add(new BasicNameValuePair("userId", String.valueOf(userId)));
+        JSONObject res = HttpTool.getTool().post(url, params);
+        if (res == null)
+            return "-1";
+
+        List<DrugCheckData> drugCheckDatas = new ArrayList<DrugCheckData>();
+        try {
+            if (!res.getBoolean("success")) {
+                return "-1";
+            }
+            JSONArray arrays = res.getJSONArray("drugCheckData");
             for (int i = 0; i < arrays.length(); i++) {
                 JSONObject p = (JSONObject) arrays.get(i);
                 drugCheckDatas.add(JSON.parseObject(p.toString(), DrugCheckData.class));

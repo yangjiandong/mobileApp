@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,6 +23,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.MobLogAction;
@@ -58,23 +60,58 @@ public class DrugCheck extends NurseBaseActivity {
     SharedPreferences sharedPreferences;
 
     @Override
-    protected void createUi() {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.drugcheck);
+    public void onConfigurationChanged(Configuration newConfig) {
+        // TODO Auto-generated method stub
+        super.onConfigurationChanged(newConfig);
+        HenorShu();
+        showUi();
+        refreshPatientInfo();
+    }
+
+   public void HenorShu() {
         final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         try {
-            LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.drugcheck_patient_info, null);
 
-            LinearLayout layout = (LinearLayout) findViewById(R.id.pa_infos);
-            layout.addView(inputkey);
+            if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                Toast.makeText(getApplicationContext(), "切换为横屏", Toast.LENGTH_SHORT).show();
+                this.setContentView(R.layout.drugcheck_land);
+                LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.drugcheck_patient_info_land, null);
+                LinearLayout layout = (LinearLayout) findViewById(R.id.drugcheck_pa_infos_land);
+                layout.addView(inputkey);
 
+            } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                Toast.makeText(getApplicationContext(), "切换为竖屏", Toast.LENGTH_SHORT).show();
+                this.setContentView(R.layout.drugcheck);
+                LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.drugcheck_patient_info, null);
+                LinearLayout layout = (LinearLayout) findViewById(R.id.drugcheck_pa_infos);
+                layout.addView(inputkey);
+            }
         } catch (Exception e) {
             MobLogAction.getMobLogAction().mobLogError("病人信息", e.getMessage());
         }
+    }
+
+    @Override
+    protected void createUi() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        HenorShu();
+        //setContentView(R.layout.drugcheck);
+
+        showUi();
+
+        //振动器
+        final Vibrator mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        final int vibrationDuration = 33;
+        mVibrator.vibrate(vibrationDuration);
+        mMediaPlayer = MediaPlayer.create(DrugCheck.this, R.raw.voice);
+
+    }
+
+    private void showUi() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         UserDTO user = GlobalCache.getCache().getLoginuser();
-        t_user_by = (TextView) findViewById(R.id.user_by);
+        t_user_by = (TextView) findViewById(R.id.drugcheck_user_by);
         t_user_by.setText("操作人: " + user.getName() + " - " + user.getDepartName());
 
         e_barCode = (EditText) findViewById(R.id.drugcheck_barcode);
@@ -103,16 +140,9 @@ public class DrugCheck extends NurseBaseActivity {
         });
 
         clearData();
-        //振动器
-        final Vibrator mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        final int vibrationDuration = 33;
-        mVibrator.vibrate(vibrationDuration);
 
         infolist = (ListView) findViewById(R.id.drugcheck_list);
         infolist.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-
-        mMediaPlayer = MediaPlayer.create(DrugCheck.this, R.raw.voice);
-
     }
 
     private void clearData() {
@@ -288,6 +318,8 @@ public class DrugCheck extends NurseBaseActivity {
                         bundle.putString("msg", "找不到住院号为" + t_patientId.getText().toString().trim() + "的病人");
                         message.setData(bundle);
                     } else {
+
+                        DrugCheckAction.queryData(e_barCode.getText().toString().trim());
                         Bundle bundle = new Bundle();
                         bundle.putInt("type", 1);
                         bundle.putString("msg", "病人" + GlobalCache.getCache().getCurrentPatient().getPatientName());

@@ -1,6 +1,18 @@
 android app
 ===========
 
+2012.07.26
+----------
+
+   1. 程序发布
+   退出eclipse
+   cmd
+   ant clean
+   ant release
+   生成bin/copy/*.apk
+   
+   --每次发布只需要更改AndroidManifest.xml 定义的版本信息
+   
 2012.07.24
 ----------
 

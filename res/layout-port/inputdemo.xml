@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/main"
+              style="@style/Page">
+    <LinearLayout
+         android:id="@+id/Top"
+         android:orientation="vertical"
+         android:layout_width="fill_parent"
+         android:layout_height="fill_parent"
+         android:layout_weight="2">
+    <EditText
+        android:id="@+id/textView1"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/TextViewHeight"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:ellipsize="start"
+        android:padding="2dp"
+        android:text="@string/Empty"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="@dimen/ViewedTextSize" android:singleLine="true" />
+
+    <EditText
+        android:id="@+id/textView2"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/TextViewHeight"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:ellipsize="start"
+        android:padding="2dp"
+        android:text="@string/Empty"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="@dimen/ViewedTextSize" android:singleLine="true"/>
+    </LinearLayout>
+</LinearLayout>

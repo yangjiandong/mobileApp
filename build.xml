@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="sshapp-mobileapp" default="help">
+<project name="sshapp-mobileapp" default="">
 
     <!-- The local.properties file is created and updated by the 'android' tool.
          It contains the path to the SDK. It should *NOT* be checked into
@@ -80,4 +80,11 @@
     <!-- version-tag: 1 -->
     <import file="${sdk.dir}/tools/ant/build.xml" />
 
+  <!--
+  <xpath input="AndroidManifest.xml" expression="/manifest/@android:versionName"
+                          output="versionName" default="0"/>
+  <xpath input="AndroidManifest.xml" expression="/manifest/@android:versionCode"
+                            output="versionCode" default="0"/>
+  <echo message="name: ${versionCode}_${versionName}"></echo>
+    -->
 </project>

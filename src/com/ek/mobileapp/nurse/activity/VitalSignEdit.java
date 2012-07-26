@@ -7,6 +7,7 @@ import java.util.Map;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,20 +25,20 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.activity.InputDemoActivtiy;
 import com.ek.mobileapp.model.MeasureType;
 import com.ek.mobileapp.model.Patient;
-import com.ek.mobileapp.model.UserDTO;
 import com.ek.mobileapp.model.VitalSignData;
 import com.ek.mobileapp.nurse.action.VitalSignAction;
-import com.ek.mobileapp.utils.BlueToothConnector;
 import com.ek.mobileapp.utils.GlobalCache;
+import com.ek.mobileapp.utils.UtilString;
 
 //维护生命体征,按时间点
-public class VitalSignEdit extends NurseBaseActivity {
+public class VitalSignEdit extends VitalSignBase {
     List<MeasureType> list = new ArrayList<MeasureType>();
     Map<Integer, Integer> btns = new HashMap<Integer, Integer>();
     Button B1, B2, B3, B4, B5, B6, B7, B8, B9, B0, BClear, BDot, BEqual;
@@ -58,53 +59,86 @@ public class VitalSignEdit extends NurseBaseActivity {
     boolean textCursor = false;
     boolean dotPressed = false;
     boolean syntaxError = false;
-
     private static Long measureTypeCode = 0L;
 
+    private String itemCode = "";
+
     @Override
-    protected void createUi() {
+    public void initBase() {
         setContentView(R.layout.vitalsignedit);
 
+    }
+
+    @Override
+    protected String getItemCode() {
+        return itemCode;
+    }
+
+    @Override
+    public void refreshOther() {
+        VitalSignData data = GlobalCache.getCache().getVitalSignData();
+
+        if (data != null) {
+            if (!UtilString.isBlank(data.getValue1()) && data.getItemCode().equals(itemCode)) {
+                e_text.setText(data.getValue1());
+            } else {
+                e_text.setText("");
+            }
+
+        }
+
+        if (UtilString.isBlank(data.getMeasureTypeCode())) {
+            measures.clearCheck();
+            measures2.clearCheck();
+        } else {
+            if (Integer.valueOf(data.getMeasureTypeCode()) < 5) {
+                measures.check(Integer.valueOf(data.getMeasureTypeCode()));
+            } else {
+                measures2.check(Integer.valueOf(data.getMeasureTypeCode()));
+            }
+        }
+
+    }
+
+    @Override
+    public void HenorShu() {
         final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         try {
-            LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.vitalsign_patient_info, null);
 
-            LinearLayout layout = (LinearLayout) findViewById(R.id.pa_infos);
-            layout.addView(inputkey);
+            if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                Toast.makeText(getApplicationContext(), "切换为横屏", Toast.LENGTH_SHORT).show();
+                this.setContentView(R.layout.vitalsignedit);
+                LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.vitalsign_patient_info_land, null);
+                LinearLayout layout = (LinearLayout) findViewById(R.id.pa_infos_land);
+                layout.addView(inputkey);
 
+            } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                Toast.makeText(getApplicationContext(), "切换为竖屏", Toast.LENGTH_SHORT).show();
+                this.setContentView(R.layout.vitalsignedit);
+                LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.vitalsign_patient_info, null);
+                LinearLayout layout = (LinearLayout) findViewById(R.id.pa_infos);
+                layout.addView(inputkey);
+            }
         } catch (Exception e) {
             MobLogAction.getMobLogAction().mobLogError("病人信息", e.getMessage());
         }
+    }
 
-        UserDTO user = GlobalCache.getCache().getLoginuser();
-        t_user_by = (TextView) findViewById(R.id.user_by);
-        t_user_by.setText("操作人: " + user.getName() + " - " + user.getDepartName());
+    @Override
+    protected void showUi() {
+
+        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         Intent intent = getIntent();
-        String itemCode = intent.getStringExtra("code");
+        itemCode = intent.getStringExtra("code");
         String itemName = intent.getStringExtra("name");
-
-        Patient pa = GlobalCache.getCache().getCurrentPatient();
-        String busDate = GlobalCache.getCache().getBusDate();
-        String timePoint = GlobalCache.getCache().getTimePoint();
-
-        e_patientId = (EditText) findViewById(R.id.vitalsign_patientId);
-        e_patientId.setInputType(InputType.TYPE_NULL);
-        t_patientName = (TextView) findViewById(R.id.vitalsign_name);
-
-        get_patient = (Button) findViewById(R.id.get_patient);
-        get_patient.setVisibility(View.INVISIBLE);
-
-        t_age = (TextView) findViewById(R.id.vitalsign_age);
-        t_sex = (TextView) findViewById(R.id.vitalsign_sex);
-        t_bedNo = (TextView) findViewById(R.id.vitalsign_bedNo);
-        t_doctor = (TextView) findViewById(R.id.vitalsign_doctor);
 
         try {
             TableLayout inputkey = (TableLayout) inflater.inflate(R.layout.inputkey, null);
             LinearLayout layout = (LinearLayout) findViewById(R.id.vitalsign_edit_inputkey);
             layout.addView(inputkey);
             initLayout();
+            t_label.setText(itemName);
         } catch (Exception e) {
             MobLogAction.getMobLogAction().mobLogError("inputkey", e.getMessage());
         }
@@ -138,12 +172,12 @@ public class VitalSignEdit extends NurseBaseActivity {
                     return;
 
                 //有可能原有数据已有小数点
-                if (!syntaxError){
+                if (!syntaxError) {
                     StringBuffer sb = new StringBuffer(e_text.getText().toString().trim());
                     sb.append(".");
-                    try{
+                    try {
                         double d = Double.valueOf(sb.toString());
-                    }catch (Exception e) {
+                    } catch (Exception e) {
                         syntaxError = true;
                     }
                 }
@@ -176,22 +210,15 @@ public class VitalSignEdit extends NurseBaseActivity {
         BClear.setOnClickListener(myListenerBClear);
         BEqual.setOnClickListener(myListenerBSave);
 
-        if (pa != null) {
-            e_patientId.setText(pa.getPatientId());
-            t_patientName.setText(pa.getPatientName());
-            t_age.setText(pa.getAge());
-            t_sex.setText(pa.getSex());
-            t_bedNo.setText(pa.getBedNo());
-            t_doctor.setText(pa.getDoctorName());
-        }
-
-        t_label.setText(itemName);
-
         measures = (RadioGroup) findViewById(R.id.vitalsign_edit_measures);
         measures2 = (RadioGroup) findViewById(R.id.vitalsign_edit_measures2);
         int count = 4;
         int i = 0;
         try {
+
+            Patient pa = GlobalCache.getCache().getCurrentPatient();
+            String busDate = GlobalCache.getCache().getBusDate();
+            String timePoint = GlobalCache.getCache().getTimePoint();
 
             if (pa != null && busDate != null && timePoint != null && timePoint.length() > 0 && busDate.length() > 0)
                 VitalSignAction.getOne(pa.getPatientId(), busDate, timePoint, itemCode);
@@ -203,7 +230,6 @@ public class VitalSignEdit extends NurseBaseActivity {
                     e_text.setText(data.getValue1());
             }
 
-            VitalSignAction.getMeasureType();
             list = GlobalCache.getCache().getMeasureTypes();
             for (MeasureType a : list) {
                 RadioButton rb = new RadioButton(this, null);
@@ -397,48 +423,4 @@ public class VitalSignEdit extends NurseBaseActivity {
 
     }
 
-    //需实现的方法
-    public void receiveBlueToothMessage(String msg, int type) {
-        //
-    }
-
-    public Context getContext() {
-        return this;
-    }
-
-    Handler UIHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            int type = msg.getData().getInt("type");
-            switch (type) {
-            case BlueToothConnector.UNCONNECTED:
-                unConnectBLuetoothImage();
-                break;
-            case BlueToothConnector.CONNECTED:
-                //有蓝牙设备
-                connectBLuetoothImage();
-                break;
-            case BlueToothConnector.READ:
-
-                String p = msg.getData().getString("msg");
-                e_patientId.setText(p);
-
-                //振动器
-                final Vibrator mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                final int vibrationDuration = 33;
-                mVibrator.vibrate(vibrationDuration);
-
-                //processGetData();
-
-                break;
-
-            default: {
-
-            }
-            }
-        }
-    };
-
-    public Handler getUIHandler() {
-        return UIHandler;
-    }
 }

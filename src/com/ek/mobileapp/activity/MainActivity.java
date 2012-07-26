@@ -57,6 +57,8 @@ public class MainActivity extends Activity {
                 //
                 VitalSignAction.getTimePoint();
                 VitalSignAction.getItem("");
+                VitalSignAction.getSkinTest();
+                VitalSignAction.getMeasureType();
             }
         };
         new Thread(runLog).start();

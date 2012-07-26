@@ -5,6 +5,11 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -40,7 +45,9 @@ import android.widget.Toast;
 
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
+import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.utils.GlobalCache;
+import com.ek.mobileapp.utils.HttpTool;
 import com.ek.mobileapp.utils.SettingsUtils;
 import com.ek.mobileapp.utils.WebUtils;
 import com.markupartist.android.widget.ActionBar;
@@ -55,6 +62,8 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
     CheckBox savepassword;
     SharedPreferences sharedPreferences;
     TelephonyManager tm;
+    //
+    String version = "1";
 
     public static final int LOGINACTION = 12;
     private ProgressDialog proDialog;
@@ -80,11 +89,11 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
 
         tm = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
 
-        String version = "x.xx";
+        version = "1";
         String vendor = "鑫亿";
         try {
             PackageInfo pinfo = this.getPackageManager().getPackageInfo(SettingsUtils.TRACKER_PACKAGE_NAME, 0);
-            version = pinfo.versionCode + "." + pinfo.versionName;
+            version = pinfo.versionCode + "_" + pinfo.versionName;
             //vendor = pinfo.applicationInfo.sharedUserLabel;
             actionBar.setTitle(pinfo.applicationInfo.labelRes);
 
@@ -125,11 +134,7 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
         //自动更新
         if (isupdate) {
             //检查后台
-            //TODO
-
-            String ip = sharedPreferences.getString("setting_http_ip", WebUtils.HOST);
-            String uriPath = "http://" + ip + "/common/downloadFile?type=mobile";
-            update(uriPath);
+            getLastVersion();
         }
 
         logonBtn.setOnClickListener(new OnClickListener() {
@@ -274,47 +279,11 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                // TODO Auto-generated method stub
-                // do nothing
-
             }
         });
 
         AlertDialog dialog = builder.create();
         dialog.show();
-    }
-
-    @SuppressWarnings("unused")
-    private Bitmap textAsBitmap(Bitmap image, String version, String vendor, float textSize, int textColor) {
-        Paint paint = new Paint();
-        paint.setTextSize(textSize);
-        paint.setColor(textColor);
-        paint.setAntiAlias(true);
-
-        Bitmap newMapBitmap = image.copy(Bitmap.Config.ARGB_8888, true);
-
-        try {
-            Canvas canvas = new Canvas(newMapBitmap);
-            canvas.drawText(vendor, 10, 20, paint);
-            canvas.drawText(version, 10, 35, paint);
-        } catch (Exception e) {
-            Log.e("textAsBitmap", e.getMessage());
-        }
-
-        String filename = "version.jpg";
-        File sd = Environment.getExternalStorageDirectory();
-        File dest = new File(sd, filename);
-
-        try {
-            FileOutputStream out = new FileOutputStream(dest);
-            newMapBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return newMapBitmap;
     }
 
     @Override
@@ -366,36 +335,32 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
         if (!URLUtil.isNetworkUrl(strPath)) {
             Toast.makeText(this, "下载地址错误", Toast.LENGTH_SHORT).show();
         } else {
-            String fileEx = strURL.substring(strURL.lastIndexOf(".") + 1, strURL.length()).toLowerCase();
-            String fileNa = strURL.substring(strURL.lastIndexOf("/") + 1, strURL.lastIndexOf("."));
-            if (!fileEx.equals("apk")) {
-                Toast.makeText(this, "下载安装文件错误", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            URL myURL = new URL(strPath);
-            URLConnection conn = myURL.openConnection();
-            conn.connect();
-            InputStream is = conn.getInputStream();
-            if (is == null) {
-                throw new RuntimeException("stream is null");
-            }
-            File myTempFile = File.createTempFile(fileNa, "." + fileEx);
-            currentTempFilePath = myTempFile.getAbsolutePath();
-            FileOutputStream fos = new FileOutputStream(myTempFile);
-            byte buf[] = new byte[128];
-            do {
-                int numread = is.read(buf);
-                if (numread <= 0) {
-                    break;
-                }
-                fos.write(buf, 0, numread);
-            } while (true);
-            openFile(myTempFile);
-            this.finish();
+
             try {
+                URL myURL = new URL(strPath);
+                URLConnection conn = myURL.openConnection();
+                conn.connect();
+                InputStream is = conn.getInputStream();
+                if (is == null) {
+                    throw new RuntimeException("stream is null");
+                }
+                File myTempFile = File.createTempFile("sshapp-mobileapp", ".apk");
+                currentTempFilePath = myTempFile.getAbsolutePath();
+                FileOutputStream fos = new FileOutputStream(myTempFile);
+                byte buf[] = new byte[128];
+                do {
+                    int numread = is.read(buf);
+                    if (numread <= 0) {
+                        break;
+                    }
+                    fos.write(buf, 0, numread);
+                } while (true);
+                openFile(myTempFile);
+                this.finish();
+
                 is.close();
             } catch (Exception ex) {
-
+                MobLogAction.getMobLogAction().mobLogError("自动更新", ex.getMessage());
             }
         }
     }
@@ -430,6 +395,86 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
         if (myFile.exists()) {
             myFile.delete();
         }
+    }
+
+    private void getLastVersion() {
+        GetLastVersion getData = new GetLastVersion(getLastVersionHandler);
+        Thread thread = new Thread(getData);
+        thread.start();
+    }
+
+    //提取最新版本
+    class GetLastVersion implements Runnable {
+        Handler handler;
+
+        public GetLastVersion(Handler h) {
+            this.handler = h;
+        }
+
+        public void run() {
+            Message message = Message.obtain();
+            try {
+                String url = "http://" + ip + "/common/get_last_deploy?type=mobile";
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                JSONObject res = HttpTool.getTool().post(url, params);
+                if (res == null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("type", 0);
+                    bundle.putString("msg", "没取得版本信息");
+                    message.setData(bundle);
+                } else if (!res.getBoolean("success")) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("type", 0);
+                    bundle.putString("msg", "没取得版本信息");
+                    message.setData(bundle);
+                } else {
+                    String lastVersion = res.getString("lastVersion");
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("type", 1);
+                    bundle.putString("msg", lastVersion);
+                    message.setData(bundle);
+
+                }
+            } catch (Exception e) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("type", 0);
+                bundle.putString("msg", e.getMessage());
+                message.setData(bundle);
+            } finally {
+                this.handler.sendMessage(message);
+            }
+        }
+    }
+
+    //回调函数，显示结果
+    Handler getLastVersionHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            int type = msg.getData().getInt("type");
+
+            switch (type) {
+            case 1: {
+                String lastVersion = msg.getData().getString("msg");
+                if (version.compareTo(lastVersion) < 0) {
+                    processUpdate();
+                }
+                break;
+            }
+            case 0: {
+                String mss = msg.getData().getString("msg");
+                MobLogAction.getMobLogAction().mobLogError("自动更新", mss);
+                break;
+            }
+            default: {
+
+            }
+            }
+        }
+    };
+
+    private void processUpdate() {
+        String ip = sharedPreferences.getString("setting_http_ip", WebUtils.HOST);
+        String uriPath = "http://" + ip + "/common/downloadFile?type=mobile";
+        update(uriPath);
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
