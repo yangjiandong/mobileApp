@@ -50,13 +50,13 @@ public abstract class VitalSignBase extends NurseBaseActivity {
         t_doctor.setText("");
     }
 
-/*    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        HenorShu();
-        initUi();//重新刷新ui
-        refreshData();//刷新数据
-    }*/
+    /*    @Override
+        public void onConfigurationChanged(Configuration newConfig) {
+            super.onConfigurationChanged(newConfig);
+            HenorShu();
+            initUi();//重新刷新ui
+            refreshData();//刷新数据
+        }*/
 
     //横竖布局变化
     //protected abstract void HenorShu();
@@ -125,16 +125,11 @@ public abstract class VitalSignBase extends NurseBaseActivity {
             Message message = Message.obtain();
             try {
                 String busDate = GlobalCache.getCache().getBusDate();
-                //提取病人基本信息
-                String ret = VitalSignAction.getPatient(e_patientId.getText().toString().trim());
-                if (UtilString.isBlank(e_patientId.getText().toString()) && ret.equals("-1")) {
-                    return;
-                } else if (!UtilString.isBlank(e_patientId.getText().toString()) && ret.equals("-1")) {
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("type", 0);
-                    bundle.putString("msg", "找不到住院号为" + e_patientId.getText().toString().trim() + "的病人");
-                    message.setData(bundle);
-                } else {
+
+                if (GlobalCache.getCache().getCurrentPatient() != null
+                        && GlobalCache.getCache().getCurrentPatient().getPatientId()
+                                .equals(e_patientId.getText().toString().trim())) {
+
                     //取出全部生命体征数据
                     VitalSignAction.getAll(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate);
 
@@ -150,6 +145,34 @@ public abstract class VitalSignBase extends NurseBaseActivity {
                     bundle.putInt("type", 1);
                     bundle.putString("msg", "ok");
                     message.setData(bundle);
+                } else {
+
+                    //提取病人基本信息
+                    String ret = VitalSignAction.getPatient(e_patientId.getText().toString().trim());
+                    if (UtilString.isBlank(e_patientId.getText().toString()) && ret.equals("-1")) {
+                        return;
+                    } else if (!UtilString.isBlank(e_patientId.getText().toString()) && ret.equals("-1")) {
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("type", 0);
+                        bundle.putString("msg", "找不到住院号为" + e_patientId.getText().toString().trim() + "的病人");
+                        message.setData(bundle);
+                    } else {
+                        //取出全部生命体征数据
+                        VitalSignAction.getAll(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate);
+
+                        if (GlobalCache.getCache().getTimePoint() == null) {
+
+                        } else {
+                            //时间点
+                            VitalSignAction.getOne(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate,
+                                    GlobalCache.getCache().getTimePoint(), getItemCode());
+                        }
+
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("type", 1);
+                        bundle.putString("msg", "ok");
+                        message.setData(bundle);
+                    }
                 }
 
             } catch (Exception e) {
@@ -160,7 +183,6 @@ public abstract class VitalSignBase extends NurseBaseActivity {
             }
             this.handler.sendMessage(message);
         }
-
     }
 
     //开始处理取数

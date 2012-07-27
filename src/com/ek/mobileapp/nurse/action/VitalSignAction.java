@@ -236,7 +236,7 @@ public class VitalSignAction {
 
         JSONObject res = HttpTool.getTool().post(url, params);
         if (res == null)
-            return "-1";
+            return "保存数据出错,请联系管理员";
 
         try {
             if (!res.getBoolean("success")) {
@@ -262,7 +262,7 @@ public class VitalSignAction {
 
         JSONObject res = HttpTool.getTool().post(url, params);
         if (res == null)
-            return "-1";
+            return "提取数据出错,请联系管理员";
 
         try {
             if (!res.getBoolean("success")) {
