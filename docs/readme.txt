@@ -1,6 +1,11 @@
 android app
 ===========
 
+2012.07.27
+----------
+
+   1. 暂时取消横竖屏配置
+
 2012.07.26
 ----------
 
@@ -10,9 +15,9 @@ android app
    ant clean
    ant release
    生成bin/copy/*.apk
-   
+
    --每次发布只需要更改AndroidManifest.xml 定义的版本信息
-   
+
 2012.07.24
 ----------
 

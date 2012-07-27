@@ -3,11 +3,8 @@ package com.ek.mobileapp.nurse.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.text.InputType;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,14 +19,12 @@ import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ek.mobileapp.R;
-import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.model.MobConstants;
 import com.ek.mobileapp.model.TimePoint;
 import com.ek.mobileapp.model.VitalSignData;
@@ -54,30 +49,6 @@ public class VitalSign extends VitalSignBase {
     GridView gridView2;
     //
     private String busDate = "";
-
-    @Override
-    public void HenorShu() {
-        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        try {
-
-            if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                Toast.makeText(getApplicationContext(), "切换为横屏", Toast.LENGTH_SHORT).show();
-                this.setContentView(R.layout.vitalsign_land);
-                LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.vitalsign_patient_info_land, null);
-                LinearLayout layout = (LinearLayout) findViewById(R.id.pa_infos_land);
-                layout.addView(inputkey);
-
-            } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                Toast.makeText(getApplicationContext(), "切换为竖屏", Toast.LENGTH_SHORT).show();
-                this.setContentView(R.layout.vitalsign);
-                LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.vitalsign_patient_info, null);
-                LinearLayout layout = (LinearLayout) findViewById(R.id.pa_infos);
-                layout.addView(inputkey);
-            }
-        } catch (Exception e) {
-            MobLogAction.getMobLogAction().mobLogError("病人信息", e.getMessage());
-        }
-    }
 
     private void initSelectDate() {
         View view = mLayoutInflater.inflate(R.layout.activity_date, null);
@@ -136,8 +107,14 @@ public class VitalSign extends VitalSignBase {
                 boolean flag = true;
                 for (VitalSignData vsd : alls) {
                     if (vsd.getItemName().equals(vitalSignItem.getName())) {
-                        dataList2.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
-                                + vitalSignItem.getUnit() + ")" + "|" + vsd.getValue2());
+                        if (UtilString.isBlank(vsd.getValue2())) {
+                            dataList2.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                                    + vitalSignItem.getUnit() + ")" + "| ");
+                        } else {
+                            dataList2.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                                    + vitalSignItem.getUnit() + ")" + "|" + vsd.getValue2());
+                        }
+
                         flag = false;
                         break;
                     } else {
@@ -169,8 +146,14 @@ public class VitalSign extends VitalSignBase {
 
                     for (VitalSignData vsd : alls) {
                         if (vsd.getItemName().equals(vitalSignItem.getName())) {
-                            dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
-                                    + vitalSignItem.getUnit() + ")" + "|" + vsd.getValue1());
+                            if (UtilString.isBlank(vsd.getValue1())) {
+                                dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                                        + vitalSignItem.getUnit() + ")" + "| ");
+                            } else {
+                                dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                                        + vitalSignItem.getUnit() + ")" + "|" + vsd.getValue1());
+                            }
+
                             flag = false;
                             break;
                         } else {
@@ -197,11 +180,10 @@ public class VitalSign extends VitalSignBase {
     @Override
     public void initBase() {
         setContentView(R.layout.vitalsign);
-
     }
 
     @Override
-    public void showUi() {
+    protected void showUi() {
 
         e_busDate = (EditText) findViewById(R.id.vitalsign_busDate);
         e_busDate.setTextSize(16);

@@ -41,7 +41,7 @@ public abstract class VitalSignBase extends NurseBaseActivity {
 
     protected LayoutInflater mLayoutInflater;
 
-    private void clearData() {
+    protected void clearData() {
         e_patientId.setText("");
         t_name.setText("");
         t_sex.setText("");
@@ -50,17 +50,16 @@ public abstract class VitalSignBase extends NurseBaseActivity {
         t_doctor.setText("");
     }
 
-    @Override
+/*    @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        // TODO Auto-generated method stub
         super.onConfigurationChanged(newConfig);
         HenorShu();
         initUi();//重新刷新ui
         refreshData();//刷新数据
-    }
+    }*/
 
     //横竖布局变化
-    protected abstract void HenorShu();
+    //protected abstract void HenorShu();
 
     @Override
     public void onPause() {

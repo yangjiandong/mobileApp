@@ -6,16 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.media.AudioManager;
-import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.os.StrictMode;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Window;
 import android.view.WindowManager;
@@ -32,6 +27,7 @@ import com.ek.mobileapp.utils.ToastUtils;
 import com.shoushuo.android.tts.ITts;
 import com.shoushuo.android.tts.ITtsCallback;
 
+//实现蓝牙、语言功能
 public abstract class NurseBaseActivity extends Activity implements BlueToothReceive {
 
     protected SharedPreferences sharedPreferences;
@@ -44,12 +40,6 @@ public abstract class NurseBaseActivity extends Activity implements BlueToothRec
     protected boolean useVoice = false;
     protected ITts ttsService;
     protected boolean ttsBound;
-
-    //
-    private ToneGenerator mToneGenerator;
-    private Object mToneGeneratorLock = new Object();//监视器对象锁
-    private boolean mDTMFToneEnabled; //按键操作音
-    private static final int TONE_LENGTH_MS = 150;//延迟时间
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,21 +126,6 @@ public abstract class NurseBaseActivity extends Activity implements BlueToothRec
             // 绑定tts服务
             this.bindService(intent, ttsConnection, Context.BIND_AUTO_CREATE);
         }
-
-        //
-        mDTMFToneEnabled = Settings.System.getInt(getContentResolver(), Settings.System.DTMF_TONE_WHEN_DIALING, 1) == 1;//获取系统参数“按键操作音”是否开启
-
-        synchronized (mToneGeneratorLock) {
-            if (mToneGenerator == null) {
-                try {
-                    mToneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 80);
-                    setVolumeControlStream(AudioManager.STREAM_MUSIC);
-                } catch (RuntimeException e) {
-                    Log.w("", "Exception caught while creating local tone generator: " + e);
-                    mToneGenerator = null;
-                }
-            }
-        }
     }
 
     @Override
@@ -158,8 +133,8 @@ public abstract class NurseBaseActivity extends Activity implements BlueToothRec
         //ToastUtils.show(this, "onDestroy");
         try {
             //没有蓝牙设备时,
-            if (blueTootheConnector != null){
-            //if (blueTootheConnector.isHasBlueToothDevice()) {
+            if (blueTootheConnector != null) {
+                //if (blueTootheConnector.isHasBlueToothDevice()) {
                 // Stop the Bluetooth chat services
                 blueTootheConnector.mystop();
                 blueTootheConnector.stop();
@@ -184,8 +159,8 @@ public abstract class NurseBaseActivity extends Activity implements BlueToothRec
 
         try {
             //没有蓝牙设备时,
-            if (blueTootheConnector != null){
-            //if (blueTootheConnector.isHasBlueToothDevice()) {
+            if (blueTootheConnector != null) {
+                //if (blueTootheConnector.isHasBlueToothDevice()) {
                 // Stop the Bluetooth chat services
                 blueTootheConnector.mystop();
                 blueTootheConnector.stop();
@@ -253,44 +228,4 @@ public abstract class NurseBaseActivity extends Activity implements BlueToothRec
             }
         }
     };
-
-    protected void playTone(int tone) {
-        // TODO 播放按键声音
-        if (!mDTMFToneEnabled) {
-            return;
-        }
-
-        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        int ringerMode = audioManager.getRingerMode();
-        if ((ringerMode == AudioManager.RINGER_MODE_SILENT) || (ringerMode == AudioManager.RINGER_MODE_VIBRATE)) {//静音或震动时不发出按键声音
-            return;
-        }
-
-        synchronized (mToneGeneratorLock) {
-            if (mToneGenerator == null) {
-                Log.w("", "playTone: mToneGenerator == null, tone: " + tone);
-                return;
-            }
-            mToneGenerator.startTone(tone, TONE_LENGTH_MS);//发声
-        }
-    }
-
-    //    protected void onResume(){
-    //        super.onResume();
-    //        mDTMFToneEnabled = Settings.System.getInt(getContentResolver(),
-    //                Settings.System.DTMF_TONE_WHEN_DIALING, 1) == 1;//获取系统参数“按键操作音”是否开启
-    //
-    //        synchronized(mToneGeneratorLock) {
-    //            if (mToneGenerator == null) {
-    //                try {
-    //                    mToneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 80);
-    //                    setVolumeControlStream(AudioManager.STREAM_MUSIC);
-    //                } catch (RuntimeException e) {
-    //                    Log.w("", "Exception caught while creating local tone generator: " + e);
-    //                    mToneGenerator = null;
-    //                }
-    //            }
-    //        }
-    //    }
-
 }

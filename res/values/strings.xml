@@ -34,5 +34,6 @@
     <string name="mul">x</string>
     <string name="div">/</string>
     <string name="Empty">0</string>
+    <string name="Close">关闭</string>
 
 </resources>

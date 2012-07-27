@@ -129,5 +129,13 @@
         android:textSize="@dimen/TextSizeSureButton"
         android:textColor="@color/white"
         android:background="@drawable/sure"/>
+        <Button
+        android:id="@+id/buttonClose"
+        android:layout_width="@dimen/ButtonSize"
+        android:layout_height="@dimen/ButtonSize"
+        android:text="@string/Close"
+        android:textSize="@dimen/TextSizeCloseButton"
+        android:textColor="@color/white"
+        android:background="@drawable/close"/>
 </TableRow>
 </TableLayout>

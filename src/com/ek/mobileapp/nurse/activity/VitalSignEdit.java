@@ -41,7 +41,7 @@ import com.ek.mobileapp.utils.UtilString;
 public class VitalSignEdit extends VitalSignBase {
     List<MeasureType> list = new ArrayList<MeasureType>();
     Map<Integer, Integer> btns = new HashMap<Integer, Integer>();
-    Button B1, B2, B3, B4, B5, B6, B7, B8, B9, B0, BClear, BDot, BEqual;
+    Button B1, B2, B3, B4, B5, B6, B7, B8, B9, B0, BClear, BDot, BEqual, BClose;
 
     RadioGroup measures;
     RadioGroup measures2;
@@ -87,10 +87,11 @@ public class VitalSignEdit extends VitalSignBase {
 
         }
 
-        if (UtilString.isBlank(data.getMeasureTypeCode())) {
-            measures.clearCheck();
-            measures2.clearCheck();
-        } else {
+        measures.clearCheck();
+        measures2.clearCheck();
+
+        if (!UtilString.isBlank(data.getMeasureTypeCode())) {
+
             if (Integer.valueOf(data.getMeasureTypeCode()) < 5) {
                 measures.check(Integer.valueOf(data.getMeasureTypeCode()));
             } else {
@@ -100,29 +101,29 @@ public class VitalSignEdit extends VitalSignBase {
 
     }
 
-    @Override
-    public void HenorShu() {
-        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        try {
+    /*    @Override
+        public void HenorShu() {
+            final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            try {
 
-            if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                Toast.makeText(getApplicationContext(), "切换为横屏", Toast.LENGTH_SHORT).show();
-                this.setContentView(R.layout.vitalsignedit);
-                LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.vitalsign_patient_info_land, null);
-                LinearLayout layout = (LinearLayout) findViewById(R.id.pa_infos_land);
-                layout.addView(inputkey);
+                if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    Toast.makeText(getApplicationContext(), "切换为横屏", Toast.LENGTH_SHORT).show();
+                    this.setContentView(R.layout.vitalsignedit);
+                    LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.vitalsign_patient_info_land, null);
+                    LinearLayout layout = (LinearLayout) findViewById(R.id.pa_infos_land);
+                    layout.addView(inputkey);
 
-            } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                Toast.makeText(getApplicationContext(), "切换为竖屏", Toast.LENGTH_SHORT).show();
-                this.setContentView(R.layout.vitalsignedit);
-                LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.vitalsign_patient_info, null);
-                LinearLayout layout = (LinearLayout) findViewById(R.id.pa_infos);
-                layout.addView(inputkey);
+                } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    Toast.makeText(getApplicationContext(), "切换为竖屏", Toast.LENGTH_SHORT).show();
+                    this.setContentView(R.layout.vitalsignedit);
+                    LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.vitalsign_patient_info, null);
+                    LinearLayout layout = (LinearLayout) findViewById(R.id.pa_infos);
+                    layout.addView(inputkey);
+                }
+            } catch (Exception e) {
+                MobLogAction.getMobLogAction().mobLogError("病人信息", e.getMessage());
             }
-        } catch (Exception e) {
-            MobLogAction.getMobLogAction().mobLogError("病人信息", e.getMessage());
-        }
-    }
+        }*/
 
     @Override
     protected void showUi() {
@@ -195,7 +196,11 @@ public class VitalSignEdit extends VitalSignBase {
                 processSaveData();
             }
         };
-
+        OnClickListener myListenerBClose = new OnClickListener() {
+            public void onClick(View v) {
+                finish();
+            }
+        };
         B1.setOnClickListener(myListenerNum);
         B2.setOnClickListener(myListenerNum);
         B3.setOnClickListener(myListenerNum);
@@ -209,6 +214,7 @@ public class VitalSignEdit extends VitalSignBase {
         BDot.setOnClickListener(myListenerBDot);
         BClear.setOnClickListener(myListenerBClear);
         BEqual.setOnClickListener(myListenerBSave);
+        BClose.setOnClickListener(myListenerBClose);
 
         measures = (RadioGroup) findViewById(R.id.vitalsign_edit_measures);
         measures2 = (RadioGroup) findViewById(R.id.vitalsign_edit_measures2);
@@ -329,6 +335,7 @@ public class VitalSignEdit extends VitalSignBase {
         BClear = (Button) findViewById(R.id.buttonClear);
         BDot = (Button) findViewById(R.id.buttonDot);
         BEqual = (Button) findViewById(R.id.buttonEq);
+        BClose = (Button) findViewById(R.id.buttonClose);
 
         e_text = (EditText) findViewById(R.id.vitalsign_edit_text);
         e_text.setInputType(InputType.TYPE_NULL); // 关闭软键盘
@@ -358,15 +365,16 @@ public class VitalSignEdit extends VitalSignBase {
     Handler saveDataHandler = new Handler() {
         public void handleMessage(Message msg) {
             stopAnimation(R.id.loadingImageView);
-
+            String message = msg.getData().getString("msg");
             int type = msg.getData().getInt("type");
             switch (type) {
             case 1: {
-                finish();
+                showMessage(message);
                 break;
             }
             case 0: {
-                //error
+                showMessage(message);
+                break;
             }
             default: {
 
@@ -397,7 +405,7 @@ public class VitalSignEdit extends VitalSignBase {
 
                         Bundle bundle = new Bundle();
                         bundle.putInt("type", 1);
-                        bundle.putString("msg", "ok");
+                        bundle.putString("msg", "保存成功");
                         message.setData(bundle);
                     } else {
                         Bundle bundle = new Bundle();

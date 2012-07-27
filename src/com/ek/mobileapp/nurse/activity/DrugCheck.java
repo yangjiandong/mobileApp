@@ -3,9 +3,9 @@ package com.ek.mobileapp.nurse.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,10 +23,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ek.mobileapp.R;
-import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.model.DrugCheckData;
 import com.ek.mobileapp.model.Patient;
 import com.ek.mobileapp.model.UserDTO;
@@ -54,58 +52,27 @@ public class DrugCheck extends NurseBaseActivity {
     ListView infolist;
 
     MediaPlayer mMediaPlayer;
-
     Button commitBtn;
-
     SharedPreferences sharedPreferences;
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        // TODO Auto-generated method stub
-        super.onConfigurationChanged(newConfig);
-        HenorShu();
-        showUi();
-        refreshPatientInfo();
-    }
-
-   public void HenorShu() {
-        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        try {
-
-            if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                Toast.makeText(getApplicationContext(), "切换为横屏", Toast.LENGTH_SHORT).show();
-                this.setContentView(R.layout.drugcheck_land);
-                LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.drugcheck_patient_info_land, null);
-                LinearLayout layout = (LinearLayout) findViewById(R.id.drugcheck_pa_infos_land);
-                layout.addView(inputkey);
-
-            } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                Toast.makeText(getApplicationContext(), "切换为竖屏", Toast.LENGTH_SHORT).show();
-                this.setContentView(R.layout.drugcheck);
-                LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.drugcheck_patient_info, null);
-                LinearLayout layout = (LinearLayout) findViewById(R.id.drugcheck_pa_infos);
-                layout.addView(inputkey);
-            }
-        } catch (Exception e) {
-            MobLogAction.getMobLogAction().mobLogError("病人信息", e.getMessage());
-        }
-    }
 
     @Override
     protected void createUi() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        HenorShu();
-        //setContentView(R.layout.drugcheck);
+        setContentView(R.layout.drugcheck);
 
+        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.drugcheck_patient_info, null);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.drugcheck_pa_infos);
+        layout.addView(inputkey);
         showUi();
+        //refreshPatientInfo();
 
         //振动器
         final Vibrator mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         final int vibrationDuration = 33;
         mVibrator.vibrate(vibrationDuration);
         mMediaPlayer = MediaPlayer.create(DrugCheck.this, R.raw.voice);
-
     }
 
     private void showUi() {
@@ -133,9 +100,7 @@ public class DrugCheck extends NurseBaseActivity {
                     return;
                 }
                 showProcessingImage(R.id.loadingImageView);
-
                 processCommitData();
-
             }
         });
 
@@ -181,14 +146,11 @@ public class DrugCheck extends NurseBaseActivity {
         DrugCheckDataListAdapter adapter = new DrugCheckDataListAdapter(DrugCheck.this);
         adapter.setList(list);
         infolist.setAdapter(adapter);
-
     }
 
     //开始处理提交
     private void processCommitData() {
-
         CommitData commit = new CommitData(commitDataHandler);
-
         Thread thread = new Thread(commit);
         thread.start();
     }
@@ -217,7 +179,7 @@ public class DrugCheck extends NurseBaseActivity {
         }
     };
 
-    //真正的取数过程
+    //真正的提交过程
     class CommitData implements Runnable {
         Handler handler;
 
@@ -253,11 +215,9 @@ public class DrugCheck extends NurseBaseActivity {
 
     }
 
-    //开始处理取数
+    //开始处理扫描取数
     private void processGetData() {
-
         GetDataByBarCode saveData = new GetDataByBarCode(getDataHandler);
-
         Thread thread = new Thread(saveData);
         thread.start();
     }
@@ -291,12 +251,12 @@ public class DrugCheck extends NurseBaseActivity {
 
             }
             }
-            //super.handleMessage(msg);
             stopAnimation(R.id.loadingImageView);
         }
     };
 
-    //真正的取数过程
+    //真正的扫描数据过程
+    @SuppressLint("HandlerLeak")
     class GetDataByBarCode implements Runnable {
         Handler handler;
 
@@ -406,9 +366,7 @@ public class DrugCheck extends NurseBaseActivity {
 
     @Override
     public void onDestroy() {
-        // TODO Auto-generated method stub
         super.onDestroy();
         releaseMediaPlayer();
     }
-
 }

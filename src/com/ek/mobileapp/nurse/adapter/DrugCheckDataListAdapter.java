@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.model.DrugCheckData;
 
+//用药
 public class DrugCheckDataListAdapter extends BaseAdapter {
 
     private class DrugCheckHolder {

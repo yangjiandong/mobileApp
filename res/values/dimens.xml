@@ -17,6 +17,7 @@
     <dimen name="TextSizeClearButton">20dp</dimen>
     <dimen name="TextSizeClearButtonLand">20dp</dimen>
     <dimen name="TextSizeSureButton">28dp</dimen>
+    <dimen name="TextSizeCloseButton">28dp</dimen>
     <dimen name="ViewedTextSize">45dp</dimen>
     <dimen name="TextViewHeight">65dp</dimen>
     <dimen name="ButtonMargin">2dp</dimen>

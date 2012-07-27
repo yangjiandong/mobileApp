@@ -7,18 +7,25 @@ import java.util.StringTokenizer;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.ek.mobileapp.MainApplication;
 import com.ek.mobileapp.R;
@@ -65,6 +72,7 @@ public class MainActivity extends Activity {
 
         createBtns();
         super.onCreate(savedInstanceState);
+        //requestWindowFeature(Window.FEATURE_OPTIONS_PANEL);
         setContentView(R.layout.main);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -91,22 +99,18 @@ public class MainActivity extends Activity {
             int count = 3;
             LinearLayout modules = (LinearLayout) findViewById(R.id.modules);
 
-            //
             UserDTO user = GlobalCache.getCache().getLoginuser();
             String alls = user.getMobmodules();
             List<String> allIds = UtilString.stringToArrayList(alls, ",");
             int i = 0;
             LinearLayout one = null;
-            Button[] bns = new Button[count];
             for (String oneModule : allIds) {
                 StringTokenizer filter = new StringTokenizer(oneModule, "|");
                 String code = filter.nextToken();
                 String module = filter.nextToken();
 
                 if (i == count) {
-                    //ViewUtils.putViewsInLine(bns, getScreenWidth(), 0.1);
                     i = 0;
-                    bns = new Button[count];
                 }
 
                 if (i == 0) {
@@ -120,16 +124,12 @@ public class MainActivity extends Activity {
                     modules.addView(one);
                 }
 
-                //Resources res = this.getResources();
-                //XmlPullParser parser = res.getXml(R.style.);
-                //AttributeSet attributes = Xml.asAttributeSet(parser);
                 Button bn = new Button(this, null, R.style.MButton);
                 bn.setTextAppearance(this, R.style.MButton);
                 bn.setGravity(R.style.MButton);
                 bn.setId(btns.get(code));
                 bn.setCompoundDrawablesWithIntrinsicBounds(0, this.btnsStyle.get(code), 0, 0);
                 bn.setText(module);
-                //TODO 硬编码尺寸
                 bn.setPadding(20, 10, 20, 0);
                 //后台日志显示用
                 moduels.put(bn.getId(), module);
@@ -139,17 +139,12 @@ public class MainActivity extends Activity {
 
                 //为按钮绑定一个事件监听器
                 bn.setOnClickListener(new ClickEvent());
-                bns[i] = bn;
 
                 i++;
             }
 
-            if (i > 0) {
-                //ViewUtils.putViewsInLine(bns, getScreenWidth(), 0.1);
-            }
         } catch (Exception e) {
             MobLogAction.getMobLogAction().mobLogError("main", e.getMessage());
-            //Log.e("", e.getMessage());
         }
 
     }
@@ -163,7 +158,7 @@ public class MainActivity extends Activity {
         btns.put("06", R.id.m06);
         //
         btnsStyle.put("01", R.drawable.hospital_button);
-        btnsStyle.put("02", R.drawable.nurse_button);
+        btnsStyle.put("02", R.drawable.heart_button);
         btnsStyle.put("03", R.drawable.nurse_button);
         btnsStyle.put("04", R.drawable.doctor_button);
         btnsStyle.put("05", R.drawable.doctor_button);
@@ -212,8 +207,6 @@ public class MainActivity extends Activity {
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                // TODO Auto-generated method stub
-                // do nothing
 
             }
         });
@@ -227,7 +220,7 @@ public class MainActivity extends Activity {
         public void onClick(View v) {
             final View v2 = v;
             Runnable runLog = new Runnable() {
-                public void run() {                    //
+                public void run() { //
                     LogonAction.userLog(moduels.get(v2.getId()), ip);
                 }
             };
@@ -260,4 +253,29 @@ public class MainActivity extends Activity {
 
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.menu_update_password:
+            // Launch the DeviceListActivity to see devices and do scan
+            //Intent serverIntent = new Intent(this, DeviceListActivity.class);
+            //startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
+            return true;
+        case R.id.menu_about:
+            //Intent intent = new Intent(this, AboutActivity.class);
+            //startActivity(intent);
+            return true;
+        }
+        return false;
+    }
+
 }
