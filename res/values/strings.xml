@@ -1,6 +1,7 @@
 <resources>
 
     <string name="vendor_name">鑫亿软件</string>
+    <string name="app_version">Version: %1$s</string>
     <string name="app_name">鑫亿医疗移动平台</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
@@ -35,5 +36,7 @@
     <string name="div">/</string>
     <string name="Empty">0</string>
     <string name="Close">关闭</string>
+
+    <string name="dialogabout_about">MedicalLocator is a map-based application presenting the medical facilities in Poland (at least currently). The idea was to collect the public-available data about the medical facilities, present it in the user-friendly form to the Android users and allow them use this data.\n\nEnjoy!</string>
 
 </resources>

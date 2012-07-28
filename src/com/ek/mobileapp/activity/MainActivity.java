@@ -19,6 +19,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -271,11 +272,29 @@ public class MainActivity extends Activity {
             //startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
             return true;
         case R.id.menu_about:
-            //Intent intent = new Intent(this, AboutActivity.class);
-            //startActivity(intent);
+            showAbout();
             return true;
         }
         return false;
     }
 
+    private void showAbout() {
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.dialog_about, null);
+
+        try {
+            String versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+            String version = String.format(getString(R.string.app_version), versionName);
+            final TextView versionTextView = (TextView) layout.findViewById(R.id.dialogabout_appversion);
+            versionTextView.setText(version);
+        } catch (NameNotFoundException e) {
+            // No version found, not critical..
+        }
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(layout);
+        final AlertDialog dialog = builder.create();
+        dialog.setTitle(getString(R.string.app_name));
+        dialog.show();
+    }
 }
