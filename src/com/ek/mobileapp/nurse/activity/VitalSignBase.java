@@ -71,7 +71,7 @@ public abstract class VitalSignBase extends NurseBaseActivity {
         //ToastUtils.show(this, "onResume");
         super.onResume();
         get_patient.setVisibility(View.VISIBLE);
-        processGetData();
+        //processGetData();
     }
 
     protected void onStop() {
@@ -133,13 +133,13 @@ public abstract class VitalSignBase extends NurseBaseActivity {
                     //取出全部生命体征数据
                     VitalSignAction.getAll(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate);
 
-                    if (GlobalCache.getCache().getTimePoint() == null) {
+                    //if (GlobalCache.getCache().getTimePoint() == null) {
 
-                    } else {
-                        //时间点
-                        VitalSignAction.getOne(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate,
-                                GlobalCache.getCache().getTimePoint(), getItemCode());
-                    }
+                    //} else {
+                    //    //时间点
+                    //    VitalSignAction.getOne(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate,
+                    //            GlobalCache.getCache().getTimePoint(), getItemCode());
+                    //}
 
                     Bundle bundle = new Bundle();
                     bundle.putInt("type", 1);
@@ -160,13 +160,13 @@ public abstract class VitalSignBase extends NurseBaseActivity {
                         //取出全部生命体征数据
                         VitalSignAction.getAll(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate);
 
-                        if (GlobalCache.getCache().getTimePoint() == null) {
+                        //if (GlobalCache.getCache().getTimePoint() == null) {
 
-                        } else {
-                            //时间点
-                            VitalSignAction.getOne(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate,
-                                    GlobalCache.getCache().getTimePoint(), getItemCode());
-                        }
+                        //} else {
+                        //    //时间点
+                        //    VitalSignAction.getOne(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate,
+                        //            GlobalCache.getCache().getTimePoint(), getItemCode());
+                        //}
 
                         Bundle bundle = new Bundle();
                         bundle.putInt("type", 1);
@@ -265,6 +265,15 @@ public abstract class VitalSignBase extends NurseBaseActivity {
     }
 
     private void initPatientInfo() {
+        try {
+            LinearLayout inputkey = (LinearLayout) mLayoutInflater.inflate(R.layout.vitalsign_patient_info, null);
+            LinearLayout layout = (LinearLayout) findViewById(R.id.pa_infos);
+            layout.addView(inputkey);
+
+        } catch (Exception e) {
+            MobLogAction.getMobLogAction().mobLogError("病人信息", e.getMessage());
+        }
+
         UserDTO user = GlobalCache.getCache().getLoginuser();
         t_user_by = (TextView) findViewById(R.id.user_by);
         t_user_by.setText("操作人: " + user.getName() + " - " + user.getDepartName());
@@ -293,19 +302,7 @@ public abstract class VitalSignBase extends NurseBaseActivity {
 
     @Override
     protected void createUi() {
-
         initBase();
-
-        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        try {
-            LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.vitalsign_patient_info, null);
-
-            LinearLayout layout = (LinearLayout) findViewById(R.id.pa_infos);
-            layout.addView(inputkey);
-
-        } catch (Exception e) {
-            MobLogAction.getMobLogAction().mobLogError("病人信息", e.getMessage());
-        }
 
         initUi();
     }

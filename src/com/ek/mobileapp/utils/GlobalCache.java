@@ -29,6 +29,7 @@ public class GlobalCache {
 
     private List<Patient> patients = new ArrayList<Patient>();
     private List<VitalSignItem> vitalSignItems = new ArrayList<VitalSignItem>();
+    //一天所有生命体征
     private List<VitalSignData> vitalSignDatas_all = new ArrayList<VitalSignData>();
     private List<VitalSignData> vitalSignDatas = new ArrayList<VitalSignData>();
     private List<MeasureType> measureTypes = new ArrayList<MeasureType>();

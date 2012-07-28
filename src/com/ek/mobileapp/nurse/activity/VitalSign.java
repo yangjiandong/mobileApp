@@ -91,7 +91,7 @@ public class VitalSign extends VitalSignBase {
     //只负责显示数据
     private void refreshGrid() {
 
-        List<String> dataList1 = new ArrayList<String>();
+        //List<String> dataList1 = new ArrayList<String>();
         List<String> dataList2 = new ArrayList<String>();
 
         List<VitalSignData> alls = GlobalCache.getCache().getVitalSignDatas_all();
@@ -99,8 +99,8 @@ public class VitalSign extends VitalSignBase {
         for (VitalSignItem vitalSignItem : items) {
             if (vitalSignItem.getTypeCode().equals(MobConstants.MOB_VITALSIGN_MORE)) {
                 if (GlobalCache.getCache().getTimePoint() == null) {
-                    dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
-                            + vitalSignItem.getUnit() + ")" + "| ");
+                    //dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                    //        + vitalSignItem.getUnit() + ")" + "| ");
                 }
             } else {
 
@@ -130,14 +130,22 @@ public class VitalSign extends VitalSignBase {
             }
 
         }
-
         gridView2.setAdapter(new VitalSignDataGridViewAdapter(VitalSign.this, dataList2));
 
+        showGridView1();
+    }
+
+    private void showGridView1() {
+        List<VitalSignData> alls = GlobalCache.getCache().getVitalSignDatas_all();
+        List<String> dataList1 = new ArrayList<String>();
+
+        List<VitalSignItem> items;
         if (GlobalCache.getCache().getTimePoint() == null) {
             gridView1.setAdapter(new VitalSignDataGridViewAdapter(VitalSign.this, dataList1));
         } else {
             dataList1 = new ArrayList<String>();
-            alls = GlobalCache.getCache().getVitalSignDatas();
+            String timePoint = GlobalCache.getCache().getTimePoint();
+            //alls = GlobalCache.getCache().getVitalSignDatas();
             items = GlobalCache.getCache().getVitalSignItems();
 
             for (VitalSignItem vitalSignItem : items) {
@@ -145,7 +153,7 @@ public class VitalSign extends VitalSignBase {
                 if (vitalSignItem.getTypeCode().equals(MobConstants.MOB_VITALSIGN_MORE)) {
 
                     for (VitalSignData vsd : alls) {
-                        if (vsd.getItemName().equals(vitalSignItem.getName())) {
+                        if (vsd.getTimePoint().equals(timePoint) && vsd.getItemName().equals(vitalSignItem.getName())) {
                             if (UtilString.isBlank(vsd.getValue1())) {
                                 dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
                                         + vitalSignItem.getUnit() + ")" + "| ");
@@ -180,6 +188,11 @@ public class VitalSign extends VitalSignBase {
     @Override
     public void initBase() {
         setContentView(R.layout.vitalsign);
+
+        //第一次清除cache
+        GlobalCache.getCache().setCurrentPatient(null);
+        GlobalCache.getCache().setVitalSignDatas_all(null);
+
     }
 
     @Override
@@ -212,6 +225,11 @@ public class VitalSign extends VitalSignBase {
         s_timePoint.setOnItemSelectedListener(new OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> adapter, View view, int selected, long arg3) {
                 GlobalCache.getCache().setTimePoint(timeStr[selected]);
+                //直接刷新
+                //比较奇怪,启动时直接会运行
+                if (GlobalCache.getCache().getVitalSignDatas_all()!=null){
+                    showGridView1();
+                }
             }
 
             public void onNothingSelected(AdapterView<?> arg0) {
