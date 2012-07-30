@@ -94,6 +94,7 @@ public class DrugCheck extends NurseBaseActivity {
         t_deptName = (TextView) findViewById(R.id.drugcheck_deptName);
 
         commitBtn = (Button) findViewById(R.id.drugcheck_commit);
+        commitBtn.setVisibility(View.INVISIBLE);
         commitBtn.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 if (t_patientId.getText().toString().trim().equals("")) {
@@ -192,7 +193,7 @@ public class DrugCheck extends NurseBaseActivity {
             try {
 
                 String ret = DrugCheckAction.commitHis();
-                if (ret.equals("-1")) {
+                if (!ret.equals("1")) {
                     Bundle bundle = new Bundle();
                     bundle.putInt("type", 0);
                     bundle.putString("msg", "提交失败");
@@ -216,9 +217,10 @@ public class DrugCheck extends NurseBaseActivity {
     }
 
     //开始处理扫描取数
-    private void processGetData() {
+    private void processGetData() throws InterruptedException {
         GetDataByBarCode saveData = new GetDataByBarCode(getDataHandler);
         Thread thread = new Thread(saveData);
+        //thread.sleep(1);
         thread.start();
     }
 
@@ -236,7 +238,6 @@ public class DrugCheck extends NurseBaseActivity {
             }
             case 2: {
                 refreshList();
-                showMessage(message);
                 break;
             }
             case 3: {
@@ -245,7 +246,7 @@ public class DrugCheck extends NurseBaseActivity {
                 break;
             }
             case 0: {
-                //error
+                showMessage(message);
             }
             default: {
 
@@ -286,20 +287,33 @@ public class DrugCheck extends NurseBaseActivity {
                         message.setData(bundle);
                     }
                 } else {
-                    String ret = DrugCheckAction.getData(GlobalCache.getCache().getCurrentPatient().getPatientId(),
-                            e_barCode.getText().toString().trim());
-                    if (ret.equals("-1")) {
+                    if (UtilString.isBlank(t_patientId.getText().toString())) {
                         Bundle bundle = new Bundle();
-                        bundle.putInt("type", 3);
-                        bundle.putString("msg", "请检查用药");
+                        bundle.putInt("type", 0);
+                        bundle.putString("msg", "请先扫描一个住院号");
                         message.setData(bundle);
-                    } else if (ret.equals("1")) {
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("type", 2);
-                        bundle.putString("msg", "正确");
-                        message.setData(bundle);
+                    } else {
+                        String ret = "";
+                        synchronized (DrugCheck.this) {
+                            ret = DrugCheckAction.getData(GlobalCache.getCache().getCurrentPatient().getPatientId(),
+                                    e_barCode.getText().toString().trim());
+                        }
+
+                        if (ret.equals("-1")) {
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("type", 3);
+                            bundle.putString("msg", "请检查用药");
+                            message.setData(bundle);
+                        } else if (ret.equals("1")) {
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("type", 2);
+                            bundle.putString("msg", "正确");
+                            message.setData(bundle);
+                        }
                     }
+
                 }
+
             } catch (Exception e) {
                 Bundle bundle = new Bundle();
                 bundle.putInt("type", 0);
@@ -308,7 +322,6 @@ public class DrugCheck extends NurseBaseActivity {
             }
             this.handler.sendMessage(message);
         }
-
     }
 
     //需实现的方法
@@ -341,7 +354,12 @@ public class DrugCheck extends NurseBaseActivity {
                 final int vibrationDuration = 33;
                 mVibrator.vibrate(vibrationDuration);
 
-                processGetData();
+                try {
+                    processGetData();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
 
                 break;
 
@@ -368,5 +386,11 @@ public class DrugCheck extends NurseBaseActivity {
     public void onDestroy() {
         super.onDestroy();
         releaseMediaPlayer();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        processCommitData();
     }
 }

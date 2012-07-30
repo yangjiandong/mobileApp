@@ -16,6 +16,7 @@ import com.ek.mobileapp.model.DrugCheckData;
 public class DrugCheckDataListAdapter extends BaseAdapter {
 
     private class DrugCheckHolder {
+        public TextView orderId;
         public TextView orderText;
         public TextView dosage;
     }
@@ -51,6 +52,7 @@ public class DrugCheckDataListAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.drugcheck_list, null);
             holder = new DrugCheckHolder();
+            holder.orderId = (TextView) convertView.findViewById(R.id.drugcheck_order_id);
             holder.orderText = (TextView) convertView.findViewById(R.id.drugcheck_order_text);
             holder.dosage = (TextView) convertView.findViewById(R.id.drugcheck_dosage);
             convertView.setTag(holder);
@@ -59,6 +61,7 @@ public class DrugCheckDataListAdapter extends BaseAdapter {
         }
         DrugCheckData data = list.get(position);
         if (data != null) {
+            holder.orderId.setText(String.valueOf(list.size() - position));
             holder.orderText.setText(data.getOrderText());
             holder.dosage.setText(data.getDosage());
 

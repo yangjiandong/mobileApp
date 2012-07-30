@@ -93,7 +93,7 @@ public class MainActivity extends Activity {
 
         try {
             PackageInfo pinfo = this.getPackageManager().getPackageInfo(SettingsUtils.TRACKER_PACKAGE_NAME, 0);
-            version = pinfo.versionCode + "." + pinfo.versionName;
+            version = pinfo.versionCode + "_" + pinfo.versionName;
             actionBar.setTitle(pinfo.applicationInfo.labelRes);
 
             //一排三个按钮
@@ -283,7 +283,8 @@ public class MainActivity extends Activity {
         View layout = inflater.inflate(R.layout.dialog_about, null);
 
         try {
-            String versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+            PackageInfo pinfo = this.getPackageManager().getPackageInfo(SettingsUtils.TRACKER_PACKAGE_NAME, 0);
+            String versionName = pinfo.versionCode + "_" + pinfo.versionName;
             String version = String.format(getString(R.string.app_version), versionName);
             final TextView versionTextView = (TextView) layout.findViewById(R.id.dialogabout_appversion);
             versionTextView.setText(version);
@@ -294,7 +295,7 @@ public class MainActivity extends Activity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(layout);
         final AlertDialog dialog = builder.create();
-        dialog.setTitle(getString(R.string.app_name));
+        dialog.setTitle("关于...");
         dialog.show();
     }
 }

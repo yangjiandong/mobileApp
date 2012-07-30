@@ -1,7 +1,6 @@
 package com.ek.mobileapp.nurse.activity;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,6 +33,9 @@ public abstract class VitalSignBase extends NurseBaseActivity {
     TextView t_age;
     TextView t_bedNo;
     TextView t_doctor;
+
+    //是否实时显示
+    protected boolean realTimeShowData = false;
 
     protected String getItemCode() {
         return "";
@@ -71,7 +73,11 @@ public abstract class VitalSignBase extends NurseBaseActivity {
         //ToastUtils.show(this, "onResume");
         super.onResume();
         get_patient.setVisibility(View.VISIBLE);
-        //processGetData();
+        if (realTimeShowData){
+            processGetData();
+        }else{
+            refreshData();
+        }
     }
 
     protected void onStop() {
@@ -211,7 +217,7 @@ public abstract class VitalSignBase extends NurseBaseActivity {
             refreshOther();
         } else {
             stopAnimation(R.id.loadingImageView);
-            showMessage("没有找到对应病人");
+            //showMessage("没有找到对应病人");
         }
 
     }

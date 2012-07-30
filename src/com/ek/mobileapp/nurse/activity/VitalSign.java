@@ -227,7 +227,8 @@ public class VitalSign extends VitalSignBase {
                 GlobalCache.getCache().setTimePoint(timeStr[selected]);
                 //直接刷新
                 //比较奇怪,启动时直接会运行
-                if (GlobalCache.getCache().getVitalSignDatas_all()!=null){
+                //TODO
+                if (GlobalCache.getCache().getVitalSignDatas_all() != null) {
                     showGridView1();
                 }
             }

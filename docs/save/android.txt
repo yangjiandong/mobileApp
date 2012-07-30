@@ -1,6 +1,31 @@
 android
 =======
 
+2012.07.30
+----------
+
+   1. android程序开机自启动
+
+--广播接收器
+public class HippoStartupIntentReceiver extends BroadcastReceiver{
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        context.startService(new Intent(context,VersionUpdateService.class));
+    }
+
+}
+<!-- 广播开始 -->
+<receiver android:name=".broadcast.HippoStartupIntentReceiver" >
+     <intent-filter >
+          <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+          <category android:name="android.intent.category.HOME" />
+     </intent-filter>
+</receiver>
+--AndroidManifest.xml加入权限
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
 2012.07.20
 ----------
 

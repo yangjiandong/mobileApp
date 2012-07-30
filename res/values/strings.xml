@@ -37,6 +37,6 @@
     <string name="Empty">0</string>
     <string name="Close">关闭</string>
 
-    <string name="dialogabout_about">MedicalLocator is a map-based application presenting the medical facilities in Poland (at least currently). The idea was to collect the public-available data about the medical facilities, present it in the user-friendly form to the Android users and allow them use this data.\n\nEnjoy!</string>
+    <string name="dialogabout_about">鑫亿移动平台.\n\n谢谢使用!</string>
 
 </resources>
