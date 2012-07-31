@@ -28,13 +28,15 @@
             android:windowSoftInputMode="adjustUnspecified|stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".activity.SettingActivity" />
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.InputDemoActivtiy" />
+        <activity android:name=".example.SampleTitlesTriangle" />
+        <activity android:name=".example.InOutTitlesTriangle" />
+
         <activity
             android:name=".nurse.activity.VitalSign"
             android:screenOrientation="portrait"

@@ -7,12 +7,10 @@ import java.util.StringTokenizer;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -21,7 +19,6 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -32,6 +29,8 @@ import com.ek.mobileapp.MainApplication;
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
 import com.ek.mobileapp.action.MobLogAction;
+import com.ek.mobileapp.example.InOutTitlesTriangle;
+import com.ek.mobileapp.example.SampleTitlesTriangle;
 import com.ek.mobileapp.model.UserDTO;
 import com.ek.mobileapp.nurse.action.VitalSignAction;
 import com.ek.mobileapp.nurse.activity.DrugCheck;
@@ -226,26 +225,30 @@ public class MainActivity extends Activity {
                 }
             };
             new Thread(runLog).start();
-
+            Intent intent;
             switch (v.getId()) {
             case R.id.m01: // doStuff
 
-                Intent intent = new Intent(MainActivity.this, QueryActivity.class);
+                intent = new Intent(MainActivity.this, QueryActivity.class);
                 startActivity(intent);
                 break;
             case R.id.m02: // doStuff
-                Intent intent2 = new Intent(MainActivity.this, VitalSign.class);
-                startActivity(intent2);
+                intent = new Intent(MainActivity.this, VitalSign.class);
+                startActivity(intent);
                 break;
             case R.id.m03: // doStuff
-                Intent intent3 = new Intent(MainActivity.this, DrugCheck.class);
-                startActivity(intent3);
+                intent = new Intent(MainActivity.this, DrugCheck.class);
+                startActivity(intent);
                 break;
             case R.id.m04: // doStuff
-                actionBar.setTitle("04");
+                //actionBar.setTitle("04");
+                intent = new Intent(MainActivity.this, SampleTitlesTriangle.class);
+                startActivity(intent);
                 break;
             case R.id.m05: // doStuff
-                actionBar.setTitle("05");
+                //actionBar.setTitle("05");
+                intent = new Intent(MainActivity.this, InOutTitlesTriangle.class);
+                startActivity(intent);
                 break;
 
             default:
@@ -257,9 +260,11 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        //super.onCreateOptionsMenu(menu);
+        //MenuInflater inflater = getMenuInflater();
+        //inflater.inflate(R.menu.menu, menu);
+        //return true;
+        getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
 

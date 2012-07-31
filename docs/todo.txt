@@ -1,6 +1,12 @@
 TODO
 ====
 
+2012.07.31
+----------
+
+   1. viewPager Indicator
+   Titles -- Triangle Style
+
 2012.07.24
 ----------
 

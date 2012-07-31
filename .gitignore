@@ -7,3 +7,5 @@
 project.properties
 /libsproject/actionbar/bin
 /libsproject/actionbar/gen
+/libsproject/viewPagerIndicator/bin
+/libsproject/viewPagerIndicator/gen
