@@ -4,8 +4,8 @@
     android:versionName="b1_2012073015">
 
     <uses-sdk
-        android:minSdkVersion="10"
-        android:targetSdkVersion="15"/>
+        android:minSdkVersion="4"
+        android:targetSdkVersion="10"/>
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -35,7 +35,6 @@
         <activity android:name=".activity.SettingActivity" />
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.InputDemoActivtiy" />
-        <activity android:name=".activity.AboutActivity" />
         <activity
             android:name=".nurse.activity.VitalSign"
             android:screenOrientation="portrait"

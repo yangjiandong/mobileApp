@@ -1,6 +1,12 @@
 android
 =======
 
+2012.07.31
+----------
+
+   1. Support Package
+   android-support-v4.jar
+
 2012.07.30
 ----------
 

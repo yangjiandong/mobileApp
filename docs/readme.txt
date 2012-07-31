@@ -1,6 +1,13 @@
 android app
 ===========
 
+2012.07.31
+----------
+
+   1. 增加libprojects目录,存放所需library
+   actionbar
+   viewPageIndicator(滑屏)
+   
 2012.07.28
 ----------
 
