@@ -240,8 +240,22 @@ public class VitalSignAction {
 
         try {
             if (!res.getBoolean("success")) {
-                return res.getString("message");
+                return res.getString("保存数据出错,请联系管理员");
             }
+
+            boolean flag = false;
+            List<VitalSignData> lists = GlobalCache.getCache().getVitalSignDatas_all();
+            for (VitalSignData a : lists) {
+                if (a.getItemCode().equals(data.getItemCode())) {
+                    flag = true;
+                    a = data;
+                }
+
+            }
+            if (!flag) {
+                lists.add(data);
+            }
+            GlobalCache.getCache().setVitalSignDatas_all(lists);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -266,7 +280,7 @@ public class VitalSignAction {
 
         try {
             if (!res.getBoolean("success")) {
-                return res.getString("message");
+                return res.getString("保存数据出错,请联系管理员");
             }
 
         } catch (JSONException e) {

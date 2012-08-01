@@ -1,11 +1,17 @@
 TODO
 ====
 
+2012.08.01
+----------
+
+   1. sqlite
+
 2012.07.31
 ----------
 
-   1. viewPager Indicator
+ok   1. viewPager Indicator
    Titles -- Triangle Style
+   --已测试
 
 2012.07.24
 ----------

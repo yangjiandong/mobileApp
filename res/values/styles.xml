@@ -1,9 +1,28 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="AppTheme" parent="android:Theme.Black">
+    <style name="AppTheme" parent="android:Theme.Light">
+
+        <!-- 全局风格,Light Or Black -->
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@color/custom_theme_color</item>
+        <item name="android:colorBackground">@color/custom_theme_color</item>
     </style>
+
+    <color name="custom_theme_color">#FFFFFF</color><!-- Light风格时,全局背景颜色 -->
+    <color name="custom_list_text_color">#000000</color><!-- 列表字体颜色 -->
+    <color name="custom_info_back_color">#00FF00</color><!-- 病人信息背景颜色 -->
+    <color name="custom_info_text_color">#000000</color><!-- 病人信息字体颜色 -->
+    <color name="custom_grid_value_color">#0000FF</color><!-- 网格字体颜色 -->
+
+
+    <!--
+    <color name="custom_theme_color">#000000</color>
+    <color name="custom_list_text_color">#00FF00</color>
+    <color name="custom_info_back_color">#FFFF00</color>
+    <color name="custom_info_text_color">#000000</color>
+    <color name="custom_grid_value_color">#00FF00</color>
+    -->
 
     <style name="AppTheme2" parent="android:Theme.Light">
         <item name="android:windowNoTitle">true</item>
@@ -38,9 +57,11 @@
 
     <style name="InfoText">
         <item name="android:textSize">16dip</item>
-        <item name="android:background">#4F010E</item>
+        <item name="android:background">@color/custom_info_back_color</item>
+        <item name="android:textColor">@color/custom_info_text_color</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">5dp</item>
         <item name="android:gravity">center</item>
     </style>
+
 </resources>

@@ -335,6 +335,11 @@ public class VitalSign extends VitalSignBase {
                     intent.putExtra("code", code);
                     intent.putExtra("name", name);
                     startActivity(intent);
+                } else if (code.equals("14") || code.equals("15")) {
+                    Intent intent = new Intent(VitalSign.this, VitalSignEdit4.class);
+                    intent.putExtra("code", code);
+                    intent.putExtra("name", name);
+                    startActivity(intent);
                 } else {
                     Toast.makeText(getApplicationContext(), code, Toast.LENGTH_SHORT).show();
                 }

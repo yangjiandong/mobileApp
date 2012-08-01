@@ -28,7 +28,6 @@ import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.activity.InputDemoActivtiy;
 import com.ek.mobileapp.model.MeasureType;
-import com.ek.mobileapp.model.Patient;
 import com.ek.mobileapp.model.VitalSignData;
 import com.ek.mobileapp.nurse.action.VitalSignAction;
 import com.ek.mobileapp.utils.GlobalCache;
@@ -40,15 +39,6 @@ public class VitalSignEdit2 extends VitalSignBase {
     List<MeasureType> list = new ArrayList<MeasureType>();
     Map<Integer, Integer> btns = new HashMap<Integer, Integer>();
     Button B1, B2, B3, B4, B5, B6, B7, B8, B9, B0, BClear, BDot, BEqual, BClose;
-
-    EditText e_patientId;
-    TextView t_patientName;
-    TextView t_age;
-    TextView t_sex;
-    TextView t_bedNo;
-    TextView t_doctor;
-    TextView t_user_by;
-    Button get_patient;
 
     TextView t_label;
     EditText e_text;
@@ -75,8 +65,8 @@ public class VitalSignEdit2 extends VitalSignBase {
         VitalSignData data = GlobalCache.getCache().getVitalSignData();
 
         if (data != null) {
-            if (!UtilString.isBlank(data.getValue1()) && data.getItemCode().equals(itemCode)) {
-                e_text.setText(data.getValue1());
+            if (!UtilString.isBlank(data.getValue2()) && data.getItemCode().equals(itemCode)) {
+                e_text.setText(data.getValue2());
             } else {
                 e_text.setText("");
             }
@@ -168,19 +158,28 @@ public class VitalSignEdit2 extends VitalSignBase {
 
         try {
 
-            Patient pa = GlobalCache.getCache().getCurrentPatient();
-            String busDate = GlobalCache.getCache().getBusDate();
-            String timePoint = GlobalCache.getCache().getTimePoint();
+            VitalSignData data = new VitalSignData();
+            data.setAddDate(GlobalCache.getCache().getBusDate());
+            data.setPatientId(GlobalCache.getCache().getCurrentPatient().getPatientId());
+            data.setTimePoint(GlobalCache.getCache().getTimePoint());
+            data.setItemCode(itemCode);
+            data.setItemName(getItemName(itemCode));
+            data.setUserId(GlobalCache.getCache().getLoginuser().getId());
+            data.setValue2("");
 
-            if (pa != null && busDate != null && timePoint != null && timePoint.length() > 0 && busDate.length() > 0)
-                VitalSignAction.getOne(pa.getPatientId(), busDate, timePoint, itemCode);
-
-            VitalSignData data = GlobalCache.getCache().getVitalSignData();
+            List<VitalSignData> lists = GlobalCache.getCache().getVitalSignDatas_all();
+            for (VitalSignData a : lists) {
+                if (a.getItemCode().equals(itemCode)) {
+                    data = a;
+                }
+            }
 
             if (data != null) {
                 if (data.getValue2() != null && data.getValue2().length() > 0 && data.getItemCode().equals(itemCode))
                     e_text.setText(data.getValue2());
             }
+
+            GlobalCache.getCache().setVitalSignData(data);
 
         } catch (Exception e) {
             Log.e("", e.getMessage());
@@ -195,7 +194,6 @@ public class VitalSignEdit2 extends VitalSignBase {
     }
 
     private void NumPressed(String key) {
-        Log.v("Test click", "The button " + key + " has been pressed!");
 
         //设置一个变量判断是否有光标
         if (textCursor == true) {

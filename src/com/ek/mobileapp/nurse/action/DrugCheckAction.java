@@ -63,7 +63,7 @@ public class DrugCheckAction {
             }
             JSONArray arrays = res.getJSONArray("drugCheckData");
             if (arrays.length() == GlobalCache.getCache().getDrugCheckDatas().size())
-                return "1";
+                return "-1";
             for (int i = 0; i < arrays.length(); i++) {
                 JSONObject p = (JSONObject) arrays.get(i);
                 drugCheckDatas.add(JSON.parseObject(p.toString(), DrugCheckData.class));

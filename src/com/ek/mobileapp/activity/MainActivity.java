@@ -5,14 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -44,7 +42,7 @@ import com.markupartist.android.widget.ActionBar;
 import com.markupartist.android.widget.ActionBar.Action;
 import com.markupartist.android.widget.ActionBar.IntentAction;
 
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
     Map<String, Integer> btns = new HashMap<String, Integer>();
     Map<String, Integer> btnsStyle = new HashMap<String, Integer>();
     Map<Integer, String> moduels = new HashMap<Integer, String>();
@@ -55,7 +53,7 @@ public class MainActivity extends Activity {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void createUi() {
         MainApplication.getInstance().addActivity(this);
 
         //统一取数
@@ -71,8 +69,6 @@ public class MainActivity extends Activity {
         new Thread(runLog).start();
 
         createBtns();
-        super.onCreate(savedInstanceState);
-        //requestWindowFeature(Window.FEATURE_OPTIONS_PANEL);
         setContentView(R.layout.main);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -303,4 +299,5 @@ public class MainActivity extends Activity {
         dialog.setTitle("关于...");
         dialog.show();
     }
+
 }

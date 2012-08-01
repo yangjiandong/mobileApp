@@ -1,5 +1,7 @@
 package com.ek.mobileapp.nurse.activity;
 
+import java.util.List;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +19,8 @@ import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.model.Patient;
 import com.ek.mobileapp.model.UserDTO;
+import com.ek.mobileapp.model.VitalSignData;
+import com.ek.mobileapp.model.VitalSignItem;
 import com.ek.mobileapp.nurse.action.VitalSignAction;
 import com.ek.mobileapp.utils.BlueToothConnector;
 import com.ek.mobileapp.utils.GlobalCache;
@@ -37,8 +41,23 @@ public abstract class VitalSignBase extends NurseBaseActivity {
     //是否实时显示
     protected boolean realTimeShowData = false;
 
+    protected boolean hasRefreshData = false;
+
     protected String getItemCode() {
         return "";
+    }
+
+    protected String getItemName(String code) {
+        String itemName = "";
+
+        List<VitalSignItem> items = GlobalCache.getCache().getVitalSignItems();
+        for (VitalSignItem a : items) {
+            if (a.getCode().equals(code)) {
+                itemName = a.getName();
+            }
+        }
+
+        return itemName;
     }
 
     protected LayoutInflater mLayoutInflater;
@@ -69,13 +88,13 @@ public abstract class VitalSignBase extends NurseBaseActivity {
         super.onPause();
     }
 
-    public void onResume() {
-        //ToastUtils.show(this, "onResume");
-        super.onResume();
+    @Override
+    public void resumeOther() {
+
         get_patient.setVisibility(View.VISIBLE);
-        if (realTimeShowData){
+        if (realTimeShowData) {
             processGetData();
-        }else{
+        } else {
             refreshData();
         }
     }
@@ -163,6 +182,7 @@ public abstract class VitalSignBase extends NurseBaseActivity {
                         bundle.putString("msg", "找不到住院号为" + e_patientId.getText().toString().trim() + "的病人");
                         message.setData(bundle);
                     } else {
+                        hasRefreshData = true;
                         //取出全部生命体征数据
                         VitalSignAction.getAll(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate);
 
@@ -192,7 +212,7 @@ public abstract class VitalSignBase extends NurseBaseActivity {
     }
 
     //开始处理取数
-    private void processGetData() {
+    public void processGetData() {
         if (e_patientId.getText().toString().trim().equals("")) {
             return;
         }
@@ -207,13 +227,40 @@ public abstract class VitalSignBase extends NurseBaseActivity {
 
         Patient pa = GlobalCache.getCache().getCurrentPatient();
         if (pa != null) {
+            e_patientId.setText(pa.getPatientId());
             t_name.setText(pa.getPatientName());
             t_sex.setText(pa.getSex());
             t_age.setText(pa.getAge());
             t_bedNo.setText(pa.getBedNo());
             t_doctor.setText(pa.getDoctorName());
             //取生命体征
-            showMessageByVoice("当前病人" + pa.getPatientName());
+            if (hasRefreshData) {
+                showMessage("当前病人" + pa.getPatientName());
+                hasRefreshData = false;
+            }
+
+            VitalSignData data = new VitalSignData();
+            data.setAddDate(GlobalCache.getCache().getBusDate());
+            data.setPatientId(GlobalCache.getCache().getCurrentPatient().getPatientId());
+            data.setTimePoint(GlobalCache.getCache().getTimePoint());
+            data.setItemCode(getItemCode());
+            data.setItemName(getItemName(getItemCode()));
+            data.setUserId(GlobalCache.getCache().getLoginuser().getId());
+            data.setValue1("");
+            data.setValue2("");
+
+            List<VitalSignData> lists = GlobalCache.getCache().getVitalSignDatas_all();
+            if (lists.size() == 0) {
+
+            } else {
+                for (VitalSignData a : lists) {
+                    if (a.getItemCode().equals(getItemCode())) {
+                        data = a;
+                    }
+                }
+            }
+
+            GlobalCache.getCache().setVitalSignData(data);
             refreshOther();
         } else {
             stopAnimation(R.id.loadingImageView);

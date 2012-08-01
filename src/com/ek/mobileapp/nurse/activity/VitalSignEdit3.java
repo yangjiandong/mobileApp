@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
-import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.text.Selection;
 import android.util.Log;
@@ -22,8 +20,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -34,27 +30,17 @@ import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.activity.InputDemoActivtiy;
 import com.ek.mobileapp.model.MeasureType;
-import com.ek.mobileapp.model.Patient;
-import com.ek.mobileapp.model.UserDTO;
 import com.ek.mobileapp.model.VitalSignData;
 import com.ek.mobileapp.nurse.action.VitalSignAction;
 import com.ek.mobileapp.utils.GlobalCache;
+import com.ek.mobileapp.utils.UtilString;
 
 //血压,血压2
 //一次录入2个指标
-public class VitalSignEdit3 extends Activity {
+public class VitalSignEdit3 extends VitalSignBase {
     List<MeasureType> list = new ArrayList<MeasureType>();
     Map<Integer, Integer> btns = new HashMap<Integer, Integer>();
-    Button B1, B2, B3, B4, B5, B6, B7, B8, B9, B0, BClear, BDot, BEqual;
-
-    EditText e_patientId;
-    TextView t_patientName;
-    TextView t_age;
-    TextView t_sex;
-    TextView t_bedNo;
-    TextView t_doctor;
-    TextView t_user_by;
-    Button get_patient;
+    Button B1, B2, B3, B4, B5, B6, B7, B8, B9, B0, BClear, BDot, BEqual, BClose;
 
     TextView t_label;
     EditText e_text;
@@ -70,64 +56,97 @@ public class VitalSignEdit3 extends Activity {
     private int touchNo = 1;
     private boolean flag = false;
 
+    private String itemCode = "";
+    private String itemCode2 = "";
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    public void initBase() {
         setContentView(R.layout.vitalsignedit_3);
-        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        try {
-            LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.vitalsign_patient_info, null);
 
-            LinearLayout layout = (LinearLayout) findViewById(R.id.pa_infos);
-            layout.addView(inputkey);
+    }
 
-        } catch (Exception e) {
-            MobLogAction.getMobLogAction().mobLogError("病人信息", e.getMessage());
+    @Override
+    protected String getItemCode() {
+        return itemCode;
+    }
+
+    private void getVitalSignData() {
+        VitalSignData data = new VitalSignData();
+        data.setAddDate(GlobalCache.getCache().getBusDate());
+        data.setPatientId(GlobalCache.getCache().getCurrentPatient().getPatientId());
+        data.setTimePoint(GlobalCache.getCache().getTimePoint());
+        data.setItemCode(itemCode);
+        data.setItemName(getItemName(itemCode));
+        data.setUserId(GlobalCache.getCache().getLoginuser().getId());
+        data.setValue2("");
+
+        VitalSignData data2 = new VitalSignData();
+        data2.setAddDate(GlobalCache.getCache().getBusDate());
+        data2.setPatientId(GlobalCache.getCache().getCurrentPatient().getPatientId());
+        data2.setTimePoint(GlobalCache.getCache().getTimePoint());
+        data2.setItemCode(itemCode2);
+        data2.setItemName(getItemName(itemCode2));
+        data2.setUserId(GlobalCache.getCache().getLoginuser().getId());
+        data2.setValue2("");
+
+        List<VitalSignData> lists = GlobalCache.getCache().getVitalSignDatas_all();
+        for (VitalSignData a : lists) {
+            if (a.getItemCode().equals(itemCode)) {
+                data = a;
+            }
+            if (a.getItemCode().equals(itemCode2)) {
+                data2 = a;
+            }
         }
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        UserDTO user = GlobalCache.getCache().getLoginuser();
-        t_user_by = (TextView) findViewById(R.id.user_by);
-        t_user_by.setText("操作人: " + user.getName() + " - " + user.getDepartName());
+
+        if (data != null) {
+            if (data.getValue2() != null && data.getValue2().length() > 0 && data.getItemCode().equals(itemCode)) {
+                e_text.setText(data.getValue2());
+            } else {
+                e_text.setText("");
+            }
+        }
+        GlobalCache.getCache().setVitalSignData(data);
+
+        if (data2 != null) {
+            if (data2.getValue2() != null && data2.getValue2().length() > 0 && data2.getItemCode().equals(itemCode2)) {
+                e_text2.setText(data2.getValue2());
+            } else {
+                e_text2.setText("");
+            }
+        }
+        GlobalCache.getCache().setVitalSignData2(data2);
+        e_text.requestFocus(1);
+    }
+
+    @Override
+    public void refreshOther() {
+        getVitalSignData();
+    }
+
+    @Override
+    protected void showUi() {
+
+        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         Intent intent = getIntent();
-        String itemCode = intent.getStringExtra("code");
+        itemCode = intent.getStringExtra("code");
         String itemName = intent.getStringExtra("name");
-        String itemCode2 = "";
+
         String itemName2 = "";
-        if (itemCode.equals("08")) {
+        if (itemCode.equals("08") || itemCode.equals("09")) {
+            itemCode = "08";
+            itemName = "血压Low(mmHg)";
             itemCode2 = "09";
             itemName2 = "血压high(mmHg)";
         }
-        if (itemCode.equals("09")) {
-            itemCode2 = "08";
-            itemName2 = "血压Low(mmHg)";
-        }
-        if (itemCode.equals("10")) {
+
+        if (itemCode.equals("10") || itemCode.equals("11")) {
+            itemCode = "10";
+            itemName = "血压Low(2)(mmHg)";
             itemCode2 = "11";
             itemName2 = "血压high(2)(mmHg)";
         }
-        if (itemCode.equals("11")) {
-            itemCode2 = "10";
-            itemName2 = "血压Low(2)(mmHg)";
-        }
-
-        Patient pa = GlobalCache.getCache().getCurrentPatient();
-        String busDate = GlobalCache.getCache().getBusDate();
-        String timePoint = GlobalCache.getCache().getTimePoint();
-
-        e_patientId = (EditText) findViewById(R.id.vitalsign_patientId);
-        e_patientId.setInputType(InputType.TYPE_NULL);
-        t_patientName = (TextView) findViewById(R.id.vitalsign_name);
-
-        get_patient = (Button) findViewById(R.id.get_patient);
-        get_patient.setVisibility(View.INVISIBLE);
-
-        t_age = (TextView) findViewById(R.id.vitalsign_age);
-        t_sex = (TextView) findViewById(R.id.vitalsign_sex);
-        t_bedNo = (TextView) findViewById(R.id.vitalsign_bedNo);
-        t_doctor = (TextView) findViewById(R.id.vitalsign_doctor);
 
         try {
             TableLayout inputkey = (TableLayout) inflater.inflate(R.layout.inputkey, null);
@@ -182,10 +201,16 @@ public class VitalSignEdit3 extends Activity {
         };
         OnClickListener myListenerBSave = new OnClickListener() {
             public void onClick(View v) {
-                GlobalCache.getCache().getVitalSignData().setValue2(e_text2.getText().toString().trim());
+                GlobalCache.getCache().getVitalSignData2().setValue2(e_text2.getText().toString().trim());
+                GlobalCache.getCache().getVitalSignData().setValue2(e_text.getText().toString().trim());
                 flag = false;
                 processSaveData();
 
+            }
+        };
+        OnClickListener myListenerBClose = new OnClickListener() {
+            public void onClick(View v) {
+                finish();
             }
         };
 
@@ -202,42 +227,14 @@ public class VitalSignEdit3 extends Activity {
         BDot.setOnClickListener(myListenerBDot);
         BClear.setOnClickListener(myListenerBClear);
         BEqual.setOnClickListener(myListenerBSave);
-
-        if (pa != null) {
-            e_patientId.setText(pa.getPatientId());
-            t_patientName.setText(pa.getPatientName());
-            t_age.setText(pa.getAge());
-            t_sex.setText(pa.getSex());
-            t_bedNo.setText(pa.getBedNo());
-            t_doctor.setText(pa.getDoctorName());
-        }
+        BClose.setOnClickListener(myListenerBClose);
 
         t_label.setText(itemName);
         t_label2.setText(itemName2);
 
         try {
 
-            if (pa != null && busDate != null && timePoint != null && timePoint.length() > 0 && busDate.length() > 0)
-                VitalSignAction.getOne(pa.getPatientId(), busDate, timePoint, itemCode);
-
-            VitalSignData data = GlobalCache.getCache().getVitalSignData();
-
-            if (data != null) {
-                if (data.getValue2() != null && data.getValue2().length() > 0 && data.getItemCode().equals(itemCode))
-                    e_text.setText(data.getValue2());
-            }
-            GlobalCache.getCache().setVitalSignData2(data);
-
-            if (pa != null && busDate != null && timePoint != null && timePoint.length() > 0 && busDate.length() > 0)
-                VitalSignAction.getOne(pa.getPatientId(), busDate, timePoint, itemCode2);
-
-            data = GlobalCache.getCache().getVitalSignData();
-
-            if (data != null) {
-                if (data.getValue2() != null && data.getValue2().length() > 0 && data.getItemCode().equals(itemCode2))
-                    e_text2.setText(data.getValue2());
-            }
-            e_text.requestFocus(1);
+            getVitalSignData();
 
         } catch (Exception e) {
             Log.e("", e.getMessage());
@@ -256,7 +253,6 @@ public class VitalSignEdit3 extends Activity {
     }
 
     private void NumPressed(String key) {
-        Log.v("Test click", "The button " + key + " has been pressed!");
 
         if (touchNo == 1) {
             //设置一个变量判断是否有光标
@@ -318,6 +314,7 @@ public class VitalSignEdit3 extends Activity {
         BClear = (Button) findViewById(R.id.buttonClear);
         BDot = (Button) findViewById(R.id.buttonDot);
         BEqual = (Button) findViewById(R.id.buttonEq);
+        BClose = (Button) findViewById(R.id.buttonClose);
 
         e_text = (EditText) findViewById(R.id.vitalsign_edit_3_text);
         e_text.setInputType(InputType.TYPE_NULL); // 关闭软键盘
@@ -377,21 +374,21 @@ public class VitalSignEdit3 extends Activity {
     Handler saveDataHandler = new Handler() {
         public void handleMessage(Message msg) {
             int type = msg.getData().getInt("type");
+            String message = msg.getData().getString("msg");
 
             switch (type) {
             case 1: {
                 if (!flag) {
                     GlobalCache.getCache().setVitalSignData(GlobalCache.getCache().getVitalSignData2());
-                    GlobalCache.getCache().getVitalSignData().setValue2(e_text.getText().toString().trim());
                     flag = true;
                     processSaveData();
                 } else {
-                    finish();
+                    showMessage(message);
                 }
                 break;
             }
             case 0: {
-                //error
+                showMessage(message);
             }
             default: {
 
@@ -422,7 +419,7 @@ public class VitalSignEdit3 extends Activity {
 
                         Bundle bundle = new Bundle();
                         bundle.putInt("type", 1);
-                        bundle.putString("msg", "ok");
+                        bundle.putString("msg", "保存成功");
                         message.setData(bundle);
                     } else {
                         Bundle bundle = new Bundle();

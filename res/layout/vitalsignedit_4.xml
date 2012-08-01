@@ -35,11 +35,11 @@
         android:layout_width="fill_parent"
         android:layout_height="190dp"
         android:fillViewport="true" >
-
+
         <LinearLayout
             android:id="@+id/vital_sign_edit"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="151dp"
             android:orientation="vertical" >
 
             <LinearLayout
@@ -90,5 +90,25 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <Button
+            android:id="@+id/vitalsign_edit_4_button_save"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80dp"
+            android:text="保存" />
+
+        <Button
+            android:id="@+id/vitalsign_edit_4_button_close"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:text="关闭" />
+
+    </LinearLayout>
 
 </LinearLayout>

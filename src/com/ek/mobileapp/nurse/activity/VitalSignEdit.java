@@ -7,7 +7,6 @@ import java.util.Map;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,13 +24,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.activity.InputDemoActivtiy;
 import com.ek.mobileapp.model.MeasureType;
-import com.ek.mobileapp.model.Patient;
 import com.ek.mobileapp.model.VitalSignData;
 import com.ek.mobileapp.nurse.action.VitalSignAction;
 import com.ek.mobileapp.utils.GlobalCache;
@@ -45,14 +42,6 @@ public class VitalSignEdit extends VitalSignBase {
 
     RadioGroup measures;
     RadioGroup measures2;
-    EditText e_patientId;
-    TextView t_patientName;
-    TextView t_age;
-    TextView t_sex;
-    TextView t_bedNo;
-    TextView t_doctor;
-    TextView t_user_by;
-    Button get_patient;
 
     TextView t_label;
     EditText e_text;
@@ -222,14 +211,21 @@ public class VitalSignEdit extends VitalSignBase {
         int i = 0;
         try {
 
-            Patient pa = GlobalCache.getCache().getCurrentPatient();
-            String busDate = GlobalCache.getCache().getBusDate();
-            String timePoint = GlobalCache.getCache().getTimePoint();
+            VitalSignData data = new VitalSignData();
+            data.setAddDate(GlobalCache.getCache().getBusDate());
+            data.setPatientId(GlobalCache.getCache().getCurrentPatient().getPatientId());
+            data.setTimePoint(GlobalCache.getCache().getTimePoint());
+            data.setItemCode(itemCode);
+            data.setItemName(getItemName(itemCode));
+            data.setUserId(GlobalCache.getCache().getLoginuser().getId());
+            data.setValue1("");
 
-            if (pa != null && busDate != null && timePoint != null && timePoint.length() > 0 && busDate.length() > 0)
-                VitalSignAction.getOne(pa.getPatientId(), busDate, timePoint, itemCode);
-
-            VitalSignData data = GlobalCache.getCache().getVitalSignData();
+            List<VitalSignData> lists = GlobalCache.getCache().getVitalSignDatas_all();
+            for (VitalSignData a : lists) {
+                if (a.getItemCode().equals(itemCode)) {
+                    data = a;
+                }
+            }
 
             if (data != null) {
                 if (data.getValue1() != null && data.getValue1().length() > 0 && data.getItemCode().equals(itemCode))
@@ -261,6 +257,7 @@ public class VitalSignEdit extends VitalSignBase {
 
                 i++;
             }
+            GlobalCache.getCache().setVitalSignData(data);
 
         } catch (Exception e) {
 
@@ -289,9 +286,6 @@ public class VitalSignEdit extends VitalSignBase {
     }
 
     private void NumPressed(String key) {
-        showMessageByVoice(key);
-
-        Log.v("Test click", "The button " + key + " has been pressed!");
 
         //设置一个变量判断是否有光标
         if (textCursor == true) {

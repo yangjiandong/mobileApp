@@ -38,7 +38,7 @@ public class LogonAction {
 
     public static int userLog(String infos, String ip) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("infos", infos));
+        params.add(new BasicNameValuePair("infos", infos + "|" + GlobalCache.getCache().getDeviceId()));
 
         String url = "http://" + ip + WebUtils.USERLOG;
         JSONObject res = HttpTool.getTool().post(url, params);
@@ -54,5 +54,4 @@ public class LogonAction {
             return WebUtils.APPLICATIONERROR;
         }
     }
-
 }

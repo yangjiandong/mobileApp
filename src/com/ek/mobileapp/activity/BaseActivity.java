@@ -1,4 +1,4 @@
-package com.ek.mobileapp.nurse.activity;
+package com.ek.mobileapp.activity;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -21,20 +21,16 @@ import android.widget.ImageView;
 import com.ek.mobileapp.MainApplication;
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.MobLogAction;
-import com.ek.mobileapp.utils.BlueToothConnector;
-import com.ek.mobileapp.utils.BlueToothReceive;
 import com.ek.mobileapp.utils.ToastUtils;
 import com.shoushuo.android.tts.ITts;
 import com.shoushuo.android.tts.ITtsCallback;
 
-//实现蓝牙功能
-public abstract class NurseBaseActivity extends Activity implements BlueToothReceive {
+//实现蓝牙、语言功能
+public abstract class BaseActivity extends Activity {
 
     protected SharedPreferences sharedPreferences;
 
     protected LayoutInflater mLayoutInflater;
-    //bluetooth
-    protected BlueToothConnector blueTootheConnector;
 
     //TTS
     protected boolean useVoice = false;
@@ -53,11 +49,6 @@ public abstract class NurseBaseActivity extends Activity implements BlueToothRec
         useVoice = sharedPreferences.getBoolean("setting_use_vocie", false);
 
         createUi();
-
-        //蓝牙设备
-        blueTootheConnector = new BlueToothConnector(this);
-        blueTootheConnector.setDaemon(true);
-        blueTootheConnector.start();
 
     }
 
@@ -131,18 +122,7 @@ public abstract class NurseBaseActivity extends Activity implements BlueToothRec
     @Override
     public void onDestroy() {
         //ToastUtils.show(this, "onDestroy");
-        try {
-            //没有蓝牙设备时,
-            if (blueTootheConnector != null) {
-                //if (blueTootheConnector.isHasBlueToothDevice()) {
-                // Stop the Bluetooth chat services
-                blueTootheConnector.mystop();
-                blueTootheConnector.stop();
-                blueTootheConnector = null;
-            }
-        } catch (Exception e) {
-            MobLogAction.getMobLogAction().mobLogError("关闭蓝牙", e.getMessage());
-        }
+
         try {
             if (ttsBound) {
                 ttsBound = false;
@@ -159,34 +139,12 @@ public abstract class NurseBaseActivity extends Activity implements BlueToothRec
     public void onPause() {
         //ToastUtils.show(this, "onPause");
         super.onPause();
-
-        try {
-            //没有蓝牙设备时,
-            if (blueTootheConnector != null) {
-                //if (blueTootheConnector.isHasBlueToothDevice()) {
-                // Stop the Bluetooth chat services
-                blueTootheConnector.mystop();
-                blueTootheConnector.stop();
-                blueTootheConnector = null;
-            }
-        } catch (Exception e) {
-            //MobLogAction.getMobLogAction().mobLogError("关闭蓝牙", e.getMessage());
-        }
     }
 
     public void onResume() {
         super.onResume();
 
-        if (blueTootheConnector == null) {
-            //蓝牙设备
-            blueTootheConnector = new BlueToothConnector(this);
-            blueTootheConnector.setDaemon(true);
-            blueTootheConnector.start();
-        }
-        resumeOther();
     }
-
-    protected abstract void resumeOther();
 
     //锁定home 键
     //@Override
@@ -226,6 +184,8 @@ public abstract class NurseBaseActivity extends Activity implements BlueToothRec
             ttsService = ITts.Stub.asInterface(service);
             ttsBound = true;
             try {
+                // tts服务初始化
+                ttsService.initialize();
                 // 注册回调参数
                 ttsService.registerCallback(ttsCallback);
             } catch (RemoteException e) {

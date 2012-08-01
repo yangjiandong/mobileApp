@@ -166,11 +166,11 @@ public class DrugCheck extends NurseBaseActivity {
             case 1: {
                 GlobalCache.getCache().setDrugCheckDatas(new ArrayList<DrugCheckData>());
                 refreshList();
-                showMessage(message);
+                ToastUtils.show(DrugCheck.this, message);
                 break;
             }
             case 0: {
-                showMessage(message);
+                ToastUtils.show(DrugCheck.this, message);
             }
             default: {
 
@@ -383,14 +383,14 @@ public class DrugCheck extends NurseBaseActivity {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
         releaseMediaPlayer();
+        processCommitData();
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        processCommitData();
+    public void resumeOther() {
+
     }
 }

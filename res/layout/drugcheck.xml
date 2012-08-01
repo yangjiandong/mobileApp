@@ -23,18 +23,17 @@
             android:textSize="20dip" />
     </LinearLayout>
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp" >
-
+
         <TextView
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="条码"
-            android:textSize="16dp" />
-
+            android:textSize="20dp" />
+
         <EditText
             android:id="@+id/drugcheck_barcode"
             android:layout_width="200dp"
@@ -42,18 +41,17 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="7dp"
             android:ems="10"
-            android:textSize="16dp" >
+            android:textSize="20dp" >
 
             <requestFocus />
         </EditText>
-
+
         <Button
             android:id="@+id/drugcheck_commit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="7dp"
             android:text="提交" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -62,11 +60,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/toply"
         android:orientation="horizontal" />
-
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="41dp" >
-
+
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
@@ -74,7 +72,6 @@
             android:layout_gravity="center"
             android:text="用药信息"
             android:textSize="25dp" />
-
     </FrameLayout>
 
     <ListView

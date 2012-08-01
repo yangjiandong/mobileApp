@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="住院号"
-            android:textSize="16dip" />
+            android:textSize="18dip" />
 
         <EditText
             android:id="@+id/vitalsign_patientId"
@@ -39,7 +39,7 @@
             android:layout_toRightOf="@id/vitalsign_patientId"
             android:focusable="false"
             android:text="提取"
-            android:textSize="16dip" />
+            android:textSize="18dip" />
 
         <ImageView
             android:id="@+id/loadingImageView"
@@ -64,12 +64,13 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="姓名"
-            android:textSize="16dip" />
-
+            android:textSize="18dip" />
+
         <TextView
             android:id="@+id/vitalsign_name"
             style="@style/InfoText"
-            android:layout_width="64dp" />
+            android:layout_width="64dp"
+            android:textSize="18dip" />
 
         <TextView
             android:id="@+id/vitalsign_sexLabel"
@@ -77,13 +78,13 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:text="性别"
-            android:textSize="16dip" />
+            android:textSize="18dip" />
 
         <TextView
             android:id="@+id/vitalsign_sex"
             style="@style/InfoText"
             android:layout_width="64dp"
-            />
+            android:textSize="18dip" />
 
         <TextView
             android:id="@+id/vitalsign_ageLabel"
@@ -91,13 +92,13 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:text="年龄"
-            android:textSize="16dip" />
+            android:textSize="18dip" />
 
         <TextView
             android:id="@+id/vitalsign_age"
             style="@style/InfoText"
             android:layout_width="64dp"
-            />
+            android:textSize="18dip" />
     </LinearLayout>
 
     <LinearLayout
@@ -114,13 +115,13 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="床号"
-            android:textSize="16dip" />
+            android:textSize="18dip" />
 
         <TextView
             android:id="@+id/vitalsign_bedNo"
             style="@style/InfoText"
             android:layout_width="64dp"
-            />
+            android:textSize="18dip" />
 
         <TextView
             android:id="@+id/vitalsign_doctorLabel"
@@ -128,13 +129,13 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:text="医生"
-            android:textSize="16dip" />
+            android:textSize="18dip" />
 
         <TextView
             android:id="@+id/vitalsign_doctor"
             style="@style/InfoText"
             android:layout_width="64dp"
-            />
+            android:textSize="18dip" />
     </LinearLayout>
 
 </LinearLayout>

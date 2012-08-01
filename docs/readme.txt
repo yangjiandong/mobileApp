@@ -1,13 +1,22 @@
 android app
 ===========
 
+2012.08.01
+----------
+
+   1. 增加下载文件处理
+   utils/download
+
 2012.07.31
 ----------
 
    1. 增加libprojects目录,存放所需library
    actionbar
    viewPageIndicator(滑屏)
-   
+
+   2. 调整tts程序,只在主界面初始化
+   MainActivity --> BaseActivity
+
 2012.07.28
 ----------
 

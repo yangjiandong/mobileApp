@@ -1,6 +1,19 @@
 android
 =======
 
+2012.08.01
+----------
+
+   1. Professional_Android_Application_Development
+   直接取资源
+   p84
+
+   dynamically updating menu items
+   p128
+
+   2. 自定义控件,颜色提取器
+   git://github.com/commonsguy/cwac-colormixer.git
+
 2012.07.31
 ----------
 
