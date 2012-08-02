@@ -1,0 +1,73 @@
+蓝牙知识
+========
+
+什么是蓝牙
+
+1. Bluetooth是目前使用的最广泛的无线通讯协议
+2. 主要针对短距离设备通讯(10M)
+3. 常用于连接耳机、鼠标和移动通讯设备等
+
+与蓝牙相关的API
+
+1. BluetoothAdapter：该类的对象代表了本地的蓝牙适配器
+2. BluetoothDevice：代表了一个远程的Bluetooth设备
+
+扫描已配对的蓝牙设备（一）
+
+1. 在AndroidManifest.xml声明蓝牙权限：
+<uses-permission android:name= "android.permission.BLUETOOTH"/>
+
+
+扫描已配对的蓝牙设备（二）
+
+1. 获得BluetoothAdapter对象
+BluetoothAdapteradapter = BluetoothAdapter.getDefaultAdapter();
+
+2. 判断当前设备中是否拥有蓝牙设备
+if(adapter !=null)  //如果adapter为空，则表明本机没有蓝牙设备
+
+3. 判断当前设备中的蓝牙设备是否已经打开
+
+if(!adapter.isEnabled())　　//判断当前蓝牙设备是否可用
+{
+       //创建一个Intent对象，该对象用于启动一个Activity，提示用户开启蓝牙设备
+       Intent intent = newIntent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+       startActivity(intent);
+}
+
+4. 得到所有已经配对的蓝牙设备对象
+
+Set<BluetoothDevice>devices = adapter.getBondedDevices();
+if(devices.size()> 0)
+{
+       for(Iterator iterator = devices.iterator();iterator.hasNext();)
+       {
+              BluetoothDevice bluetoothDevice =(BluetoothDevice)iterator.next();
+       }
+}
+
+如果需要对蓝牙的可见性进行修改，还需要加权限
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+
+//设置蓝牙可见
+
+Intent discoverableIntent = newIntent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATOIN,500); //最高不超过300秒，这里设置500秒，也会当300秒
+startActivity(discoverableIntent);
+
+BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+bluetoothAdapter.startDiscovery();  //每次扫描到一个设备，都会发送一个广播
+
+//创建一个广播接收器来进行接收
+
+private classBluetoothReceiver extends BroadcastReceiver{
+
+       @Override
+       public void onReceive(Context context,Intent intent)
+       {
+              String action =intent.getAction();
+              if(BluetoothDevice.ACTION_FOUND.equals(action)){
+                     BluetoothDevice device =intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                     System.out.println(device.getAddress());}
+       }
+}
