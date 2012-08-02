@@ -4,6 +4,7 @@
 
     <LinearLayout
         android:id="@+id/toply"
+        style="?InfoLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -13,17 +14,18 @@
             android:id="@+id/showBluetooth"
             android:layout_width="18dp"
             android:layout_height="20dp"
-            android:paddingTop="1dp" />
+            android:paddingTop="0dp" />
 
         <TextView
             android:id="@+id/drugcheck_user_by"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="操作员"
-            android:textSize="20dip" />
+            style="?text.dark.medium.bold" />
     </LinearLayout>
 
     <LinearLayout
+        style="?InfoLayout"
         android:layout_width="match_parent"
         android:layout_height="48dp" >
 
@@ -56,7 +58,8 @@
 
     <LinearLayout
         android:id="@+id/drugcheck_pa_infos"
-        android:layout_width="fill_parent"
+        style="?InfoLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toply"
         android:orientation="horizontal" />

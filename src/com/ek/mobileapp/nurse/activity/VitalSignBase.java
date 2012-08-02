@@ -99,11 +99,6 @@ public abstract class VitalSignBase extends NurseBaseActivity {
         }
     }
 
-    protected void onStop() {
-        //ToastUtils.show(this, "onStop");
-        super.onStop();
-    }
-
     protected void onStart() {
         //ToastUtils.show(this, "onStart");
         super.onStart();

@@ -1,6 +1,12 @@
 android app
 ===========
 
+2012.08.02
+----------
+
+   1. 通过theme设置style
+   res/values/attrs.xml,themes.xml
+
 2012.08.01
 ----------
 

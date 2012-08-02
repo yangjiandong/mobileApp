@@ -34,6 +34,8 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.webkit.URLUtil;
 import android.webkit.WebView;
@@ -78,6 +80,9 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.logon);
 
         final ActionBar actionBar = (ActionBar) findViewById(R.id.actionbar);

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="Page" format="reference" />
+    <attr name="ModulePage" format="reference" />
+
+    <!-- View styles -->
+    <attr name="body" format="reference" />
+    <attr name="text" format="reference" />
+    <attr name="text.medium" format="reference" />
+    <attr name="text.medium.bold" format="reference" />
+    <attr name="text.dark" format="reference" />
+    <attr name="text.dark.medium" format="reference" />
+    <attr name="text.dark.medium.bold" format="reference" />
+    <attr name="button" format="reference" />
+    <attr name="button.medium" format="reference" />
+    <attr name="button.medium.bold" format="reference" />
+    <attr name="button.dark" format="reference" />
+    <attr name="button.dark.medium" format="reference" />
+    <attr name="button.dark.medium.bold" format="reference" />
+    <attr name="button.dark.big" format="reference" />
+    <attr name="button.dark.big.bold" format="reference" />
+    <attr name="InfoText" format="reference" />
+    <attr name="InfoLayout" format="reference" />
+
+    <attr name="custom_list_text_color" format="reference" />
+    <attr name="custom_grid_value_color" format="reference" />
+
+
+    <!-- Attributes -->
+    <attr name="pageMargin" format="reference|dimension" />
+    <attr name="contentLeftMargin" format="reference|dimension" />
+
+
+
+</resources>

@@ -3,7 +3,6 @@
 
 /gen
 /target
-.project
 project.properties
 /libsproject/actionbar/bin
 /libsproject/actionbar/gen

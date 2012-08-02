@@ -3,6 +3,7 @@
     style="@style/ModulePage" >
 
     <LinearLayout
+        style="?InfoLayout"
         android:id="@+id/toply"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="操作员"
-            android:textSize="20dip" />
+            style="?text.dark.medium.bold" />
     </LinearLayout>
 
     <LinearLayout
@@ -33,7 +34,7 @@
     <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="190dp"
+        android:layout_height="160dp"
         android:fillViewport="true" >
 
         <LinearLayout

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme" parent="android:Theme">
+        <item name="pageMargin">2sp</item>
+        <item name="android:windowTitleSize">20dip</item>
+    </style>
+
+    <style name="Light1Theme" parent="android:Theme.Light">
+
+        <!-- 全局风格,Light Or Black -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@color/custom_theme_color</item>
+        <item name="android:colorBackground">@color/custom_theme_color</item>
+        <item name="Page">@style/Page</item>
+        <item name="ModulePage">@style/ModulePage</item>
+        <item name="body">@style/body</item>
+        <item name="text">@style/text</item>
+        <item name="text.medium">@style/text.medium</item>
+        <item name="text.medium.bold">@style/text.medium.bold</item>
+        <item name="text.dark">@style/text.dark</item>
+        <item name="text.dark.medium">@style/text.dark.medium</item>
+        <item name="text.dark.medium.bold">@style/text.dark.medium.bold</item>
+        <item name="button">@style/button</item>
+        <item name="button.medium">@style/button.medium</item>
+        <item name="button.medium.bold">@style/button.medium.bold</item>
+        <item name="button.dark">@style/button.dark</item>
+        <item name="button.dark.medium">@style/button.dark.medium</item>
+        <item name="button.dark.medium.bold">@style/button.dark.medium.bold</item>
+        <item name="button.dark.big">@style/button.dark.big</item>
+        <item name="button.dark.big.bold">@style/button.dark.big.bold</item>
+        <item name="InfoText">@style/InfoText</item>
+        <item name="InfoLayout">@style/InfoLayout</item>
+        <item name="custom_list_text_color">@color/custom_list_text_color</item>
+        <item name="custom_grid_value_color">@color/custom_grid_value_color</item>
+    </style>
+
+</resources>

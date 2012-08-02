@@ -93,7 +93,7 @@ public abstract class NurseBaseActivity extends Activity implements BlueToothRec
 
     protected void showProcessingImage(int imageViewId) {
         ImageView imageView = (ImageView) findViewById(imageViewId);
-        imageView.setImageResource(R.drawable.loading);
+        imageView.setImageResource(R.drawable.loading2);
         RotateAnimation rotateAnimation = new RotateAnimation(0, 360, 13, 13);
         rotateAnimation.setDuration(1000);
         rotateAnimation.setRepeatCount(Animation.INFINITE);

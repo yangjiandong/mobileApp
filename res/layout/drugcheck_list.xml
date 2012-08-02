@@ -11,7 +11,7 @@
         android:gravity="left"
         android:paddingLeft="10dip"
         android:text=" "
-        android:textColor="@color/custom_list_text_color"
+        android:textColor="?custom_list_text_color"
         android:textSize="20dip" />
 
     <TextView

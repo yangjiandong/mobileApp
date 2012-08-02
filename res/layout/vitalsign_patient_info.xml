@@ -8,6 +8,7 @@
 
     <RelativeLayout
         android:id="@+id/rlMyPortfolio"
+        style="?InfoLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -33,13 +34,15 @@
 
         <Button
             android:id="@+id/get_patient"
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
+            style="?button"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
             android:layout_alignTop="@id/vitalsign_patientId"
+            android:layout_marginLeft="5dp"
             android:layout_toRightOf="@id/vitalsign_patientId"
             android:focusable="false"
-            android:text="提取"
-            android:textSize="18dip" />
+            android:paddingLeft="2dp"
+            android:text="提取" />
 
         <ImageView
             android:id="@+id/loadingImageView"
@@ -52,6 +55,7 @@
 
     <LinearLayout
         android:id="@+id/pa_info1"
+        style="?InfoLayout"
         android:layout_width="fill_parent"
         android:layout_height="30dp"
         android:layout_below="@id/rlFavQuote"
@@ -68,21 +72,44 @@
 
         <TextView
             android:id="@+id/vitalsign_name"
-            style="@style/InfoText"
-            android:layout_width="64dp"
+            style="?InfoText"
+            android:layout_width="100dp"
             android:textSize="18dip" />
+
+        <TextView
+            android:id="@+id/vitalsign_doctorLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="医生"
+            android:textSize="18dip" />
+
+        <TextView
+            android:id="@+id/vitalsign_doctor"
+            style="?InfoText"
+            android:layout_width="100dp"
+            android:textSize="18dip" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/pa_info2"
+        style="?InfoLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/pa_info1"
+        android:orientation="horizontal"
+        android:padding="1dp" >
 
         <TextView
             android:id="@+id/vitalsign_sexLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
             android:text="性别"
             android:textSize="18dip" />
 
         <TextView
             android:id="@+id/vitalsign_sex"
-            style="@style/InfoText"
+            style="?InfoText"
             android:layout_width="64dp"
             android:textSize="18dip" />
 
@@ -96,44 +123,22 @@
 
         <TextView
             android:id="@+id/vitalsign_age"
-            style="@style/InfoText"
+            style="?InfoText"
             android:layout_width="64dp"
             android:textSize="18dip" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/pa_info2"
-        android:layout_width="fill_parent"
-        android:layout_height="30dp"
-        android:layout_below="@+id/pa_info1"
-        android:orientation="horizontal"
-        android:padding="1dp" >
 
         <TextView
             android:id="@+id/vitalsign_bedNoLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
             android:text="床号"
             android:textSize="18dip" />
 
         <TextView
             android:id="@+id/vitalsign_bedNo"
-            style="@style/InfoText"
-            android:layout_width="64dp"
-            android:textSize="18dip" />
-
-        <TextView
-            android:id="@+id/vitalsign_doctorLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:text="医生"
-            android:textSize="18dip" />
-
-        <TextView
-            android:id="@+id/vitalsign_doctor"
-            style="@style/InfoText"
+            style="?InfoText"
             android:layout_width="64dp"
             android:textSize="18dip" />
     </LinearLayout>

@@ -21,7 +21,7 @@
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/Light1Theme" >
         <activity
             android:name=".activity.LogonActivity"
             android:configChanges="orientation|keyboardHidden"
