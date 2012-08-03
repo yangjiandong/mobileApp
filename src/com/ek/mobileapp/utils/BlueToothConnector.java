@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -27,8 +28,19 @@ public class BlueToothConnector extends Thread {
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     //获取蓝牙本地对象
     private BluetoothAdapter mBluetoothAdapter;
-    BlueToothReceive blueToothReceive;
     AtomicBoolean isActive = new AtomicBoolean(true);
+
+    //动态设置接收
+    AtomicReference<BlueToothReceive> blueToothReceive;
+
+    public AtomicReference<BlueToothReceive> getBlueToothReceive() {
+        return blueToothReceive;
+    }
+
+    public void setBlueToothReceive(AtomicReference<BlueToothReceive> blueToothReceive) {
+        this.blueToothReceive = blueToothReceive;
+    }
+
     boolean hasBlueToothDevice = false;
     InputThread inputThread;
 
@@ -40,9 +52,8 @@ public class BlueToothConnector extends Thread {
         this.inputThread = mConnectThread;
     }
 
-    public BlueToothConnector(BlueToothReceive blueToothReceive) {
+    public BlueToothConnector() {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        this.blueToothReceive = blueToothReceive;
     }
 
     public void mystop() {
@@ -66,18 +77,18 @@ public class BlueToothConnector extends Thread {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             ////设置蓝牙可见性的时间，方法本身规定最多可见300秒
             enableBtIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-            blueToothReceive.getContext().startActivity(enableBtIntent);
+            getBlueToothReceive().get().getContext().startActivity(enableBtIntent);
         }
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(blueToothReceive
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBlueToothReceive().get()
                 .getContext());
-        String deviceName = sharedPreferences.getString("setting_bluetooth_scanner", "SUMLUNG Device");
+        String deviceName = sharedPreferences.getString("setting_bluetooth_scanner", "");
         connectToDevice(deviceName);
     }
 
     public void connectToDevice(String name) {
         //获取已经配对的蓝牙设备
         Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-        if (pairedDevices == null){
+        if (pairedDevices == null) {
             setHasBlueToothDevice(false);
             return;
         }
@@ -85,7 +96,7 @@ public class BlueToothConnector extends Thread {
         if (pairedDevices.size() > 0) {
             for (BluetoothDevice device : pairedDevices) {
                 if (device.getName().equals(name)) {
-                    inputThread = new InputThread(device, this.blueToothReceive);
+                    inputThread = new InputThread(device);
                     inputThread.start();
                 }
             }
@@ -98,12 +109,10 @@ public class BlueToothConnector extends Thread {
     private class InputThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
-        BlueToothReceive blueToothReceive;
 
-        public InputThread(BluetoothDevice device, BlueToothReceive blueToothReceive) {
+        public InputThread(BluetoothDevice device) {
             BluetoothSocket tmp = null;
             this.mmDevice = device;
-            this.blueToothReceive = blueToothReceive;
 
             // Get a BluetoothSocket for a connection with the
             // given BluetoothDevice
@@ -136,7 +145,7 @@ public class BlueToothConnector extends Thread {
                 }
                 //reader.close();
             } catch (IOException e) {
-                MobLogAction.getMobLogAction().mobLogError("蓝牙设备", "蓝牙未连接,"+e.getMessage());
+                MobLogAction.getMobLogAction().mobLogError("蓝牙设备", "蓝牙未连接," + e.getMessage());
                 sendResult("蓝牙未连接", UNCONNECTED);
                 try {
                     mmSocket.close();
@@ -162,7 +171,7 @@ public class BlueToothConnector extends Thread {
             bundle.putString("msg", msg);
             message.setData(bundle);
 
-            this.blueToothReceive.getUIHandler().sendMessage(message);
+            getBlueToothReceive().get().getUIHandler().sendMessage(message);
         }
     }
 

@@ -13,7 +13,6 @@ import android.util.Log;
 import com.ek.mobileapp.MainApplication;
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.MobLogAction;
-import com.ek.mobileapp.utils.WebUtils;
 
 //登录时设置界面
 public class SettingActivity extends PreferenceActivity implements OnPreferenceChangeListener
@@ -22,7 +21,7 @@ public class SettingActivity extends PreferenceActivity implements OnPreferenceC
     EditTextPreference settingIp;
     CheckBoxPreference settingUseVociePref;
     CheckBoxPreference settingUpdate;
-    EditTextPreference settingBlueToothScanner;
+    //EditTextPreference settingBlueToothScanner;
     SharedPreferences sharedPreferences;
 
     @Override
@@ -37,7 +36,7 @@ public class SettingActivity extends PreferenceActivity implements OnPreferenceC
         settingUseVociePref = (CheckBoxPreference) findPreference("setting_use_vocie");
         settingUpdate = (CheckBoxPreference) findPreference("setting_update");
         settingIp = (EditTextPreference) findPreference("setting_http_ip");
-        settingBlueToothScanner = (EditTextPreference) findPreference("setting_bluetooth_scanner");
+        //settingBlueToothScanner = (EditTextPreference) findPreference("setting_bluetooth_scanner");
 
         //TODO
         //这里有点多余,现有的参数都会影响SharedPreferences

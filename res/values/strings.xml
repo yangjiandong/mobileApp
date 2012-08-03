@@ -39,4 +39,13 @@
 
     <string name="dialogabout_about">鑫亿移动平台.\n\n谢谢使用!</string>
 
+    <!-- DeviceListActivity -->
+    <string name="scanning">扫描蓝牙设备...</string>
+    <string name="select_device">选择连接设备</string>
+    <string name="none_paired">没有配对设备</string>
+    <string name="none_found">没找到设备</string>
+    <string name="title_paired_devices">已存在的配对设备</string>
+    <string name="title_other_devices">有效设备</string>
+    <string name="button_scan">开始扫描设备</string>
+
 </resources>

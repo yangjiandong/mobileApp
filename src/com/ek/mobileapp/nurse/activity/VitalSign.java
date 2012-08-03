@@ -2,6 +2,7 @@ package com.ek.mobileapp.nurse.activity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import android.content.Intent;
 import android.text.InputType;
@@ -25,11 +26,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ek.mobileapp.R;
+import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.model.MobConstants;
 import com.ek.mobileapp.model.TimePoint;
 import com.ek.mobileapp.model.VitalSignData;
 import com.ek.mobileapp.model.VitalSignItem;
 import com.ek.mobileapp.nurse.adapter.VitalSignDataGridViewAdapter;
+import com.ek.mobileapp.utils.BlueToothConnector;
+import com.ek.mobileapp.utils.BlueToothReceive;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.TimeTool;
 import com.ek.mobileapp.utils.UtilString;
@@ -49,6 +53,12 @@ public class VitalSign extends VitalSignBase {
     GridView gridView2;
     //
     private String busDate = "";
+
+    protected static BlueToothConnector blueTootheConnector;
+
+    public static BlueToothConnector getBlueToothConnector() {
+        return blueTootheConnector;
+    }
 
     private void initSelectDate() {
         View view = mLayoutInflater.inflate(R.layout.activity_date, null);
@@ -91,7 +101,6 @@ public class VitalSign extends VitalSignBase {
     //只负责显示数据
     private void refreshGrid() {
 
-        //List<String> dataList1 = new ArrayList<String>();
         List<String> dataList2 = new ArrayList<String>();
 
         List<VitalSignData> alls = GlobalCache.getCache().getVitalSignDatas_all();
@@ -188,6 +197,12 @@ public class VitalSign extends VitalSignBase {
     @Override
     public void initBase() {
         setContentView(R.layout.vitalsign);
+
+        //蓝牙设备,需统一启动
+        blueTootheConnector = new BlueToothConnector();
+        blueTootheConnector.setDaemon(true);
+        blueTootheConnector.setBlueToothReceive(new AtomicReference<BlueToothReceive>(this));
+        blueTootheConnector.start();
 
         //第一次清除cache
         GlobalCache.getCache().setCurrentPatient(null);
@@ -340,12 +355,32 @@ public class VitalSign extends VitalSignBase {
                     intent.putExtra("code", code);
                     intent.putExtra("name", name);
                     startActivity(intent);
-                } else {
-                    Toast.makeText(getApplicationContext(), code, Toast.LENGTH_SHORT).show();
+                } else if (code.equals("07")) {
+                    Intent intent = new Intent(VitalSign.this, VitalSignEdit5.class);
+                    intent.putExtra("code", code);
+                    intent.putExtra("name", name);
+                    startActivity(intent);
                 }
 
             }
         });
+    }
+
+    //只做一次
+    @Override
+    protected void onDestroy() {
+        //ToastUtils.show(this, "onDestroy");
+        try {
+            //没有蓝牙设备时,
+            if (blueTootheConnector != null) {
+                blueTootheConnector.mystop();
+                blueTootheConnector.stop();
+                blueTootheConnector = null;
+            }
+        } catch (Exception e) {
+            MobLogAction.getMobLogAction().mobLogError("关闭蓝牙", e.getMessage());
+        }
+        super.onDestroy();
     }
 
 }

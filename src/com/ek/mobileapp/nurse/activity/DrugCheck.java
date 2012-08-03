@@ -2,6 +2,7 @@ package com.ek.mobileapp.nurse.activity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -25,6 +26,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ek.mobileapp.R;
+import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.model.DrugCheckData;
 import com.ek.mobileapp.model.Patient;
 import com.ek.mobileapp.model.UserDTO;
@@ -32,6 +34,7 @@ import com.ek.mobileapp.nurse.action.DrugCheckAction;
 import com.ek.mobileapp.nurse.adapter.DrugCheckDataListAdapter;
 import com.ek.mobileapp.utils.BarCodeUtils;
 import com.ek.mobileapp.utils.BlueToothConnector;
+import com.ek.mobileapp.utils.BlueToothReceive;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.ToastUtils;
 import com.ek.mobileapp.utils.UtilString;
@@ -55,11 +58,24 @@ public class DrugCheck extends NurseBaseActivity {
     Button commitBtn;
     SharedPreferences sharedPreferences;
 
+    protected static BlueToothConnector blueTootheConnector;
+
+    public static BlueToothConnector getBlueToothConnector() {
+        return blueTootheConnector;
+    }
+
     @Override
     protected void createUi() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.drugcheck);
+
+        //蓝牙设备
+        //需重新启动
+        blueTootheConnector = new BlueToothConnector();
+        blueTootheConnector.setDaemon(true);
+        blueTootheConnector.setBlueToothReceive(new AtomicReference<BlueToothReceive>(this));
+        blueTootheConnector.start();
 
         final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout inputkey = (LinearLayout) inflater.inflate(R.layout.drugcheck_patient_info, null);
@@ -151,6 +167,8 @@ public class DrugCheck extends NurseBaseActivity {
 
     //开始处理提交
     private void processCommitData() {
+        if (UtilString.isBlank(t_patientId.getText().toString()))
+            return;
         CommitData commit = new CommitData(commitDataHandler);
         Thread thread = new Thread(commit);
         thread.start();
@@ -380,6 +398,30 @@ public class DrugCheck extends NurseBaseActivity {
             mMediaPlayer.release();
             mMediaPlayer = null;
         }
+    }
+
+    //需重写,指定处理方
+    @Override
+    protected void getCurrentBlueToothConnector() {
+        getBlueToothConnector().setBlueToothReceive(new AtomicReference<BlueToothReceive>(this));
+    }
+
+    @Override
+    protected void onDestroy() {
+        //ToastUtils.show(this, "onDestroy");
+        try {
+            //没有蓝牙设备时,
+            if (blueTootheConnector != null) {
+                //if (blueTootheConnector.isHasBlueToothDevice()) {
+                // Stop the Bluetooth chat services
+                blueTootheConnector.mystop();
+                blueTootheConnector.stop();
+                blueTootheConnector = null;
+            }
+        } catch (Exception e) {
+            MobLogAction.getMobLogAction().mobLogError("关闭蓝牙", e.getMessage());
+        }
+        super.onDestroy();
     }
 
     @Override

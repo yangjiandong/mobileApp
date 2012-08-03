@@ -7,6 +7,24 @@ android
    1. bluetooth
    bluethoth.txt
 
+   2. android 完全退出
+   //完全退出,以下方法都没效果
+                //setResult(result);
+                //System.exit(0);
+
+                //
+                //Intent startMain = new Intent(Intent.ACTION_MAIN);
+                //startMain.addCategory(Intent.CATEGORY_HOME);
+                //startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                //startActivity(startMain);
+                //System.exit(0);
+
+                //android.os.Process.killProcess(android.os.Process.myPid());    //获取PID
+                //System.exit(0);   //常规java、c#的标准退出法，返回值为0代表正常退出
+
+                //ActivityManager am = (ActivityManager)getSystemService (Context.ACTIVITY_SERVICE);
+                //am.restartPackage(getPackageName());
+
 2012.08.01
 ----------
 

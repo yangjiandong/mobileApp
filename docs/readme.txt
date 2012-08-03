@@ -1,6 +1,15 @@
 android app
 ===========
 
+2012.08.03
+----------
+
+   1. 取消手工设置蓝牙设备,通过程序自动扫描
+
+   2. 调整蓝牙处理
+   BlueToothConnector
+   DrugCheck,NurseBaseActivity,VitalSign,VitalSignBase
+
 2012.08.02
 ----------
 

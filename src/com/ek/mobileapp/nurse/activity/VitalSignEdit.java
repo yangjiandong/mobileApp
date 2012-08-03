@@ -158,6 +158,7 @@ public class VitalSignEdit extends VitalSignBase {
         };
         OnClickListener myListenerBDot = new OnClickListener() {
             public void onClick(View v) {
+                mVibrator.vibrate(vibrationDuration);
                 if (dotPressed)
                     return;
 
@@ -180,6 +181,7 @@ public class VitalSignEdit extends VitalSignBase {
         };
         OnClickListener myListenerBSave = new OnClickListener() {
             public void onClick(View v) {
+                mVibrator.vibrate(vibrationDuration);
                 GlobalCache.getCache().getVitalSignData().setValue1(e_text.getText().toString().trim());
                 GlobalCache.getCache().getVitalSignData().setMeasureTypeCode(measureTypeCode.toString());
                 processSaveData();
@@ -187,6 +189,7 @@ public class VitalSignEdit extends VitalSignBase {
         };
         OnClickListener myListenerBClose = new OnClickListener() {
             public void onClick(View v) {
+                mVibrator.vibrate(vibrationDuration);
                 finish();
             }
         };

@@ -105,7 +105,7 @@ public abstract class VitalSignBase extends NurseBaseActivity {
     }
 
     @Override
-    public void onDestroy() {
+    protected void onDestroy() {
         super.onDestroy();
     }
 
@@ -153,14 +153,6 @@ public abstract class VitalSignBase extends NurseBaseActivity {
                     //取出全部生命体征数据
                     VitalSignAction.getAll(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate);
 
-                    //if (GlobalCache.getCache().getTimePoint() == null) {
-
-                    //} else {
-                    //    //时间点
-                    //    VitalSignAction.getOne(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate,
-                    //            GlobalCache.getCache().getTimePoint(), getItemCode());
-                    //}
-
                     Bundle bundle = new Bundle();
                     bundle.putInt("type", 1);
                     bundle.putString("msg", "ok");
@@ -180,14 +172,6 @@ public abstract class VitalSignBase extends NurseBaseActivity {
                         hasRefreshData = true;
                         //取出全部生命体征数据
                         VitalSignAction.getAll(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate);
-
-                        //if (GlobalCache.getCache().getTimePoint() == null) {
-
-                        //} else {
-                        //    //时间点
-                        //    VitalSignAction.getOne(GlobalCache.getCache().getCurrentPatient().getPatientId(), busDate,
-                        //            GlobalCache.getCache().getTimePoint(), getItemCode());
-                        //}
 
                         Bundle bundle = new Bundle();
                         bundle.putInt("type", 1);

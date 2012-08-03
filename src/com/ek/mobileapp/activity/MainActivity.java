@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.preference.PreferenceManager;
@@ -34,14 +36,17 @@ import com.ek.mobileapp.nurse.action.VitalSignAction;
 import com.ek.mobileapp.nurse.activity.DrugCheck;
 import com.ek.mobileapp.nurse.activity.VitalSign;
 import com.ek.mobileapp.query.activity.QueryActivity;
+import com.ek.mobileapp.service.BluetoothService;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.SettingsUtils;
+import com.ek.mobileapp.utils.ToastUtils;
 import com.ek.mobileapp.utils.UtilString;
 import com.ek.mobileapp.utils.WebUtils;
 import com.markupartist.android.widget.ActionBar;
 import com.markupartist.android.widget.ActionBar.Action;
 import com.markupartist.android.widget.ActionBar.IntentAction;
 
+//主界面
 public class MainActivity extends BaseActivity {
     Map<String, Integer> btns = new HashMap<String, Integer>();
     Map<String, Integer> btnsStyle = new HashMap<String, Integer>();
@@ -178,23 +183,6 @@ public class MainActivity extends BaseActivity {
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                //完全退出,以下方法都没效果
-                //setResult(result);
-                //System.exit(0);
-
-                //
-                //Intent startMain = new Intent(Intent.ACTION_MAIN);
-                //startMain.addCategory(Intent.CATEGORY_HOME);
-                //startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                //startActivity(startMain);
-                //System.exit(0);
-
-                //android.os.Process.killProcess(android.os.Process.myPid());    //获取PID
-                //System.exit(0);   //常规java、c#的标准退出法，返回值为0代表正常退出
-
-                //ActivityManager am = (ActivityManager)getSystemService (Context.ACTIVITY_SERVICE);
-                //am.restartPackage(getPackageName());
-
                 MainApplication.getInstance().exit();
             }
         });
@@ -256,10 +244,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //super.onCreateOptionsMenu(menu);
-        //MenuInflater inflater = getMenuInflater();
-        //inflater.inflate(R.menu.menu, menu);
-        //return true;
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
@@ -267,6 +251,10 @@ public class MainActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+        case R.id.menu_select_bluetooth:
+            Intent serverIntent = new Intent(this, DeviceListActivity.class);
+            startActivityForResult(serverIntent, BluetoothService.REQUEST_CONNECT_DEVICE);
+            return true;
         case R.id.menu_update_password:
             // Launch the DeviceListActivity to see devices and do scan
             //Intent serverIntent = new Intent(this, DeviceListActivity.class);
@@ -300,4 +288,24 @@ public class MainActivity extends BaseActivity {
         dialog.show();
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+        case BluetoothService.REQUEST_CONNECT_DEVICE:
+            // 此处只完成设定蓝牙设备,连接功能由实际activity实现
+            // When DeviceListActivity returns with a device to connect
+            if (resultCode == Activity.RESULT_OK) {
+                // Get the device MAC address
+                String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+                String name = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_NAME);
+
+                Editor edit = sharedPreferences.edit();
+                edit.putString("setting_bluetooth_scanner", name);
+                edit.putString("setting_bluetooth_scanner_address", address);
+                edit.commit();
+
+                ToastUtils.show(this, "当前蓝牙设备为"+name);
+            }
+            break;
+        }
+    }
 }

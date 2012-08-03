@@ -8,3 +8,5 @@ project.properties
 /libsproject/actionbar/gen
 /libsproject/viewPagerIndicator/bin
 /libsproject/viewPagerIndicator/gen
+/libsproject/viewPagerIndicator/local.properties
+/libsproject/actionbar/local.properties

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rlFavQuote"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_below="@id/toply"
     android:orientation="vertical" >
@@ -12,7 +12,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="1px" >
+        android:paddingLeft="4dp">
 
         <TextView
             android:id="@+id/vitalsign_patientLabel"
@@ -31,18 +31,19 @@
             android:gravity="bottom"
             android:singleLine="true"
             android:textSize="20dip" />
-
+
         <Button
             android:id="@+id/get_patient"
             style="?button"
-            android:layout_width="40dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/vitalsign_patientId"
             android:layout_marginLeft="5dp"
             android:layout_toRightOf="@id/vitalsign_patientId"
             android:focusable="false"
+            android:gravity="center"
             android:paddingLeft="2dp"
-            android:text="提取" />
+            android:text="提 取" />
 
         <ImageView
             android:id="@+id/loadingImageView"
@@ -53,94 +54,96 @@
             android:layout_toRightOf="@id/get_patient" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/pa_info1"
-        style="?InfoLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="30dp"
-        android:layout_below="@id/rlFavQuote"
-        android:orientation="horizontal"
-        android:padding="1dp" >
+    <TableLayout
+            android:id="@+id/pa_info"
+            style="?InfoLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp">
 
-        <TextView
-            android:id="@+id/vitalsign_nameLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="姓名"
-            android:textSize="18dip" />
+        <TableRow>
+            <TextView
+                android:id="@+id/vitalsign_nameLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="姓名"
+                android:textSize="18dip" />
 
-        <TextView
-            android:id="@+id/vitalsign_name"
-            style="?InfoText"
-            android:layout_width="100dp"
-            android:textSize="18dip" />
+            <TextView
+                android:id="@+id/vitalsign_name"
+                style="?InfoText"
+                android:layout_span="2"
+                android:layout_width="100dp"
+                android:gravity="center"
+                android:textSize="18dip" />
 
-        <TextView
-            android:id="@+id/vitalsign_doctorLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:text="医生"
-            android:textSize="18dip" />
+            <TextView
+                android:id="@+id/vitalsign_doctorLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="医生"
+                android:textSize="18dip"
+                android:gravity="right"/>
 
-        <TextView
-            android:id="@+id/vitalsign_doctor"
-            style="?InfoText"
-            android:layout_width="100dp"
-            android:textSize="18dip" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/vitalsign_doctor"
+                style="?InfoText"
+                android:layout_span="2"
+                android:layout_width="100dp"
+                android:gravity="center"
+                android:textSize="18dip" />
+         </TableRow>
 
-    <LinearLayout
-        android:id="@+id/pa_info2"
-        style="?InfoLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="30dp"
-        android:layout_below="@+id/pa_info1"
-        android:orientation="horizontal"
-        android:padding="1dp" >
+         <TableRow
+             android:paddingTop="7dp">
 
-        <TextView
-            android:id="@+id/vitalsign_sexLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="性别"
-            android:textSize="18dip" />
+            <TextView
+                android:id="@+id/vitalsign_sexLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="性别"
+                android:textSize="18dip" />
 
-        <TextView
-            android:id="@+id/vitalsign_sex"
-            style="?InfoText"
-            android:layout_width="64dp"
-            android:textSize="18dip" />
+            <TextView
+                android:id="@+id/vitalsign_sex"
+                style="?InfoText"
+                android:layout_width="64dp"
+                android:gravity="center"
+                android:textSize="18dip" />
 
-        <TextView
-            android:id="@+id/vitalsign_ageLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:text="年龄"
-            android:textSize="18dip" />
+            <TextView
+                android:id="@+id/vitalsign_ageLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="年龄"
+                android:layout_marginLeft="4dp"
+                android:textSize="18dip" />
 
-        <TextView
-            android:id="@+id/vitalsign_age"
-            style="?InfoText"
-            android:layout_width="64dp"
-            android:textSize="18dip" />
+            <TextView
+                android:id="@+id/vitalsign_age"
+                style="?InfoText"
+                android:layout_width="64dp"
+                android:gravity="center"
+                android:textSize="18dip" />
 
-        <TextView
-            android:id="@+id/vitalsign_bedNoLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
-            android:text="床号"
-            android:textSize="18dip" />
+            <TextView
+                android:id="@+id/vitalsign_bedNoLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="4dp"
+                android:text="床号"
+                android:textSize="18dip" />
 
-        <TextView
-            android:id="@+id/vitalsign_bedNo"
-            style="?InfoText"
-            android:layout_width="64dp"
-            android:textSize="18dip" />
-    </LinearLayout>
-
+            <TextView
+                android:id="@+id/vitalsign_bedNo"
+                style="?InfoText"
+                android:layout_width="64dp"
+                android:gravity="center"
+                android:textSize="18dip" />
+           </TableRow>
+    </TableLayout>
 </LinearLayout>

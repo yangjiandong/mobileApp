@@ -182,6 +182,7 @@ public class VitalSignEdit3 extends VitalSignBase {
         };
         OnClickListener myListenerBDot = new OnClickListener() {
             public void onClick(View v) {
+                mVibrator.vibrate(vibrationDuration);
                 if (touchNo == 1 && dotPressed)
                     return;
                 if (touchNo == 2 && dotPressed2)
@@ -201,6 +202,7 @@ public class VitalSignEdit3 extends VitalSignBase {
         };
         OnClickListener myListenerBSave = new OnClickListener() {
             public void onClick(View v) {
+                mVibrator.vibrate(vibrationDuration);
                 GlobalCache.getCache().getVitalSignData2().setValue2(e_text2.getText().toString().trim());
                 GlobalCache.getCache().getVitalSignData().setValue2(e_text.getText().toString().trim());
                 flag = false;
@@ -210,6 +212,7 @@ public class VitalSignEdit3 extends VitalSignBase {
         };
         OnClickListener myListenerBClose = new OnClickListener() {
             public void onClick(View v) {
+                mVibrator.vibrate(vibrationDuration);
                 finish();
             }
         };

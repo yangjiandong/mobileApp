@@ -37,7 +37,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/pa_infos"
         android:orientation="horizontal"
-        >
+        android:paddingLeft="4dp"
+        android:paddingTop="4dp">
 
         <TextView
             android:id="@+id/vitalsign_busDateLabel"
@@ -51,7 +52,7 @@
             android:id="@+id/vitalsign_busDate"
             android:layout_width="140dp"
             android:layout_height="37dp"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="7dp"
             android:ems="10"
             android:gravity="bottom"
             android:singleLine="true"/>
