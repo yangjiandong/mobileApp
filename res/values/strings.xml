@@ -48,4 +48,5 @@
     <string name="title_other_devices">有效设备</string>
     <string name="button_scan">开始扫描设备</string>
 
+    <string name="user_update_pwd">用户更改密码</string>
 </resources>

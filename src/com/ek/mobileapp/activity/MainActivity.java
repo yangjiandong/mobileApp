@@ -125,13 +125,14 @@ public class MainActivity extends BaseActivity {
                     modules.addView(one);
                 }
 
-                Button bn = new Button(this, null, R.style.MButton);
-                bn.setTextAppearance(this, R.style.MButton);
-                bn.setGravity(R.style.MButton);
+                Button bn = new Button(this, null, R.style.MButton);//android.R.attr.buttonStyleSmall);
                 bn.setId(btns.get(code));
                 bn.setCompoundDrawablesWithIntrinsicBounds(0, this.btnsStyle.get(code), 0, 0);
                 bn.setText(module);
-                bn.setPadding(20, 10, 20, 0);
+                bn.setPadding(20, 20, 20, 20);
+                bn.setTextAppearance(this, R.style.MButton);//Typeface.BOLD_ITALIC);//);
+                //bn.setBackgroundResource(R.color.white);
+                bn.setGravity(Gravity.CENTER_HORIZONTAL);//R.style.MButton);
                 //后台日志显示用
                 moduels.put(bn.getId(), module);
 
@@ -256,9 +257,8 @@ public class MainActivity extends BaseActivity {
             startActivityForResult(serverIntent, BluetoothService.REQUEST_CONNECT_DEVICE);
             return true;
         case R.id.menu_update_password:
-            // Launch the DeviceListActivity to see devices and do scan
-            //Intent serverIntent = new Intent(this, DeviceListActivity.class);
-            //startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
+            Intent intent = new Intent(this, UserUpdatePwdActivity.class);
+            startActivity(intent);
             return true;
         case R.id.menu_about:
             showAbout();
@@ -303,9 +303,10 @@ public class MainActivity extends BaseActivity {
                 edit.putString("setting_bluetooth_scanner_address", address);
                 edit.commit();
 
-                ToastUtils.show(this, "当前蓝牙设备为"+name);
+                ToastUtils.show(this, "当前蓝牙设备为" + name);
             }
             break;
         }
+
     }
 }

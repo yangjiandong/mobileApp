@@ -169,9 +169,16 @@ public class DrugCheck extends NurseBaseActivity {
     private void processCommitData() {
         if (UtilString.isBlank(t_patientId.getText().toString()))
             return;
-        CommitData commit = new CommitData(commitDataHandler);
-        Thread thread = new Thread(commit);
-        thread.start();
+        try {
+            CommitData commit = new CommitData(commitDataHandler);
+            Thread thread = new Thread(commit);
+            thread.sleep(100);
+            thread.start();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
 
     //回调函数，显示结果
@@ -421,14 +428,14 @@ public class DrugCheck extends NurseBaseActivity {
         } catch (Exception e) {
             MobLogAction.getMobLogAction().mobLogError("关闭蓝牙", e.getMessage());
         }
+        releaseMediaPlayer();
+        processCommitData();
         super.onDestroy();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        releaseMediaPlayer();
-        processCommitData();
     }
 
     @Override

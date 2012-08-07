@@ -29,7 +29,7 @@
             android:title="检查更新" />
 
         <EditTextPreference
-            android:defaultValue="192.168.1.1:8090/sshapp"
+            android:defaultValue="192.168.1.112:8090/sshapp"
             android:dialogMessage="ip地址"
             android:dialogTitle="设置访问服务端地址"
             android:key="setting_http_ip"

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ek.mobileapp"
     android:versionCode="1"
-    android:versionName="b1_2012073015" >
+    android:versionName="b2_2012080410" >
 
     <uses-sdk
         android:minSdkVersion="5"
@@ -32,6 +32,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.DeviceListActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/select_device"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name=".activity.UserUpdatePwdActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/user_update_pwd"
+            android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".activity.SettingActivity" />
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.InputDemoActivtiy" />
@@ -74,11 +84,6 @@
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <activity android:name=".query.activity.QueryActivity" >
         </activity>
-        <activity
-            android:name=".activity.DeviceListActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/select_device"
-            android:theme="@android:style/Theme.Dialog" />
     </application>
 
 </manifest>

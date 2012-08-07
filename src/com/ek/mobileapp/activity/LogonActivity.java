@@ -21,22 +21,17 @@ import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
 import android.webkit.URLUtil;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -190,14 +185,16 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
 
             int res = LogonAction.login(loginname, psd, ip);
             if (res == WebUtils.SUCCESS) {
+                //更新密码时用
+                saveOldPwd(psd);
                 if (savepassword.isChecked()) {
                     setPreferences(loginname, psd);
                 }
                 GlobalCache.getCache().setDeviceId(tm.getDeviceId());
 
                 Intent intent = new Intent(LogonActivity.this, MainActivity.class);
-                //startActivity(intent);
-                startActivityForResult(intent, LOGINACTION);
+                startActivity(intent);
+                //startActivityForResult(intent, LOGINACTION);
                 proDialog.dismiss();
                 finish();
 
@@ -246,6 +243,12 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
         //} else {
         //    edit.putBoolean("isauto", false);
         //}
+        edit.commit();
+    }
+
+    public void saveOldPwd(String password) {
+        Editor edit = sharedPreferences.edit();
+        edit.putString("old_password", password);
         edit.commit();
     }
 

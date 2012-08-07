@@ -2,11 +2,13 @@ package com.ek.mobileapp.nurse.activity;
 
 import java.util.List;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -94,6 +96,10 @@ public class VitalSignEdit4 extends VitalSignBase {
         itemCode = intent.getStringExtra("code");
         String itemName = intent.getStringExtra("name");
 
+        //振动器
+        final Vibrator mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        final int vibrationDuration = 33;
+
         button1 = (RadioButton) findViewById(R.id.vitalsign_edit_4_radion1);
         button2 = (RadioButton) findViewById(R.id.vitalsign_edit_4_radion2);
 
@@ -102,6 +108,7 @@ public class VitalSignEdit4 extends VitalSignBase {
 
         button_save.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
+                mVibrator.vibrate(vibrationDuration);
                 String skName = "";
                 if (button1.isChecked()) {
                     skName = "阴性";
@@ -121,6 +128,7 @@ public class VitalSignEdit4 extends VitalSignBase {
         });
         button_close.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
+                mVibrator.vibrate(vibrationDuration);
                 finish();
             }
         });

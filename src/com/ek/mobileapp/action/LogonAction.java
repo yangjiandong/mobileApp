@@ -54,4 +54,27 @@ public class LogonAction {
             return WebUtils.APPLICATIONERROR;
         }
     }
+
+    public static int updatePwd(String password) {
+        UserDTO user = GlobalCache.getCache().getLoginuser();
+        String hostIp = GlobalCache.getCache().getHostIp();
+
+        String url = "http://" + hostIp + "/system/update_password";
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("userId", user.getId().toString()));
+        params.add(new BasicNameValuePair("newPwd", password));
+        JSONObject res = HttpTool.getTool().post(url, params);
+        if (res == null)
+            return WebUtils.WEBERROR;
+        try {
+            if (!res.getBoolean("success")) {
+                return WebUtils.LOGINERROR;
+            }
+
+            return WebUtils.SUCCESS;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return WebUtils.APPLICATIONERROR;
+        }
+    }
 }

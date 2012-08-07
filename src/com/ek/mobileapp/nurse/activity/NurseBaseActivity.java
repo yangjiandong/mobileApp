@@ -144,6 +144,7 @@ public abstract class NurseBaseActivity extends Activity implements BlueToothRec
     protected void onResume() {
         getCurrentBlueToothConnector();
         super.onResume();
+        resumeOther();
     }
 
     protected abstract void resumeOther();

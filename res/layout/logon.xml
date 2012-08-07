@@ -75,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dip"
                     android:layout_marginTop="5dip"
-                    android:singleLine="true" 
+                    android:singleLine="true"
                     android:contentDescription="请输入用户名">
 
                     <!-- android:background="@drawable/edittext_modified_states" -->
@@ -119,7 +119,8 @@
                     android:textSize="20sp"
                     android:typeface="sans"
                     android:textColor="@color/foreground1"
-                    android:text="@string/ok" />
+                    android:text="@string/ok"
+                    style="?button.dark" />
             </LinearLayout>
             <!-- Login Form Ends -->
 
