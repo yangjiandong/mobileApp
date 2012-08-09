@@ -43,9 +43,11 @@ import android.widget.Toast;
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
 import com.ek.mobileapp.action.MobLogAction;
+import com.ek.mobileapp.approval.activity.DrugApproval;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.HttpTool;
 import com.ek.mobileapp.utils.SettingsUtils;
+import com.ek.mobileapp.utils.UtilString;
 import com.ek.mobileapp.utils.WebUtils;
 import com.markupartist.android.widget.ActionBar;
 import com.markupartist.android.widget.ActionBar.Action;
@@ -77,6 +79,12 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        //TODO
+        //直接放在sharedPreferences,MobLogAction取不出值,暂时存放在cache
+        boolean weblog = sharedPreferences.getBoolean("setting_weblog", false);
+        GlobalCache.getCache().setWebLog(weblog);
 
         setContentView(R.layout.logon);
 
@@ -112,7 +120,6 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
         savepassword = (CheckBox) findViewById(R.id.logon_save_password);
         logonBtn = (Button) findViewById(R.id.logon_ok);
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         //监听
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         //getSharedPreferences(SettingsUtils.PreferencesString, MODE_PRIVATE);
@@ -192,8 +199,26 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
                 }
                 GlobalCache.getCache().setDeviceId(tm.getDeviceId());
 
-                Intent intent = new Intent(LogonActivity.this, MainActivity.class);
-                startActivity(intent);
+                String moduleCode = GlobalCache.getCache().getModuleCode();
+                if (UtilString.isBlank(moduleCode)) {
+                    Intent intent = new Intent(LogonActivity.this, MainActivity.class);
+                    //startActivity(intent);
+                    startActivityForResult(intent, LOGINACTION);
+                } else {
+                    if (moduleCode.equals("04")) {
+                        //合理用药审批
+                        Intent intent = new Intent(LogonActivity.this, DrugApproval.class);
+                        //startActivity(intent);
+                        startActivityForResult(intent, LOGINACTION);
+                    } else if (moduleCode.equals("05")) {
+                        //手术审批
+
+                    } else if (moduleCode.equals("06")) {
+                        //危机值
+
+                    }
+                }
+
                 //startActivityForResult(intent, LOGINACTION);
                 proDialog.dismiss();
                 finish();

@@ -22,8 +22,9 @@ public class MobLogAction {
     private static MobLogAction me = null;
 
     public static MobLogAction getMobLogAction() {
-        if (me == null)
+        if (me == null) {
             me = new MobLogAction();
+        }
         return me;
     }
 
@@ -83,7 +84,11 @@ public class MobLogAction {
     }
 
     public void mobLogInfo(String event, String infos) {
-        //Log.i(event, infos);
+        Log.i(event, infos);
+
+        if (!GlobalCache.getCache().isWebLog())
+            return;
+
         final String events = event;
         final String infoss = infos;
         Runnable runLog = new Runnable() {
@@ -96,8 +101,11 @@ public class MobLogAction {
     }
 
     public void mobLogError(String event, String infos) {
+        Log.e(event, infos);
 
-        //Log.e(event, infos);
+        if (!GlobalCache.getCache().isWebLog())
+            return;
+
         final String events = event;
         final String infoss = infos;
 

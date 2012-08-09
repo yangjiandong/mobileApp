@@ -20,6 +20,7 @@ import android.preference.PreferenceManager;
 
 import com.ek.mobileapp.action.MobLogAction;
 
+//蓝牙线程服务
 public class BlueToothConnector extends Thread {
     public static final int CONNECTED = 1;
     public static final int UNCONNECTED = 0;

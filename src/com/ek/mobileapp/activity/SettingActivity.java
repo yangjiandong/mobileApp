@@ -13,6 +13,7 @@ import android.util.Log;
 import com.ek.mobileapp.MainApplication;
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.MobLogAction;
+import com.ek.mobileapp.utils.GlobalCache;
 
 //登录时设置界面
 public class SettingActivity extends PreferenceActivity implements OnPreferenceChangeListener
@@ -21,6 +22,7 @@ public class SettingActivity extends PreferenceActivity implements OnPreferenceC
     EditTextPreference settingIp;
     CheckBoxPreference settingUseVociePref;
     CheckBoxPreference settingUpdate;
+    CheckBoxPreference settingWebLog;
     //EditTextPreference settingBlueToothScanner;
     SharedPreferences sharedPreferences;
 
@@ -36,6 +38,7 @@ public class SettingActivity extends PreferenceActivity implements OnPreferenceC
         settingUseVociePref = (CheckBoxPreference) findPreference("setting_use_vocie");
         settingUpdate = (CheckBoxPreference) findPreference("setting_update");
         settingIp = (EditTextPreference) findPreference("setting_http_ip");
+        settingWebLog = (CheckBoxPreference) findPreference("setting_weblog");
         //settingBlueToothScanner = (EditTextPreference) findPreference("setting_bluetooth_scanner");
 
         //TODO
@@ -43,6 +46,7 @@ public class SettingActivity extends PreferenceActivity implements OnPreferenceC
         settingUseVociePref.setOnPreferenceChangeListener(this);
         settingUpdate.setOnPreferenceChangeListener(this);
         settingIp.setOnPreferenceChangeListener(this);
+        settingWebLog.setOnPreferenceChangeListener(this);
     }
 
     public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -56,13 +60,15 @@ public class SettingActivity extends PreferenceActivity implements OnPreferenceC
         //判断是哪个Preference改变了
         if (preference.getKey().equals("setting_use_vocie")) {
             Log.v("SystemSetting", "checkbox preference is changed " + newValue);
-        } else if (preference.getKey().equals("setting_update")) {
+        } else if (preference.getKey().equals("setting_weblog")) {
+            GlobalCache.getCache().setWebLog((Boolean) newValue);
 
         } else if (preference.getKey().equals("setting_http_ip")) {
             Log.v("SystemSetting", "ip is changed " + newValue);
             //Editor edit = sharedPreferences.edit();
             //edit.putString("setting_http_ip", newValue.toString());
             //edit.commit();
+        } else if (preference.getKey().equals("setting_update")) {
 
         } else {
             //如果返回false表示不允许被改变

@@ -29,6 +29,7 @@ import com.ek.mobileapp.MainApplication;
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
 import com.ek.mobileapp.action.MobLogAction;
+import com.ek.mobileapp.approval.activity.DrugApproval;
 import com.ek.mobileapp.example.InOutTitlesTriangle;
 import com.ek.mobileapp.example.SampleTitlesTriangle;
 import com.ek.mobileapp.model.UserDTO;
@@ -162,8 +163,8 @@ public class MainActivity extends BaseActivity {
         btnsStyle.put("01", R.drawable.hospital_button);
         btnsStyle.put("02", R.drawable.heart_button);
         btnsStyle.put("03", R.drawable.nurse_button);
-        btnsStyle.put("04", R.drawable.doctor_button);
-        btnsStyle.put("05", R.drawable.doctor_button);
+        btnsStyle.put("04", R.drawable.drug_button);
+        btnsStyle.put("05", R.drawable.surgery_button);
         btnsStyle.put("06", R.drawable.doctor_button);
     }
 
@@ -227,7 +228,7 @@ public class MainActivity extends BaseActivity {
                 break;
             case R.id.m04: // doStuff
                 //actionBar.setTitle("04");
-                intent = new Intent(MainActivity.this, SampleTitlesTriangle.class);
+                intent = new Intent(MainActivity.this, DrugApproval.class);
                 startActivity(intent);
                 break;
             case R.id.m05: // doStuff

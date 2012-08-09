@@ -27,7 +27,11 @@
             android:key="setting_update"
             android:summary="启动程序时,是否检查更新"
             android:title="检查更新" />
-
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="setting_weblog"
+            android:summary="是否记录调试日志"
+            android:title="日志" />
         <EditTextPreference
             android:defaultValue="192.168.1.112:8090/sshapp"
             android:dialogMessage="ip地址"

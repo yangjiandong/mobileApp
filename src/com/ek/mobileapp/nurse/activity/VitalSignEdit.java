@@ -13,7 +13,6 @@ import android.os.Message;
 import android.os.Vibrator;
 import android.text.InputType;
 import android.text.Selection;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;

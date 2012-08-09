@@ -50,4 +50,10 @@ public class WebUtils {
     //用药核对,提交HIS
     public static final String DRUGCHECK_COMMIT_HIS = "/drug_check/commit_his?type=mobile";
 
+    public static final String DRUGAPPROVAL_COMMIT_HIS = "/drug_approval/commit_his?type=mobile";
+    public static final String DRUGAPPROVAL_SAVE = "/drug_approval/save_drug_approval?type=mobile";
+    public static final String DRUGAPPROVAL_GET_ALL = "/drug_approval/get_all?type=mobile";
+    public static final String DRUGAPPROVAL_GET_ONE = "/drug_approval/get_one?type=mobile";
+    public static final String DRUGAPPROVAL_GET_NOTE = "/drug_approval/get_note?type=mobile";
+
 }

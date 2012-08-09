@@ -11,6 +11,26 @@
 设计
 -----
 
-   1. 发现蓝牙,启用一个蓝牙设备并保存,作为默认的启动蓝牙,显示当前蓝牙连接状态
+   1. 暂时还是先采用BlueToothConnector作为后台线程服务,对于生命体征操作
 
-   2.
+   VitalSign --> VitalSignBase --> NurseBaseActivity
+
+   由 VitalSign.initBase() 统一启动该线程
+   //蓝牙设备,需统一启动
+   blueTootheConnector = new BlueToothConnector();
+   blueTootheConnector.setDaemon(true);
+   blueTootheConnector.setBlueToothReceive(new AtomicReference<BlueToothReceive>(this));
+   blueTootheConnector.start();
+
+   操作界面切换时不关闭该线程,直到onDestroy时才关闭,编辑生命体征时通过NurseBaseActivity.getCurrentBlueToothConnector
+   对线程中消息对象赋值
+
+   VitalSignEdit --> VitalSignBase
+
+   NurseBaseActivity
+   // 处理蓝牙接收方
+   protected void getCurrentBlueToothConnector() {
+       VitalSign.getBlueToothConnector().setBlueToothReceive(new AtomicReference<BlueToothReceive>(this));
+   }
+
+   2. 用药核对DrugCheck,不需要对其他界面进行操作,自己负责开启和关闭线程

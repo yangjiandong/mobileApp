@@ -3,14 +3,16 @@ package com.ek.mobileapp.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ek.mobileapp.model.ApprovalNote;
+import com.ek.mobileapp.model.DrugApprovalData;
 import com.ek.mobileapp.model.DrugCheckData;
+import com.ek.mobileapp.model.MeasureType;
 import com.ek.mobileapp.model.Patient;
 import com.ek.mobileapp.model.SkinTest;
-import com.ek.mobileapp.model.UserDTO;
-import com.ek.mobileapp.model.VitalSignItem;
-import com.ek.mobileapp.model.VitalSignData;
-import com.ek.mobileapp.model.MeasureType;
 import com.ek.mobileapp.model.TimePoint;
+import com.ek.mobileapp.model.UserDTO;
+import com.ek.mobileapp.model.VitalSignData;
+import com.ek.mobileapp.model.VitalSignItem;
 
 public class GlobalCache {
     private static GlobalCache cache = null;
@@ -42,6 +44,17 @@ public class GlobalCache {
     private VitalSignData vitalSignData2;
 
     private List<DrugCheckData> drugCheckDatas = new ArrayList<DrugCheckData>();
+
+    private List<DrugApprovalData> drugApprovalDatas = new ArrayList<DrugApprovalData>();
+
+    private DrugApprovalData drugApprovalData;
+
+    private List<ApprovalNote> approvalNotes = new ArrayList<ApprovalNote>();
+
+    private String moduleCode;//进入模块后设为null
+
+    //
+    private boolean webLog;
 
     private GlobalCache() {
     }
@@ -218,6 +231,46 @@ public class GlobalCache {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public String getModuleCode() {
+        return moduleCode;
+    }
+
+    public void setModuleCode(String moduleCode) {
+        this.moduleCode = moduleCode;
+    }
+
+    public List<DrugApprovalData> getDrugApprovalDatas() {
+        return drugApprovalDatas;
+    }
+
+    public void setDrugApprovalDatas(List<DrugApprovalData> drugApprovalDatas) {
+        this.drugApprovalDatas = drugApprovalDatas;
+    }
+
+    public DrugApprovalData getDrugApprovalData() {
+        return drugApprovalData;
+    }
+
+    public void setDrugApprovalData(DrugApprovalData drugApprovalData) {
+        this.drugApprovalData = drugApprovalData;
+    }
+
+    public List<ApprovalNote> getApprovalNotes() {
+        return approvalNotes;
+    }
+
+    public void setApprovalNotes(List<ApprovalNote> approvalNotes) {
+        this.approvalNotes = approvalNotes;
+    }
+
+    public boolean isWebLog() {
+        return webLog;
+    }
+
+    public void setWebLog(boolean webLog) {
+        this.webLog = webLog;
     }
 
 }

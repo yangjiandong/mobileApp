@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="?ModulePage" >
+
+    <LinearLayout
+        android:id="@+id/toply"
+        style="?InfoLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/user_by"
+            style="?text.dark.medium.bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="操作员" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/drugappr_title"
+        style="?InfoLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toply"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="申请用药审批表"
+            android:textSize="24dip" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/drugappr_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/drugappr_title" >
+
+        <LinearLayout
+            style="?InfoLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <TableLayout
+                android:id="@+id/pa_info"
+                style="?InfoLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:paddingTop="3dp" >
+
+                <TableRow android:paddingTop="1dp" >
+
+                    <TextView
+                        android:id="@+id/drugappr_patientId_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="住院号/门诊号"
+                        android:textSize="18dip" />
+
+                    <TextView
+                        android:id="@+id/drugappr_patientId"
+                        style="?InfoText"
+                        android:layout_width="180dp"
+                        android:gravity="left"
+                        android:textSize="18dip" />
+                </TableRow>
+
+                <TableRow android:paddingTop="1dp" >
+
+                    <TextView
+                        android:id="@+id/drugappr_patientName_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="患者姓名"
+                        android:textSize="18dip" />
+
+                    <TextView
+                        android:id="@+id/drugappr_patientName"
+                        style="?InfoText"
+                        android:layout_width="180dp"
+                        android:gravity="left"
+                        android:textSize="18dip" />
+                </TableRow>
+
+                <TableRow android:paddingTop="1dp" >
+
+                    <TextView
+                        android:id="@+id/drugappr_sex_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="性别"
+                        android:textSize="18dip" />
+
+                    <TextView
+                        android:id="@+id/drugappr_sex"
+                        style="?InfoText"
+                        android:layout_width="180dp"
+                        android:gravity="left"
+                        android:textSize="18dip" />
+                </TableRow>
+
+                <TableRow android:paddingTop="1dp" >
+
+                    <TextView
+                        android:id="@+id/drugappr_age_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="年龄"
+                        android:textSize="18dip" />
+
+                    <TextView
+                        android:id="@+id/drugappr_age"
+                        style="?InfoText"
+                        android:layout_width="180dp"
+                        android:gravity="left"
+                        android:textSize="18dip" />
+                </TableRow>
+
+                <TableRow android:paddingTop="1dp" >
+
+                    <TextView
+                        android:id="@+id/drugappr_deptName_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="病区"
+                        android:textSize="18dip" />
+
+                    <TextView
+                        android:id="@+id/drugappr_deptName"
+                        style="?InfoText"
+                        android:layout_width="180dp"
+                        android:gravity="left"
+                        android:textSize="18dip" />
+                </TableRow>
+
+                <TableRow android:paddingTop="1dp" >
+
+                    <TextView
+                        android:id="@+id/drugappr_appWho_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="申请医师"
+                        android:textSize="18dip" />
+
+                    <TextView
+                        android:id="@+id/drugappr_appWho"
+                        style="?InfoText"
+                        android:layout_width="180dp"
+                        android:gravity="left"
+                        android:textSize="18dip" />
+                </TableRow>
+
+                <TableRow android:paddingTop="1dp" >
+
+                    <TextView
+                        android:id="@+id/drugappr_appDate_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="申请日期"
+                        android:textSize="18dip" />
+
+                    <TextView
+                        android:id="@+id/drugappr_appDate"
+                        style="?InfoText"
+                        android:layout_width="180dp"
+                        android:gravity="left"
+                        android:textSize="18dip" />
+                </TableRow>
+
+                <TableRow android:paddingTop="1dp" >
+
+                    <TextView
+                        android:id="@+id/drugappr_diagnosis_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="主要诊断"
+                        android:textSize="18dip" />
+
+                    <TextView
+                        android:id="@+id/drugappr_diagnosis"
+                        style="?InfoText"
+                        android:layout_width="180dp"
+                        android:gravity="left"
+                        android:textSize="18dip" />
+                </TableRow>
+
+                <TableRow android:paddingTop="1dp" >
+
+                    <TextView
+                        android:id="@+id/drugappr_useReason_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="使用原因"
+                        android:textSize="18dip" />
+
+                    <TextView
+                        android:id="@+id/drugappr_useReason"
+                        style="?InfoText"
+                        android:layout_width="180dp"
+                        android:gravity="left"
+                        android:textSize="18dip" />
+                </TableRow>
+
+                <TableRow android:paddingTop="1dp" >
+
+                    <TextView
+                        android:id="@+id/drugappr_drugName_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="药品名称"
+                        android:textSize="18dip" />
+
+                    <TextView
+                        android:id="@+id/drugappr_drugName"
+                        style="?InfoText"
+                        android:layout_width="180dp"
+                        android:gravity="left"
+                        android:textSize="18dip" />
+                </TableRow>
+
+                <TableRow android:paddingTop="1dp" >
+
+                    <TextView
+                        android:id="@+id/drugappr_drugSpec_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="药品规格"
+                        android:textSize="18dip" />
+
+                    <TextView
+                        android:id="@+id/drugappr_drugSpec"
+                        style="?InfoText"
+                        android:layout_width="180dp"
+                        android:gravity="left"
+                        android:textSize="18dip" />
+                </TableRow>
+
+                <TableRow android:paddingTop="1dp" >
+
+                    <TextView
+                        android:id="@+id/drugappr_meddleType_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="干预类型"
+                        android:textSize="18dip" />
+
+                    <TextView
+                        android:id="@+id/drugappr_meddleType"
+                        style="?InfoText"
+                        android:layout_width="180dp"
+                        android:gravity="left"
+                        android:textSize="18dip" />
+                </TableRow>
+            </TableLayout>
+
+            <LinearLayout
+                android:id="@+id/drugappr_radiogroup"
+                style="?InfoLayout"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="vertical" >
+
+                <RadioGroup
+                    android:id="@+id/radioGroup1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal" >
+
+                    <RadioButton
+                        android:id="@+id/drugappr_yes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="同意" />
+
+                    <RadioButton
+                        android:id="@+id/drugappr_no"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="不同意" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/drugappr_note_layout"
+                style="?InfoLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/drugappr_note_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="备注:"
+                    android:textSize="18dip" />
+
+                <Spinner
+                    android:id="@+id/drugappr_note"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="?InfoLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center" >
+
+                <Button
+                    android:id="@+id/drugappr_save"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:text="保存"
+                    android:textSize="20dip" />
+
+                <Button
+                    android:id="@+id/drugappr_close"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="关闭"
+                    android:textSize="20dip" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>
