@@ -37,6 +37,8 @@
     <string name="Empty">0</string>
     <string name="Close">关闭</string>
 
+    <string name="onBed">卧床</string>
+
     <string name="dialogabout_about">鑫亿移动平台.\n\n谢谢使用!</string>
 
     <!-- DeviceListActivity -->

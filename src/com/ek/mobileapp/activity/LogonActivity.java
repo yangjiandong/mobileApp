@@ -44,9 +44,11 @@ import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
 import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.approval.activity.DrugApproval;
+import com.ek.mobileapp.approval.activity.DrugApproval2;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.HttpTool;
 import com.ek.mobileapp.utils.SettingsUtils;
+import com.ek.mobileapp.utils.ToastUtils;
 import com.ek.mobileapp.utils.UtilString;
 import com.ek.mobileapp.utils.WebUtils;
 import com.markupartist.android.widget.ActionBar;
@@ -73,6 +75,8 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
     private boolean isupdate = false;
     private String currentTempFilePath = "";
     private String strURL = "";
+
+    private String moduleCode = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -160,6 +164,15 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
 
     }
 
+    @Override
+    public void onStart() {
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            moduleCode = extras.getString("message");
+        }
+        super.onStart();
+    }
+
     private void login(String loginname, String psd, String ip) {
         proDialog = ProgressDialog.show(LogonActivity.this, "", "登录中...", true, true);
         Thread login = new LoginHandler(loginname, psd, ip);
@@ -199,7 +212,6 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
                 }
                 GlobalCache.getCache().setDeviceId(tm.getDeviceId());
 
-                String moduleCode = GlobalCache.getCache().getModuleCode();
                 if (UtilString.isBlank(moduleCode)) {
                     Intent intent = new Intent(LogonActivity.this, MainActivity.class);
                     //startActivity(intent);

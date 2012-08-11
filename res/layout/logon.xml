@@ -104,7 +104,7 @@
 
                 <CheckBox
                     android:id="@+id/logon_save_password"
-                    android:layout_width="fill_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/logon_save_passwrod"
                     android:textSize="20sp"
@@ -113,14 +113,12 @@
 
                 <Button
                     android:id="@+id/logon_ok"
-                    android:layout_width="fill_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dip"
-                    android:textSize="20sp"
-                    android:typeface="sans"
-                    android:textColor="@color/foreground1"
-                    android:text="@string/ok"
-                    style="?button.dark" />
+                    android:layout_gravity="center_horizontal"
+                    android:text=" 确 定 "
+                    style="?button.dark.big" />
             </LinearLayout>
             <!-- Login Form Ends -->
 

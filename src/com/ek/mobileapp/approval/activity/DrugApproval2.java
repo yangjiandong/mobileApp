@@ -60,6 +60,7 @@ public class DrugApproval2 extends Activity {
     Spinner s_note;
     String note;
     String[] noteStr;
+    String[] noteCodeStr;
     private ArrayAdapter<String> noteAdapter;
     String position = "0";
 
@@ -129,10 +130,12 @@ public class DrugApproval2 extends Activity {
         DrugApprovalAction.getNote("1");
         List<ApprovalNote> notes = GlobalCache.getCache().getApprovalNotes();
         noteStr = new String[notes.size()];
+        noteCodeStr = new String[notes.size()];
         int i = 0;
         note = "";
         for (ApprovalNote a : notes) {
             noteStr[i] = a.getName();
+            noteCodeStr[i] = a.getCode();
             i++;
         }
 
@@ -142,7 +145,7 @@ public class DrugApproval2 extends Activity {
         s_note.setPrompt("选择备注信息:");
         s_note.setOnItemSelectedListener(new OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> adapter, View view, int selected, long arg3) {
-                note = noteStr[selected];
+                note = noteCodeStr[selected];
 
             }
 

@@ -93,12 +93,18 @@
     </style>
 
     <style name="InfoText">
-        <item name="android:textSize">16dip</item>
+        <item name="android:textSize">18dip</item>
         <item name="android:background">@color/custom_info_back_color</item>
         <item name="android:textColor">#000000</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">5dp</item>
-        <item name="android:gravity">center</item>
+        <item name="android:gravity">left</item>
+    </style>
+
+    <style name="InfoLabel">
+        <item name="android:textSize">18dip</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
     <style name="InfoLayout">

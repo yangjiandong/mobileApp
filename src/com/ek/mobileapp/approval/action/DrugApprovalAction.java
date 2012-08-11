@@ -20,8 +20,10 @@ public class DrugApprovalAction {
 
     public static String getAll() {
         String ip = GlobalCache.getCache().getHostIp();
+        Long userId = GlobalCache.getCache().getLoginuser().getId();
         String url = "http://" + ip + WebUtils.DRUGAPPROVAL_GET_ALL;
         List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("userId", String.valueOf(userId)));
         JSONObject res = HttpTool.getTool().post(url, params);
         if (res == null)
             return "-1";

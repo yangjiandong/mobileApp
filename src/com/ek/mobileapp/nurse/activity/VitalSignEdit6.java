@@ -33,12 +33,12 @@ import com.ek.mobileapp.nurse.action.VitalSignAction;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.UtilString;
 
-//入量,尿量,身高,体重指标
+//身高,体重指标
 //一次录入一个指标
-public class VitalSignEdit2 extends VitalSignBase {
+public class VitalSignEdit6 extends VitalSignBase {
     List<MeasureType> list = new ArrayList<MeasureType>();
     Map<Integer, Integer> btns = new HashMap<Integer, Integer>();
-    Button B1, B2, B3, B4, B5, B6, B7, B8, B9, B0, BClear, BDot, BEqual, BClose;
+    Button B1, B2, B3, B4, B5, B6, B7, B8, B9, B0, BClear, BDot, BEqual, BClose, BBed;
 
     TextView t_label;
     EditText e_text;
@@ -84,7 +84,7 @@ public class VitalSignEdit2 extends VitalSignBase {
         String itemName = intent.getStringExtra("name");
 
         try {
-            TableLayout inputkey = (TableLayout) inflater.inflate(R.layout.inputkey, null);
+            TableLayout inputkey = (TableLayout) inflater.inflate(R.layout.inputkey2, null);
             LinearLayout layout = (LinearLayout) findViewById(R.id.vitalsign_edit_2_inputkey);
             layout.addView(inputkey);
             initLayout();
@@ -141,7 +141,14 @@ public class VitalSignEdit2 extends VitalSignBase {
                 finish();
             }
         };
+        OnClickListener myListenerBBed = new OnClickListener() {
+            public void onClick(View v) {
+                String bed = "卧床";
+                mVibrator.vibrate(vibrationDuration);
 
+                e_text.setText(bed);
+            }
+        };
         B1.setOnClickListener(myListenerNum);
         B2.setOnClickListener(myListenerNum);
         B3.setOnClickListener(myListenerNum);
@@ -156,6 +163,7 @@ public class VitalSignEdit2 extends VitalSignBase {
         BClear.setOnClickListener(myListenerBClear);
         BEqual.setOnClickListener(myListenerBSave);
         BClose.setOnClickListener(myListenerBClose);
+        BBed.setOnClickListener(myListenerBBed);
 
         t_label.setText(itemName);
 
@@ -242,6 +250,7 @@ public class VitalSignEdit2 extends VitalSignBase {
         BDot = (Button) findViewById(R.id.buttonDot);
         BEqual = (Button) findViewById(R.id.buttonEq);
         BClose = (Button) findViewById(R.id.buttonClose);
+        BBed = (Button) findViewById(R.id.buttonOnBed);
 
         e_text = (EditText) findViewById(R.id.vitalsign_edit_2_text);
         e_text.setInputType(InputType.TYPE_NULL); // 关闭软键盘

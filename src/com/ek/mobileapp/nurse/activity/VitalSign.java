@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.MobLogAction;
+import com.ek.mobileapp.model.MeasureType;
 import com.ek.mobileapp.model.MobConstants;
 import com.ek.mobileapp.model.TimePoint;
 import com.ek.mobileapp.model.VitalSignData;
@@ -164,11 +165,25 @@ public class VitalSign extends VitalSignBase {
                     for (VitalSignData vsd : alls) {
                         if (vsd.getTimePoint().equals(timePoint) && vsd.getItemName().equals(vitalSignItem.getName())) {
                             if (UtilString.isBlank(vsd.getValue1())) {
-                                dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
-                                        + vitalSignItem.getUnit() + ")" + "| ");
+                                if (UtilString.isBlank(vsd.getMeasureTypeCode())) {
+                                    dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                                            + vitalSignItem.getUnit() + ")" + "| ");
+                                } else {
+                                    dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                                            + vitalSignItem.getUnit() + ")" + "|"
+                                            + getMeasureType(vsd.getMeasureTypeCode()));
+                                }
+
                             } else {
-                                dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
-                                        + vitalSignItem.getUnit() + ")" + "|" + vsd.getValue1());
+                                if (!UtilString.isBlank(vsd.getMeasureTypeCode())) {
+                                    dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                                            + vitalSignItem.getUnit() + ")" + "|" + vsd.getValue1() + "("
+                                            + getMeasureType(vsd.getMeasureTypeCode()) + ")");
+                                } else {
+                                    dataList1.add(vitalSignItem.getCode() + "|" + vitalSignItem.getName() + "("
+                                            + vitalSignItem.getUnit() + ")" + "|" + vsd.getValue1());
+                                }
+
                             }
 
                             flag = false;
@@ -340,8 +355,13 @@ public class VitalSign extends VitalSignBase {
                     showMessage("请先选择一个病人");
                     return;
                 }
-                if (code.equals("05") || code.equals("06") || code.equals("12") || code.equals("13")) {
+                if (code.equals("05") || code.equals("06") || code.equals("16")) {
                     Intent intent = new Intent(VitalSign.this, VitalSignEdit2.class);
+                    intent.putExtra("code", code);
+                    intent.putExtra("name", name);
+                    startActivity(intent);
+                } else if (code.equals("12") || code.equals("13")) {
+                    Intent intent = new Intent(VitalSign.this, VitalSignEdit6.class);
                     intent.putExtra("code", code);
                     intent.putExtra("name", name);
                     startActivity(intent);
@@ -381,6 +401,18 @@ public class VitalSign extends VitalSignBase {
             MobLogAction.getMobLogAction().mobLogError("关闭蓝牙", e.getMessage());
         }
         super.onDestroy();
+    }
+
+    private String getMeasureType(String measureTypeCode) {
+        String measureType = "";
+
+        List<MeasureType> list = GlobalCache.getCache().getMeasureTypes();
+        for (MeasureType a : list) {
+            if (a.getCode().equals(measureTypeCode))
+                measureType = a.getName();
+        }
+
+        return measureType;
     }
 
 }

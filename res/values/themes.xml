@@ -31,6 +31,7 @@
         <item name="button.dark.big">@style/button.dark.big</item>
         <item name="button.dark.big.bold">@style/button.dark.big.bold</item>
         <item name="InfoText">@style/InfoText</item>
+        <item name="InfoLabel">@style/InfoLabel</item>
         <item name="InfoLayout">@style/InfoLayout</item>
         <item name="custom_list_text_color">@color/custom_list_text_color</item>
         <item name="custom_grid_value_color">@color/custom_grid_value_color</item>

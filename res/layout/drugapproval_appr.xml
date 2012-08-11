@@ -63,15 +63,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:text="住院号/门诊号"
-                        android:textSize="18dip" />
+                        android:text="住院号/门诊号"/>
 
                     <TextView
                         android:id="@+id/drugappr_patientId"
                         style="?InfoText"
                         android:layout_width="180dp"
-                        android:gravity="left"
-                        android:textSize="18dip" />
+                        android:gravity="left" />
                 </TableRow>
 
                 <TableRow android:paddingTop="1dp" >
@@ -81,15 +79,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:text="患者姓名"
-                        android:textSize="18dip" />
+                        android:text="患者姓名"/>
 
                     <TextView
                         android:id="@+id/drugappr_patientName"
                         style="?InfoText"
                         android:layout_width="180dp"
-                        android:gravity="left"
-                        android:textSize="18dip" />
+                        android:gravity="left"/>
                 </TableRow>
 
                 <TableRow android:paddingTop="1dp" >
@@ -99,15 +95,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:text="性别"
-                        android:textSize="18dip" />
+                        android:text="性别"/>
 
                     <TextView
                         android:id="@+id/drugappr_sex"
                         style="?InfoText"
                         android:layout_width="180dp"
-                        android:gravity="left"
-                        android:textSize="18dip" />
+                        android:gravity="left" />
                 </TableRow>
 
                 <TableRow android:paddingTop="1dp" >
@@ -117,15 +111,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:text="年龄"
-                        android:textSize="18dip" />
+                        android:text="年龄"/>
 
                     <TextView
                         android:id="@+id/drugappr_age"
                         style="?InfoText"
                         android:layout_width="180dp"
-                        android:gravity="left"
-                        android:textSize="18dip" />
+                        android:gravity="left"/>
                 </TableRow>
 
                 <TableRow android:paddingTop="1dp" >
@@ -135,15 +127,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:text="病区"
-                        android:textSize="18dip" />
+                        android:text="病区"/>
 
                     <TextView
                         android:id="@+id/drugappr_deptName"
                         style="?InfoText"
                         android:layout_width="180dp"
-                        android:gravity="left"
-                        android:textSize="18dip" />
+                        android:gravity="left"/>
                 </TableRow>
 
                 <TableRow android:paddingTop="1dp" >
@@ -153,15 +143,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:text="申请医师"
-                        android:textSize="18dip" />
+                        android:text="申请医师"/>
 
                     <TextView
                         android:id="@+id/drugappr_appWho"
                         style="?InfoText"
                         android:layout_width="180dp"
-                        android:gravity="left"
-                        android:textSize="18dip" />
+                        android:gravity="left" />
                 </TableRow>
 
                 <TableRow android:paddingTop="1dp" >
@@ -171,15 +159,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:text="申请日期"
-                        android:textSize="18dip" />
+                        android:text="申请日期" />
 
                     <TextView
                         android:id="@+id/drugappr_appDate"
                         style="?InfoText"
                         android:layout_width="180dp"
-                        android:gravity="left"
-                        android:textSize="18dip" />
+                        android:gravity="left"/>
                 </TableRow>
 
                 <TableRow android:paddingTop="1dp" >
@@ -189,15 +175,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:text="主要诊断"
-                        android:textSize="18dip" />
+                        android:text="主要诊断"/>
 
                     <TextView
                         android:id="@+id/drugappr_diagnosis"
                         style="?InfoText"
                         android:layout_width="180dp"
-                        android:gravity="left"
-                        android:textSize="18dip" />
+                        android:gravity="left" />
                 </TableRow>
 
                 <TableRow android:paddingTop="1dp" >
@@ -207,15 +191,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:text="使用原因"
-                        android:textSize="18dip" />
+                        android:text="使用原因" />
 
                     <TextView
                         android:id="@+id/drugappr_useReason"
                         style="?InfoText"
                         android:layout_width="180dp"
-                        android:gravity="left"
-                        android:textSize="18dip" />
+                        android:gravity="left" />
                 </TableRow>
 
                 <TableRow android:paddingTop="1dp" >
@@ -225,15 +207,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:text="药品名称"
-                        android:textSize="18dip" />
+                        android:text="药品名称" />
 
                     <TextView
                         android:id="@+id/drugappr_drugName"
                         style="?InfoText"
                         android:layout_width="180dp"
-                        android:gravity="left"
-                        android:textSize="18dip" />
+                        android:gravity="left"/>
                 </TableRow>
 
                 <TableRow android:paddingTop="1dp" >
@@ -243,15 +223,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:text="药品规格"
-                        android:textSize="18dip" />
+                        android:text="药品规格"/>
 
                     <TextView
                         android:id="@+id/drugappr_drugSpec"
                         style="?InfoText"
                         android:layout_width="180dp"
-                        android:gravity="left"
-                        android:textSize="18dip" />
+                        android:gravity="left"/>
                 </TableRow>
 
                 <TableRow android:paddingTop="1dp" >
@@ -261,15 +239,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:text="干预类型"
-                        android:textSize="18dip" />
+                        android:text="干预类型" />
 
                     <TextView
                         android:id="@+id/drugappr_meddleType"
                         style="?InfoText"
                         android:layout_width="180dp"
-                        android:gravity="left"
-                        android:textSize="18dip" />
+                        android:gravity="left" />
                 </TableRow>
             </TableLayout>
 
@@ -313,8 +289,7 @@
                     android:id="@+id/drugappr_note_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="备注:"
-                    android:textSize="18dip" />
+                    android:text="备注:" />
 
                 <Spinner
                     android:id="@+id/drugappr_note"

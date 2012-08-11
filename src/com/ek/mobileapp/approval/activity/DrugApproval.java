@@ -70,7 +70,8 @@ public class DrugApproval extends Activity {
     @Override
     protected void onDestroy() {
 
-        processCommitData();
+        if (list.size() > 0)
+            processCommitData();
         super.onDestroy();
     }
 

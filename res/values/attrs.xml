@@ -21,16 +21,13 @@
     <attr name="button.dark.big" format="reference" />
     <attr name="button.dark.big.bold" format="reference" />
     <attr name="InfoText" format="reference" />
+    <attr name="InfoLabel" format="reference" />
     <attr name="InfoLayout" format="reference" />
-
     <attr name="custom_list_text_color" format="reference" />
     <attr name="custom_grid_value_color" format="reference" />
-
 
     <!-- Attributes -->
     <attr name="pageMargin" format="reference|dimension" />
     <attr name="contentLeftMargin" format="reference|dimension" />
-
-
 
 </resources>

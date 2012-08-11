@@ -12,7 +12,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="4dp">
+        android:paddingLeft="4dp" >
 
         <TextView
             android:id="@+id/drugcheck_patientLabel"
@@ -36,73 +36,61 @@
             android:layout_alignBaseline="@+id/drugcheck_patientLabel"
             android:layout_alignBottom="@+id/drugcheck_patientLabel"
             android:layout_toRightOf="@+id/drugcheck_patientLabel"
-            android:gravity="center"
-            android:text=" "
-            android:textSize="18dip" />
+            android:text=" " />
     </RelativeLayout>
 
     <TableLayout
-            android:id="@+id/pa_info"
-            style="?InfoLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp">
+        android:id="@+id/pa_info"
+        style="?InfoLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp" >
 
-        <TableRow
-            android:paddingTop="7dp">
+        <TableRow android:paddingTop="7dp" >
+
             <TextView
                 android:id="@+id/drugcheck_nameLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="姓名"
-                android:textSize="18dip" />
+                android:text="姓名" />
 
             <TextView
                 android:id="@+id/drugcheck_name"
                 style="?InfoText"
-                android:layout_span="3"
                 android:layout_width="174.5dp"
-                android:gravity="center"
-                android:text=" "
-                android:textSize="18dip" />
+                android:layout_span="3"
+                android:text=" " />
 
             <TextView
                 android:id="@+id/drugcheck_sexLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
-                android:text="性别"
-                android:textSize="18dip" />
+                android:text="性别"/>
 
             <TextView
                 android:id="@+id/drugcheck_sex"
                 style="?InfoText"
                 android:layout_width="90dp"
-                android:gravity="center"
-                android:text=" "
-                android:textSize="18dip" />
+                android:text=" " />
         </TableRow>
 
-        <TableRow
-            android:paddingTop="7dp">
+        <TableRow android:paddingTop="7dp" >
 
             <TextView
                 android:id="@+id/drugcheck_ageLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="年龄"
-                android:textSize="18dip" />
+                android:text="年龄"/>
 
             <TextView
                 android:id="@+id/drugcheck_age"
                 style="?InfoText"
                 android:layout_width="50dp"
-                android:gravity="center"
-                android:text=" "
-                android:textSize="18dip" />
+                android:text=" " />
 
             <TextView
                 android:id="@+id/drugcheck_bedNoLabel"
@@ -110,52 +98,45 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="4dp"
-                android:text="床号"
-                android:textSize="18dip" />
+                android:text="床号" />
 
             <TextView
                 android:id="@+id/drugcheck_bedNo"
                 style="?InfoText"
                 android:layout_width="48dp"
-                android:gravity="center"
-                android:text=" "
-                android:textSize="18dip" />
+                android:text=" " />
 
             <TextView
                 android:id="@+id/drugcheck_doctorLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
-                android:text="医生"
-                android:textSize="18dip" />
+                android:text="医生"/>
 
             <TextView
                 android:id="@+id/drugcheck_doctor"
                 style="?InfoText"
                 android:layout_width="90dp"
-                android:gravity="center"
-                android:text=" "
-                android:textSize="18dip" />
+                android:text=" " />
         </TableRow>
 
         <TableRow
-            android:paddingTop="7dp"
-            android:paddingBottom="7dp">
+            android:paddingBottom="7dp"
+            android:paddingTop="7dp" >
+
             <TextView
                 android:id="@+id/drugcheck_deptLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="病区"
-                android:textSize="18dip" />
+                android:text="病区"/>
 
             <TextView
                 android:id="@+id/drugcheck_deptName"
                 style="?InfoText"
                 android:layout_width="174.5dp"
                 android:layout_span="5"
-                android:gravity="center"
-                android:text=" "
-                android:textSize="18dip" />
+                android:text=" " />
         </TableRow>
     </TableLayout>
+
 </LinearLayout>
