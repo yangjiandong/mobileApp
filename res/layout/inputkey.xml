@@ -19,29 +19,25 @@
          android:layout_width="@dimen/ButtonSize"
          android:layout_height="@dimen/ButtonSize"
          android:text="@string/B6"
-         android:textSize="@dimen/TextSize"
-         android:background="@drawable/digitalkey"/>
+         android:textSize="@dimen/TextSize"/>
        <Button
         android:id="@+id/button7"
         android:layout_width="@dimen/ButtonSize"
         android:layout_height="@dimen/ButtonSize"
         android:text="@string/B7"
-        android:textSize="@dimen/TextSize"
-        android:background="@drawable/digitalkey"/>
+        android:textSize="@dimen/TextSize"/>
        <Button
         android:id="@+id/button8"
         android:layout_width="@dimen/ButtonSize"
         android:layout_height="@dimen/ButtonSize"
         android:text="@string/B8"
-        android:textSize="@dimen/TextSize"
-        android:background="@drawable/digitalkey"/>
+        android:textSize="@dimen/TextSize"/>
        <Button
         android:id="@+id/button9"
         android:layout_width="@dimen/ButtonSize"
         android:layout_height="@dimen/ButtonSize"
         android:text="@string/B9"
-        android:textSize="@dimen/TextSize"
-        android:background="@drawable/digitalkey"/>
+        android:textSize="@dimen/TextSize"/>
 </TableRow>
 <View
        android:layout_height="2dip"
@@ -55,29 +51,25 @@
         android:layout_width="@dimen/ButtonSize"
         android:layout_height="@dimen/ButtonSize"
         android:text="@string/B2"
-        android:textSize="@dimen/TextSize"
-        android:background="@drawable/digitalkey"/>
+        android:textSize="@dimen/TextSize"/>
         <Button
         android:id="@+id/button3"
         android:layout_width="@dimen/ButtonSize"
         android:layout_height="@dimen/ButtonSize"
         android:text="@string/B3"
-        android:textSize="@dimen/TextSize"
-        android:background="@drawable/digitalkey"/>
+        android:textSize="@dimen/TextSize"/>
         <Button
         android:id="@+id/button4"
         android:layout_width="@dimen/ButtonSize"
         android:layout_height="@dimen/ButtonSize"
         android:text="@string/B4"
-        android:textSize="@dimen/TextSize"
-        android:background="@drawable/digitalkey"/>
+        android:textSize="@dimen/TextSize"/>
         <Button
         android:id="@+id/button5"
         android:layout_width="@dimen/ButtonSize"
         android:layout_height="@dimen/ButtonSize"
         android:text="@string/B5"
-        android:textSize="@dimen/TextSize"
-        android:background="@drawable/digitalkey"/>
+        android:textSize="@dimen/TextSize"/>
 </TableRow>
 <View
        android:layout_height="2dip"
@@ -91,28 +83,27 @@
         android:layout_width="@dimen/ButtonSize"
         android:layout_height="@dimen/ButtonSize"
         android:text="@string/B0"
-        android:textSize="@dimen/TextSize"
-        android:background="@drawable/digitalkey"/>
+        android:textSize="@dimen/TextSize"/>
         <Button
         android:id="@+id/button1"
         android:layout_width="@dimen/ButtonSize"
         android:layout_height="@dimen/ButtonSize"
         android:text="@string/B1"
-        android:textSize="@dimen/TextSize"
-        android:background="@drawable/digitalkey"/>
+        android:textSize="@dimen/TextSize"/>
         <Button
         android:id="@+id/buttonDot"
         android:layout_width="@dimen/ButtonSize"
         android:layout_height="@dimen/ButtonSize"
         android:text="@string/Dot"
-        android:textSize="@dimen/TextSize"
-        android:background="@drawable/digitalkey"/>
+        android:textSize="@dimen/TextSize"/>
         <Button
         android:id="@+id/buttonClear"
         android:layout_width="@dimen/ButtonSize"
         android:layout_height="@dimen/ButtonSize"
-        android:layout_marginTop="-8dp"
-        android:background="@drawable/cancel"/>
+        android:layout_marginTop="-2.7dp"
+        android:text="@string/Delete"
+        android:textSize="@dimen/TextSizeSureButton"
+        android:textColor="@color/opaque_red"/>
 </TableRow>
 <View
        android:layout_height="2dip"
@@ -127,15 +118,13 @@
         android:layout_height="@dimen/ButtonSize"
         android:text="@string/ok"
         android:textSize="@dimen/TextSizeSureButton"
-        android:textColor="@color/white"
-        android:background="@drawable/sure"/>
+        android:textColor="@color/lime"/>
         <Button
         android:id="@+id/buttonClose"
         android:layout_width="@dimen/ButtonSize"
         android:layout_height="@dimen/ButtonSize"
         android:text="@string/Close"
         android:textSize="@dimen/TextSizeCloseButton"
-        android:textColor="@color/white"
-        android:background="@drawable/close"/>
+        android:textColor="@color/black"/>
 </TableRow>
 </TableLayout>

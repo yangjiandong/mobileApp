@@ -6,7 +6,7 @@
         <item name="android:windowTitleSize">20dip</item>
     </style>
 
-    <style name="Light1Theme" parent="android:Theme.Light">
+    <style name="Light1Theme" parent="Theme.Sherlock.Light">
 
         <!-- 全局风格,Light Or Black -->
         <item name="android:windowNoTitle">true</item>

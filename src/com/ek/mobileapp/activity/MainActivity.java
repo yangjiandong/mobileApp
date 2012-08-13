@@ -18,20 +18,19 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.ek.mobileapp.MainApplication;
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
 import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.approval.activity.DrugApproval;
 import com.ek.mobileapp.example.InOutTitlesTriangle;
-import com.ek.mobileapp.example.SampleTitlesTriangle;
 import com.ek.mobileapp.model.UserDTO;
 import com.ek.mobileapp.nurse.action.VitalSignAction;
 import com.ek.mobileapp.nurse.activity.DrugCheck;
@@ -43,9 +42,6 @@ import com.ek.mobileapp.utils.SettingsUtils;
 import com.ek.mobileapp.utils.ToastUtils;
 import com.ek.mobileapp.utils.UtilString;
 import com.ek.mobileapp.utils.WebUtils;
-import com.markupartist.android.widget.ActionBar;
-import com.markupartist.android.widget.ActionBar.Action;
-import com.markupartist.android.widget.ActionBar.IntentAction;
 
 //主界面
 public class MainActivity extends BaseActivity {
@@ -53,7 +49,7 @@ public class MainActivity extends BaseActivity {
     Map<String, Integer> btnsStyle = new HashMap<String, Integer>();
     Map<Integer, String> moduels = new HashMap<Integer, String>();
 
-    ActionBar actionBar;
+    //ActionBar actionBar;
     SharedPreferences sharedPreferences;
     String ip = "";
 
@@ -61,6 +57,10 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void createUi() {
         MainApplication.getInstance().addActivity(this);
+
+        final ActionBar ab = getSupportActionBar();
+        ab.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_bg_black));
+        getSupportActionBar().setIcon(R.drawable.hospital);
 
         //统一取数
         Runnable runLog = new Runnable() {
@@ -80,12 +80,12 @@ public class MainActivity extends BaseActivity {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         ip = sharedPreferences.getString("setting_http_ip", WebUtils.HOST);
 
-        actionBar = (ActionBar) findViewById(R.id.actionbar);
+        //actionBar = (ActionBar) findViewById(R.id.actionbar);
         try {
             //
-            final Action otherAction = new IntentAction(this, new Intent(this, SettingActivity.class),
-                    R.drawable.ic_title_export_default);
-            actionBar.addAction(otherAction);
+            //final Action otherAction = new IntentAction(this, new Intent(this, SettingActivity.class),
+            //R.drawable.ic_title_export_default);
+            //actionBar.addAction(otherAction);
         } catch (Exception e) {
             Log.e("about", e.getMessage());
         }
@@ -95,7 +95,7 @@ public class MainActivity extends BaseActivity {
         try {
             PackageInfo pinfo = this.getPackageManager().getPackageInfo(SettingsUtils.TRACKER_PACKAGE_NAME, 0);
             version = pinfo.versionCode + "_" + pinfo.versionName;
-            actionBar.setTitle(pinfo.applicationInfo.labelRes);
+            //actionBar.setTitle(pinfo.applicationInfo.labelRes);
 
             //一排三个按钮
             int count = 3;
@@ -117,11 +117,9 @@ public class MainActivity extends BaseActivity {
 
                 if (i == 0) {
                     one = new LinearLayout(this);
-                    //one.set
                     one.setOrientation(LinearLayout.HORIZONTAL);
                     one.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT, 1));
-                    //buttnon 居中
                     one.setGravity(Gravity.CENTER);
                     modules.addView(one);
                 }
@@ -244,27 +242,49 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
+    public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
+        //getMenuInflater().inflate(R.menu.menu, menu);
+        menu.add("设置").setIntent(new Intent(this, SettingActivity.class)).setIcon(R.drawable.ic_compose)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+        menu.add("更改密码").setIcon(android.R.drawable.ic_menu_preferences)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+
+        menu.add("选择蓝牙设备").setIcon(R.drawable.bluetooth_v).setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+
+        menu.add("关于").setIcon(R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.menu_select_bluetooth:
-            Intent serverIntent = new Intent(this, DeviceListActivity.class);
-            startActivityForResult(serverIntent, BluetoothService.REQUEST_CONNECT_DEVICE);
-            return true;
-        case R.id.menu_update_password:
+    public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
+
+        String s = item.toString();
+        if (s.equals("更改密码")) {
             Intent intent = new Intent(this, UserUpdatePwdActivity.class);
             startActivity(intent);
             return true;
-        case R.id.menu_about:
+        } else if (s.equals("选择蓝牙设备")) {
+            Intent serverIntent = new Intent(this, DeviceListActivity.class);
+            startActivityForResult(serverIntent, BluetoothService.REQUEST_CONNECT_DEVICE);
+            return true;
+        } else if (s.equals("关于")) {
             showAbout();
             return true;
         }
+        //        switch (item.getItemId()) {
+        //        case R.id.menu_select_bluetooth:
+        //            Intent serverIntent = new Intent(this, DeviceListActivity.class);
+        //            startActivityForResult(serverIntent, BluetoothService.REQUEST_CONNECT_DEVICE);
+        //            return true;
+        //        case R.id.menu_update_password:
+        //            Intent intent = new Intent(this, UserUpdatePwdActivity.class);
+        //            startActivity(intent);
+        //            return true;
+        //        case R.id.menu_about:
+        //            showAbout();
+        //            return true;
+        //        }
         return false;
     }
 

@@ -10,3 +10,5 @@ project.properties
 /libsproject/viewPagerIndicator/gen
 /libsproject/viewPagerIndicator/local.properties
 /libsproject/actionbar/local.properties
+/libsproject/actionBarSherlock/gen
+/libsproject/actionBarSherlock/bin

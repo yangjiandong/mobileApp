@@ -12,7 +12,7 @@
 
     <dimen name="ButtonSize">50dp</dimen>
     <dimen name="ButtonSizeLand">76dp</dimen>
-    <dimen name="TextSize">35dp</dimen>
+    <dimen name="TextSize">30dp</dimen>
     <dimen name="TextSizeLand">30dp</dimen>
     <dimen name="TextSizeClearButton">20dp</dimen>
     <dimen name="TextSizeClearButtonLand">20dp</dimen>

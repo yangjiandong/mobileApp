@@ -8,6 +8,7 @@
    <color name="lightgray">#CCC</color>
    <color name="white">#FFF</color>
    <color name="green">#91C56A</color>
+   <color name="lime">#00FF00</color>
 
     <color name="title_background">#000</color>
     <color name="title_text">#ffffffff</color>
@@ -23,4 +24,7 @@
 
     <color name="pinned_header_background">#ff202020</color>
     <color name="dialog_text">#cccccc</color>
+
+    <drawable name="ab_bg_black">#993333</drawable>
+
 </resources>

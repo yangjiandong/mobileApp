@@ -11,7 +11,6 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -40,22 +39,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
 import com.ek.mobileapp.action.MobLogAction;
 import com.ek.mobileapp.approval.activity.DrugApproval;
-import com.ek.mobileapp.approval.activity.DrugApproval2;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.HttpTool;
 import com.ek.mobileapp.utils.SettingsUtils;
-import com.ek.mobileapp.utils.ToastUtils;
 import com.ek.mobileapp.utils.UtilString;
 import com.ek.mobileapp.utils.WebUtils;
-import com.markupartist.android.widget.ActionBar;
-import com.markupartist.android.widget.ActionBar.Action;
-import com.markupartist.android.widget.ActionBar.IntentAction;
 
-public class LogonActivity extends Activity implements OnSharedPreferenceChangeListener {
+public class LogonActivity extends SherlockActivity implements OnSharedPreferenceChangeListener {
     WebView host_info;
     EditText username;
     EditText password;
@@ -78,6 +76,21 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
 
     private String moduleCode = "";
 
+    //继承sherlock bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add("设置").setIntent(new Intent(this, SettingActivity.class)).setIcon(R.drawable.ic_compose)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return false;
+    }
+    //end
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,29 +98,24 @@ public class LogonActivity extends Activity implements OnSharedPreferenceChangeL
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        //TODO
+
         //直接放在sharedPreferences,MobLogAction取不出值,暂时存放在cache
         boolean weblog = sharedPreferences.getBoolean("setting_weblog", false);
         GlobalCache.getCache().setWebLog(weblog);
 
+        final ActionBar ab = getSupportActionBar();
+        ab.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_bg_black));
+        getSupportActionBar().setIcon(R.drawable.hospital);
         setContentView(R.layout.logon);
 
-        final ActionBar actionBar = (ActionBar) findViewById(R.id.actionbar);
-
-        //设置
-        final Action otherAction = new IntentAction(this, new Intent(this, SettingActivity.class),
-                R.drawable.ic_title_export_default);
-        actionBar.addAction(otherAction);
-
         tm = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
-
         version = "1";
         String vendor = "鑫亿";
         try {
             PackageInfo pinfo = this.getPackageManager().getPackageInfo(SettingsUtils.TRACKER_PACKAGE_NAME, 0);
             version = pinfo.versionCode + "_" + pinfo.versionName;
             //vendor = pinfo.applicationInfo.sharedUserLabel;
-            actionBar.setTitle(pinfo.applicationInfo.labelRes);
+            //actionBar.setTitle(pinfo.applicationInfo.labelRes);
 
         } catch (NameNotFoundException e) {
             e.printStackTrace();

@@ -18,6 +18,7 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 
+import com.actionbarsherlock.app.SherlockActivity;
 import com.ek.mobileapp.MainApplication;
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.MobLogAction;
@@ -26,7 +27,7 @@ import com.shoushuo.android.tts.ITts;
 import com.shoushuo.android.tts.ITtsCallback;
 
 //实现蓝牙、语言功能
-public abstract class BaseActivity extends Activity {
+public abstract class BaseActivity extends SherlockActivity {
 
     protected SharedPreferences sharedPreferences;
 

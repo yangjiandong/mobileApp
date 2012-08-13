@@ -1,6 +1,15 @@
 android app
 ===========
 
+2012.08.13
+----------
+
+   1. 取消actionBar,采用actionBarSherlock
+   logon.xml,main.xml
+   themes.xml, <style name="Light1Theme" parent="Theme.Sherlock.Light">
+   colors.xml
+   LogonActivity,MainActivity,BaseActivity
+
 2012.08.09
 ----------
 
