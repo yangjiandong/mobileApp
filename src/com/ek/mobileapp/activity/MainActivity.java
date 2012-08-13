@@ -80,22 +80,12 @@ public class MainActivity extends BaseActivity {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         ip = sharedPreferences.getString("setting_http_ip", WebUtils.HOST);
 
-        //actionBar = (ActionBar) findViewById(R.id.actionbar);
-        try {
-            //
-            //final Action otherAction = new IntentAction(this, new Intent(this, SettingActivity.class),
-            //R.drawable.ic_title_export_default);
-            //actionBar.addAction(otherAction);
-        } catch (Exception e) {
-            Log.e("about", e.getMessage());
-        }
         String version = "x.xx";
         String vendor = "鑫亿";
 
         try {
             PackageInfo pinfo = this.getPackageManager().getPackageInfo(SettingsUtils.TRACKER_PACKAGE_NAME, 0);
             version = pinfo.versionCode + "_" + pinfo.versionName;
-            //actionBar.setTitle(pinfo.applicationInfo.labelRes);
 
             //一排三个按钮
             int count = 3;
