@@ -1,14 +1,20 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_update_password"
-        android:title="更改密码"
-        android:icon="@android:drawable/ic_menu_preferences" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item android:id="@+id/menu_select_bluetooth"
-        android:title="选择蓝牙设备"
-        android:icon="@drawable/bluetooth_v" />
-
-    <item android:id="@+id/menu_about"
-        android:title="关于"
-        android:icon="@drawable/ic_menu_info_details" />
+    <item
+        android:id="@+id/menu_setting"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="设置"/>
+    <item
+        android:id="@+id/menu_update_password"
+        android:icon="@drawable/ic_menu_pwd"
+        android:title="更改密码"/>
+    <item
+        android:id="@+id/menu_select_bluetooth"
+        android:icon="@drawable/bluetooth_v"
+        android:title="选择蓝牙设备"/>
+    <item
+        android:id="@+id/menu_about"
+        android:icon="@drawable/ic_menu_info_details"
+        android:title="关于"/>
 
 </menu>

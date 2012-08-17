@@ -18,7 +18,6 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 
-import com.actionbarsherlock.app.SherlockActivity;
 import com.ek.mobileapp.MainApplication;
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.MobLogAction;
@@ -27,7 +26,7 @@ import com.shoushuo.android.tts.ITts;
 import com.shoushuo.android.tts.ITtsCallback;
 
 //实现蓝牙、语言功能
-public abstract class BaseActivity extends SherlockActivity {
+public abstract class BaseActivity extends Activity {
 
     protected SharedPreferences sharedPreferences;
 
@@ -43,7 +42,7 @@ public abstract class BaseActivity extends SherlockActivity {
         MainApplication.getInstance().addActivity(this);
 
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);

@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.MobLogAction;
+import com.ek.mobileapp.model.MobConstants;
 import com.ek.mobileapp.model.Patient;
 import com.ek.mobileapp.model.UserDTO;
 import com.ek.mobileapp.model.VitalSignData;
@@ -357,4 +358,32 @@ public abstract class VitalSignBase extends NurseBaseActivity {
 
     //setContentView
     protected abstract void initBase();
+
+    protected VitalSignData getData(String itemCode) {
+        VitalSignData data = null;
+        VitalSignItem item = null;
+        List<VitalSignItem> items = GlobalCache.getCache().getVitalSignItems();
+        for (VitalSignItem vitalSignItem : items) {
+            if (vitalSignItem.getCode().equals(itemCode))
+                item = vitalSignItem;
+        }
+        List<VitalSignData> lists = GlobalCache.getCache().getVitalSignDatas_all();
+
+        if (item.getTypeCode().equals(MobConstants.MOB_VITALSIGN_MORE)) {
+            String timePoint = GlobalCache.getCache().getTimePoint();
+            for (VitalSignData a : lists) {
+                if (a.getItemCode().equals(itemCode) && a.getTimePoint().equals(timePoint)) {
+                    data = a;
+                }
+            }
+        } else {
+            for (VitalSignData a : lists) {
+                if (a.getItemCode().equals(itemCode)) {
+                    data = a;
+                }
+            }
+        }
+
+        return data;
+    }
 }

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ek.mobileapp"
     android:versionCode="1"
-    android:versionName="b2_2012080410" >
+    android:versionName="b2_2012081511" >
 
     <uses-sdk
         android:minSdkVersion="5"

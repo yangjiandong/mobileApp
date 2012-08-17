@@ -3,8 +3,8 @@
     style="?ModulePage" >
 
     <LinearLayout
-        style="?InfoLayout"
         android:id="@+id/toply"
+        style="?InfoLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -18,10 +18,10 @@
 
         <TextView
             android:id="@+id/user_by"
+            style="?text.dark.medium.bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="操作员"
-            style="?text.dark.medium.bold" />
+            android:text="操作员" />
     </LinearLayout>
 
     <LinearLayout
@@ -36,7 +36,7 @@
         android:layout_width="fill_parent"
         android:layout_height="160dp"
         android:fillViewport="true" >
-
+
         <LinearLayout
             android:id="@+id/vital_sign_edit"
             android:layout_width="fill_parent"
@@ -55,7 +55,7 @@
                     android:layout_marginLeft="15dp"
                     android:gravity="center_vertical"
                     android:text="TextView"
-                    android:textSize="16dip" />
+                    android:textSize="18dip" />
 
                 <EditText
                     android:id="@+id/vitalsign_edit_3_text"
@@ -72,15 +72,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1" >
-
+
                 <TextView
                     android:id="@+id/vitalsign_edit_3_label2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:text="TextView"
-                    android:textSize="16dp" />
-
+                    android:textSize="18dp" />
+
                 <EditText
                     android:id="@+id/vitalsign_edit_3_text2"
                     android:layout_width="140dp"
@@ -91,10 +91,8 @@
 
                     <requestFocus />
                 </EditText>
-
             </LinearLayout>
         </LinearLayout>
-
     </ScrollView>
 
     <LinearLayout

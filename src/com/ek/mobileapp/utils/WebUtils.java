@@ -56,4 +56,9 @@ public class WebUtils {
     public static final String DRUGAPPROVAL_GET_ONE = "/drug_approval/get_one?type=mobile";
     public static final String DRUGAPPROVAL_GET_NOTE = "/drug_approval/get_note?type=mobile";
 
+    public static final String OPERATION_APPROVAL_COMMIT_HIS = "/oper_approval/commit_his?type=mobile";
+    public static final String OPERATION_APPROVAL_SAVE = "/oper_approval/save_oper_approval?type=mobile";
+    public static final String OPERATION_APPROVAL_GET_ALL = "/oper_approval/get_all?type=mobile";
+    public static final String OPERATION_APPROVAL_GET_ONE = "/oper_approval/get_one?type=mobile";
+
 }

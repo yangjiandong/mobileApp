@@ -1,6 +1,19 @@
 android app
 ===========
 
+2012.08.15
+----------
+
+   1. 取消actionBarSherlock
+   4.0 版本上有问题,报 actionbarsherlock getsupportactionbar returns null
+
+   采用自定义tilebar
+   tilebar.xml
+   需取消 theme.xml
+   <item name="android:windowNoTitle">true</item>
+
+   --统一风格,logon,main采用custom title,其他activity 采用no title
+
 2012.08.13
 ----------
 

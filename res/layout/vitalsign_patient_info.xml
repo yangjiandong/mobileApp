@@ -56,7 +56,7 @@
         android:id="@+id/pa_info"
         style="?InfoLayout"
         android:layout_width="fill_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingLeft="4dp"
         android:paddingRight="4dp" >
@@ -65,63 +65,74 @@
 
             <TextView
                 android:id="@+id/vitalsign_nameLabel"
-                style="?InfoLabel"
+               android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="姓名" />
 
-            <TextView
+             <TextView
                 android:id="@+id/vitalsign_name"
                 style="?InfoText"
-                android:layout_width="100dp"
-                android:layout_span="2" />
-
-            <TextView
-                android:id="@+id/vitalsign_doctorLabel"
-                style="?InfoLabel"
-                android:gravity="right"
-                android:text="医生" />
-
-            <TextView
-                android:id="@+id/vitalsign_doctor"
-                style="?InfoText"
-                android:layout_width="100dp"
-                android:layout_span="2" />
-        </TableRow>
-
-        <TableRow android:paddingTop="7dp" >
-
-            <TextView
-                android:id="@+id/vitalsign_sexLabel"
-                style="?InfoLabel"
-                android:text="性别" />
-
-            <TextView
-                android:id="@+id/vitalsign_sex"
-                style="?InfoText"
-                android:layout_width="64dp" />
-
-            <TextView
-                android:id="@+id/vitalsign_ageLabel"
-                style="?InfoLabel"
-                android:layout_marginLeft="4dp"
-                android:text="年龄" />
-
-            <TextView
-                android:id="@+id/vitalsign_age"
-                style="?InfoText"
-                android:layout_width="64dp" />
+                android:layout_width="174.5dp"
+                android:layout_span="3"
+                android:text=" " />
 
             <TextView
                 android:id="@+id/vitalsign_bedNoLabel"
-                style="?InfoLabel"
-                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
                 android:text="床号" />
 
             <TextView
                 android:id="@+id/vitalsign_bedNo"
                 style="?InfoText"
-                android:layout_width="64dp" />
+                 android:layout_width="90dp"
+                android:text=" " />
+
+        </TableRow>
+
+        <TableRow android:paddingTop="7dp" >
+
+            <TextView
+                android:id="@+id/vitalsign_sexLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="性别" />
+
+            <TextView
+                android:id="@+id/vitalsign_sex"
+                style="?InfoText"
+                android:layout_width="48dp"
+                android:text=" " />
+
+            <TextView
+                android:id="@+id/vitalsign_ageLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:text="年龄" />
+
+            <TextView
+                android:id="@+id/vitalsign_age"
+                style="?InfoText"
+                android:layout_width="50dp"
+                android:text=" " />
+
+            <TextView
+                android:id="@+id/vitalsign_doctorLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:text="医生" />
+
+            <TextView
+                android:id="@+id/vitalsign_doctor"
+                style="?InfoText"
+                 android:layout_width="90dp"
+                android:text=" " />
+
         </TableRow>
     </TableLayout>
 

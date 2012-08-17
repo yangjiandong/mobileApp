@@ -58,9 +58,12 @@ public class BlueToothConnector extends Thread {
     }
 
     public void mystop() {
-        inputThread.cancel();
-        inputThread.stop();
-        inputThread = null;
+        if (inputThread != null) {
+            inputThread.cancel();
+            inputThread.stop();
+            inputThread = null;
+        }
+
     }
 
     public void run() {

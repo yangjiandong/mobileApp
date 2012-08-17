@@ -55,7 +55,7 @@
                     android:layout_marginLeft="15dp"
                     android:gravity="center_vertical"
                     android:text="TextView"
-                    android:textSize="16dip" />
+                    android:textSize="20dip" />
 
                 <EditText
                     android:id="@+id/vitalsign_edit_2_text"

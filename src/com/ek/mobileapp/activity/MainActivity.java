@@ -14,17 +14,19 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.ActionBar;
 import com.ek.mobileapp.MainApplication;
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
@@ -49,7 +51,6 @@ public class MainActivity extends BaseActivity {
     Map<String, Integer> btnsStyle = new HashMap<String, Integer>();
     Map<Integer, String> moduels = new HashMap<Integer, String>();
 
-    //ActionBar actionBar;
     SharedPreferences sharedPreferences;
     String ip = "";
 
@@ -57,10 +58,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void createUi() {
         MainApplication.getInstance().addActivity(this);
-
-        final ActionBar ab = getSupportActionBar();
-        ab.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_bg_black));
-        getSupportActionBar().setIcon(R.drawable.hospital);
 
         //统一取数
         Runnable runLog = new Runnable() {
@@ -75,7 +72,11 @@ public class MainActivity extends BaseActivity {
         new Thread(runLog).start();
 
         createBtns();
+
         setContentView(R.layout.main);
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.titlebar);
+        ImageButton parmBtn = (ImageButton) findViewById(R.id.parm_set);
+        parmBtn.setVisibility(View.GONE);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         ip = sharedPreferences.getString("setting_http_ip", WebUtils.HOST);
@@ -232,49 +233,31 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
-        //getMenuInflater().inflate(R.menu.menu, menu);
-        menu.add("设置").setIntent(new Intent(this, SettingActivity.class)).setIcon(R.drawable.ic_compose)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
-        menu.add("更改密码").setIcon(android.R.drawable.ic_menu_preferences)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-
-        menu.add("选择蓝牙设备").setIcon(R.drawable.bluetooth_v).setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-
-        menu.add("关于").setIcon(R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
-
-        String s = item.toString();
-        if (s.equals("更改密码")) {
-            Intent intent = new Intent(this, UserUpdatePwdActivity.class);
-            startActivity(intent);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent serverIntent;
+        switch (item.getItemId()) {
+        case R.id.menu_setting:
+            serverIntent = new Intent(this, SettingActivity.class);
+            startActivity(serverIntent);
             return true;
-        } else if (s.equals("选择蓝牙设备")) {
-            Intent serverIntent = new Intent(this, DeviceListActivity.class);
+        case R.id.menu_select_bluetooth:
+            serverIntent = new Intent(this, DeviceListActivity.class);
             startActivityForResult(serverIntent, BluetoothService.REQUEST_CONNECT_DEVICE);
             return true;
-        } else if (s.equals("关于")) {
+        case R.id.menu_update_password:
+            serverIntent = new Intent(this, UserUpdatePwdActivity.class);
+            startActivity(serverIntent);
+            return true;
+        case R.id.menu_about:
             showAbout();
             return true;
         }
-        //        switch (item.getItemId()) {
-        //        case R.id.menu_select_bluetooth:
-        //            Intent serverIntent = new Intent(this, DeviceListActivity.class);
-        //            startActivityForResult(serverIntent, BluetoothService.REQUEST_CONNECT_DEVICE);
-        //            return true;
-        //        case R.id.menu_update_password:
-        //            Intent intent = new Intent(this, UserUpdatePwdActivity.class);
-        //            startActivity(intent);
-        //            return true;
-        //        case R.id.menu_about:
-        //            showAbout();
-        //            return true;
-        //        }
         return false;
     }
 
@@ -318,6 +301,5 @@ public class MainActivity extends BaseActivity {
             }
             break;
         }
-
     }
 }

@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -26,6 +27,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,16 +38,14 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.ek.mobileapp.R;
 import com.ek.mobileapp.action.LogonAction;
 import com.ek.mobileapp.action.MobLogAction;
+import com.ek.mobileapp.activity.SettingActivity;
 import com.ek.mobileapp.approval.activity.DrugApproval;
 import com.ek.mobileapp.utils.GlobalCache;
 import com.ek.mobileapp.utils.HttpTool;
@@ -53,11 +53,12 @@ import com.ek.mobileapp.utils.SettingsUtils;
 import com.ek.mobileapp.utils.UtilString;
 import com.ek.mobileapp.utils.WebUtils;
 
-public class LogonActivity extends SherlockActivity implements OnSharedPreferenceChangeListener {
+public class LogonActivity extends Activity implements OnSharedPreferenceChangeListener {
     WebView host_info;
     EditText username;
     EditText password;
     Button logonBtn;
+    ImageButton parmBtn;
     CheckBox savepassword;
     SharedPreferences sharedPreferences;
     TelephonyManager tm;
@@ -76,37 +77,21 @@ public class LogonActivity extends SherlockActivity implements OnSharedPreferenc
 
     private String moduleCode = "";
 
-    //继承sherlock bar
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add("设置").setIntent(new Intent(this, SettingActivity.class)).setIcon(R.drawable.ic_compose)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return false;
-    }
-    //end
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        setContentView(R.layout.logon);
+
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.titlebar);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         //直接放在sharedPreferences,MobLogAction取不出值,暂时存放在cache
         boolean weblog = sharedPreferences.getBoolean("setting_weblog", false);
         GlobalCache.getCache().setWebLog(weblog);
-
-        final ActionBar ab = getSupportActionBar();
-        ab.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_bg_black));
-        getSupportActionBar().setIcon(R.drawable.hospital);
-        setContentView(R.layout.logon);
 
         tm = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
         version = "1";
@@ -121,6 +106,18 @@ public class LogonActivity extends SherlockActivity implements OnSharedPreferenc
             e.printStackTrace();
         }
 
+        //boolean customTitleSupported = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+        //if (customTitleSupported) {
+
+        //}
+
+        final TextView myTitleText = (TextView) findViewById(R.id.myTitle);
+        if (myTitleText != null) {
+            //myTitleText.setText("NEW TITLE");
+            // user can also set color using "Color" and then "Color value constant"
+            // myTitleText.setBackgroundColor(Color.GREEN);
+        }
+
         TextView app_info = (TextView) findViewById(R.id.app_info);
         app_info.setText("Copyright © " + vendor);
         TextView app_info2 = (TextView) findViewById(R.id.app_info2);
@@ -131,6 +128,7 @@ public class LogonActivity extends SherlockActivity implements OnSharedPreferenc
         password = (EditText) findViewById(R.id.logon_password);
         savepassword = (CheckBox) findViewById(R.id.logon_save_password);
         logonBtn = (Button) findViewById(R.id.logon_ok);
+        parmBtn = (ImageButton) findViewById(R.id.parm_set);
 
         //监听
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
@@ -156,6 +154,14 @@ public class LogonActivity extends SherlockActivity implements OnSharedPreferenc
             getLastVersion();
         }
 
+        parmBtn.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(LogonActivity.this, SettingActivity.class);
+                startActivity(intent);
+            }
+        });
+
         logonBtn.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 if (username.getEditableText().toString().trim().equals("")) {
@@ -174,6 +180,7 @@ public class LogonActivity extends SherlockActivity implements OnSharedPreferenc
 
     @Override
     public void onStart() {
+
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             moduleCode = extras.getString("message");

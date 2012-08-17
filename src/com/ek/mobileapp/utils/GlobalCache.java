@@ -7,6 +7,7 @@ import com.ek.mobileapp.model.ApprovalNote;
 import com.ek.mobileapp.model.DrugApprovalData;
 import com.ek.mobileapp.model.DrugCheckData;
 import com.ek.mobileapp.model.MeasureType;
+import com.ek.mobileapp.model.OperationApprovalData;
 import com.ek.mobileapp.model.Patient;
 import com.ek.mobileapp.model.SkinTest;
 import com.ek.mobileapp.model.TimePoint;
@@ -48,7 +49,9 @@ public class GlobalCache {
     private List<DrugApprovalData> drugApprovalDatas = new ArrayList<DrugApprovalData>();
 
     private DrugApprovalData drugApprovalData;
+    private List<OperationApprovalData> operationApprovalDatas = new ArrayList<OperationApprovalData>();
 
+    private OperationApprovalData operationApprovalData;
     private List<ApprovalNote> approvalNotes = new ArrayList<ApprovalNote>();
 
     private String moduleCode;//进入模块后设为null
@@ -271,6 +274,22 @@ public class GlobalCache {
 
     public void setWebLog(boolean webLog) {
         this.webLog = webLog;
+    }
+
+    public List<OperationApprovalData> getOperationApprovalDatas() {
+        return operationApprovalDatas;
+    }
+
+    public void setOperationApprovalDatas(List<OperationApprovalData> operationApprovalDatas) {
+        this.operationApprovalDatas = operationApprovalDatas;
+    }
+
+    public OperationApprovalData getOperationApprovalData() {
+        return operationApprovalData;
+    }
+
+    public void setOperationApprovalData(OperationApprovalData operationApprovalData) {
+        this.operationApprovalData = operationApprovalData;
     }
 
 }

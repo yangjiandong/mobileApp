@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="-2px"
         android:text="@+id/label"
-        android:textSize="15dip" >
+        android:textSize="16dip" >
     </TextView>
 
     <TextView
@@ -30,7 +30,7 @@
         android:layout_marginTop="-4px"
         android:textColor="?custom_grid_value_color"
         android:text=""
-        android:textSize="15dip" >
+        android:textSize="16dip" >
     </TextView>
 
 </LinearLayout>

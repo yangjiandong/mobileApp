@@ -2,6 +2,7 @@
 <resources>
 
     <attr name="Page" format="reference" />
+    <attr name="IndexPage" format="reference" />
     <attr name="ModulePage" format="reference" />
 
     <!-- View styles -->

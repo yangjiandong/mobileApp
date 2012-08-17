@@ -419,11 +419,11 @@ public class DrugCheck extends NurseBaseActivity {
         try {
             //没有蓝牙设备时,
             if (blueTootheConnector != null) {
-                //if (blueTootheConnector.isHasBlueToothDevice()) {
-                // Stop the Bluetooth chat services
+
                 blueTootheConnector.mystop();
                 blueTootheConnector.stop();
                 blueTootheConnector = null;
+
             }
         } catch (Exception e) {
             MobLogAction.getMobLogAction().mobLogError("关闭蓝牙", e.getMessage());

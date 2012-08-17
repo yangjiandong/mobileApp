@@ -65,26 +65,41 @@
                 android:text=" " />
 
             <TextView
-                android:id="@+id/drugcheck_sexLabel"
+                android:id="@+id/drugcheck_bedNoLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
-                android:text="性别"/>
+                android:text="床号" />
 
-            <TextView
-                android:id="@+id/drugcheck_sex"
+             <TextView
+                android:id="@+id/drugcheck_bedNo"
                 style="?InfoText"
                 android:layout_width="90dp"
                 android:text=" " />
+
         </TableRow>
 
         <TableRow android:paddingTop="7dp" >
 
             <TextView
+                android:id="@+id/drugcheck_sexLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="性别" />
+
+            <TextView
+                android:id="@+id/drugcheck_sex"
+                style="?InfoText"
+                android:layout_width="48dp"
+                android:text=" " />
+
+            <TextView
                 android:id="@+id/drugcheck_ageLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="年龄"/>
+                android:layout_marginLeft="4dp"
+                android:text="年龄" />
 
             <TextView
                 android:id="@+id/drugcheck_age"
@@ -93,25 +108,11 @@
                 android:text=" " />
 
             <TextView
-                android:id="@+id/drugcheck_bedNoLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="4dp"
-                android:text="床号" />
-
-            <TextView
-                android:id="@+id/drugcheck_bedNo"
-                style="?InfoText"
-                android:layout_width="48dp"
-                android:text=" " />
-
-            <TextView
                 android:id="@+id/drugcheck_doctorLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
-                android:text="医生"/>
+                android:text="医生" />
 
             <TextView
                 android:id="@+id/drugcheck_doctor"
@@ -128,7 +129,7 @@
                 android:id="@+id/drugcheck_deptLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="病区"/>
+                android:text="病区" />
 
             <TextView
                 android:id="@+id/drugcheck_deptName"
